@@ -2,6 +2,8 @@ package com.raicod3.SDC.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class UserModel {
@@ -13,11 +15,14 @@ public class UserModel {
     private String email;
     private String phone;
     private String password;
+    private String role;
 
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;
 
-    private String role;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items;
+
 
     public UserModel() {
     }
