@@ -12,7 +12,9 @@ public class CustomUserDetails implements UserDetails {
 
     private UserModel user;
 
-    public CustomUserDetails(UserModel user) {}
+    public CustomUserDetails(UserModel user) {
+        this.user = user;
+    }
 
 
     @Override
