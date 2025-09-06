@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class JwtUtils {
                 .map(grantedAuthority -> grantedAuthority.getAuthority())
                 .collect(Collectors.toList()));
 
-        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
+        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
@@ -69,7 +70,7 @@ public class JwtUtils {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
 
         return Keys.hmacShaKeyFor(keyBytes);
     }
