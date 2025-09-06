@@ -14,7 +14,7 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private long id;
     private String title;
     private String description;
     private double dailyRate;
@@ -33,10 +33,20 @@ public class Item {
     @JoinColumn(name = "owner_id", nullable = false)
     private UserModel owner;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id",nullable = false)
+    private Category category;
+
+    @Enumerated(EnumType.STRING)
+    private ItemCondition conditionType;
+
+    @Enumerated(EnumType.STRING)
+    private ItemStatus itemStatus;
+
     public Item() {
     }
 
-    public Item(String id, String title, String description, double dailyRate, double weeklyRate, double monthlyRate, List<String> imageUrls, String location, ItemStatus status, ItemCondition condition, LocalDate createdAt) {
+    public Item(long id, String title, String description, double dailyRate, double weeklyRate, double monthlyRate, List<String> imageUrls, String location, ItemStatus status, ItemCondition condition, LocalDate createdAt, UserModel owner, Category category, ItemCondition conditionType, ItemStatus itemStatus) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -48,14 +58,10 @@ public class Item {
         this.status = status;
         this.condition = condition;
         this.createdAt = createdAt;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.owner = owner;
+        this.category = category;
+        this.conditionType = conditionType;
+        this.itemStatus = itemStatus;
     }
 
     public String getTitle() {
@@ -136,5 +142,45 @@ public class Item {
 
     public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public UserModel getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserModel owner) {
+        this.owner = owner;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public ItemCondition getConditionType() {
+        return conditionType;
+    }
+
+    public void setConditionType(ItemCondition conditionType) {
+        this.conditionType = conditionType;
+    }
+
+    public ItemStatus getItemStatus() {
+        return itemStatus;
+    }
+
+    public void setItemStatus(ItemStatus itemStatus) {
+        this.itemStatus = itemStatus;
     }
 }
