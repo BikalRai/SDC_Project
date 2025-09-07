@@ -5,15 +5,17 @@ public class AuthRegistrationRequest {
     private String email;
     private String phone;
     private String password;
+    private String role;
 
 
     public AuthRegistrationRequest() {
     }
 
-    public AuthRegistrationRequest(String email, String phone, String password) {
+    public AuthRegistrationRequest(String email, String phone, String password, String role) {
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -38,5 +40,13 @@ public class AuthRegistrationRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
