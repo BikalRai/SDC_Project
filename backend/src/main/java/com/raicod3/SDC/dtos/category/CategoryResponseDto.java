@@ -1,35 +1,23 @@
-package com.raicod3.SDC.models;
+package com.raicod3.SDC.dtos.category;
 
-import jakarta.persistence.*;
+import com.raicod3.SDC.models.Category;
 
-import java.util.List;
-
-@Entity
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CategoryResponseDto {
     private int id;
-
-    @Column(unique = true, nullable = false)
     private String name;
     private String description;
     private String iconUrl;
     private boolean isActive;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Item> items;
-
-    public Category() {
+    public CategoryResponseDto() {
     }
 
-    public Category(int id, String name, String description, String iconUrl, boolean isActive, List<Item> items) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.iconUrl = iconUrl;
-        this.isActive = isActive;
-        this.items = items;
+    public CategoryResponseDto(Category category) {
+        this.id = category.getId();
+        this.name = category.getName();
+        this.description = category.getDescription();
+        this.iconUrl = category.getIconUrl();
+        this.isActive = category.isActive();
     }
 
     public int getId() {
@@ -70,13 +58,5 @@ public class Category {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 }
