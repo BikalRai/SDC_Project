@@ -6,7 +6,9 @@ import com.raicod3.SDC.dtos.jwt.JwtAuthRequest;
 import com.raicod3.SDC.dtos.jwt.JwtAuthResponse;
 import com.raicod3.SDC.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +23,20 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<JwtAuthResponse> register (@RequestBody AuthRegistrationRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<?> register (@RequestBody AuthRegistrationRequest request) {
+        try {
+            return ResponseEntity.ok(authService.register(request));
+        } catch (Exception e) {
+            return new ResponseEntity<>("Unable to register", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> login (@RequestBody JwtAuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public ResponseEntity<?> login (@RequestBody JwtAuthRequest request) {
+        try {
+            return ResponseEntity.ok(authService.authenticate(request));
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>(  "Login credentials do not match: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 }

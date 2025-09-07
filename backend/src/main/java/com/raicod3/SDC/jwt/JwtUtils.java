@@ -1,6 +1,8 @@
 package com.raicod3.SDC.jwt;
 
 
+import com.raicod3.SDC.models.UserModel;
+import com.raicod3.SDC.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,9 +26,11 @@ public class JwtUtils {
 
 
     private final String jwtSecret;
+    private final UserRepository userRepository;
 
-    public JwtUtils(@Value("${JWT_SECRET}") String jwtSecret) {
+    public JwtUtils(@Value("${JWT_SECRET}") String jwtSecret, UserRepository userRepository) {
         this.jwtSecret = jwtSecret;
+        this.userRepository = userRepository;
     }
 
     public String extractUsername(String token) {
@@ -43,9 +47,15 @@ public class JwtUtils {
     }
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
+
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority())
                 .collect(Collectors.toList()));
+
+        UserModel user = userRepository.findByEmailOrPhone(userDetails.getUsername(), userDetails.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        claims.put("userId", user.getId());
+
 
         return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }

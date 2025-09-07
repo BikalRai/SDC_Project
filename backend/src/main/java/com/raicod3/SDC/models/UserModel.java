@@ -1,7 +1,9 @@
 package com.raicod3.SDC.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,21 +22,23 @@ public class UserModel {
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Item> items;
 
 
     public UserModel() {
     }
 
-    public UserModel(int id, String fullName, String email, String phone, String password, KYCModel userKyc, String role) {
+    public UserModel(int id, String fullName, String email, String phone, String password, String role, KYCModel userKyc, List<Item> items) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
         this.password = password;
-        this.userKyc = userKyc;
         this.role = role;
+        this.userKyc = userKyc;
+        this.items = items;
     }
 
     public int getId() {
@@ -93,6 +97,14 @@ public class UserModel {
         this.role = role;
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public String toString() {
         return "UserModel{" +
@@ -101,7 +113,9 @@ public class UserModel {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
                 ", userKyc=" + userKyc +
+                ", items=" + items +
                 '}';
     }
 }
