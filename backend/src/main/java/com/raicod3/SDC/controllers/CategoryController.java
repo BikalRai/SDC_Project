@@ -41,7 +41,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getCategoryById(@PathVariable int id) {
+    public ResponseEntity<Map<String, Object>> getCategoryById(@PathVariable("id") int id) {
         try {
             CategoryResponseDto category = categoryService.getCategoryById(id);
             return ResponseBuilder.buildResponse("Category retrieved", HttpStatus.OK, category);
@@ -51,7 +51,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateCategory(@PathVariable int id, @RequestBody Category category) {
+    public ResponseEntity<Map<String, Object>> updateCategory(@PathVariable("id") int id, @RequestBody Category category) {
         try {
             CategoryResponseDto updatedCategory = categoryService.update(id, category);
             return ResponseBuilder.buildResponse("Category updated", HttpStatus.OK, updatedCategory);
@@ -61,7 +61,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable int id) {
+    public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable("id") int id) {
         Map<String, Object> response = new HashMap<>();
 
         try {
