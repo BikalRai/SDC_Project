@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -37,9 +38,25 @@ public class ItemService {
 
     public List<ItemResponseDto> getAllItems() {
         List<Item> items = itemRepository.findAll();
+        return items.stream().map(item -> new ItemResponseDto(item)).collect(Collectors.toList());
+    }
 
-        if(items.isEmpty()) {
-            t
-        }
+    public ItemResponseDto getItemById(long id) {
+        return new ItemResponseDto(itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found")));
+    }
+
+    public ItemResponseDto updateItem(long id, ItemRequestDto itemRequestDto, Category category) {
+        Item existingItem = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
+
+        Item updatedItem = new Item(itemRequestDto, category);
+        itemRepository.save(updatedItem);
+        return new ItemResponseDto(existingItem);
+    }
+
+    public String deleteItemById(long id) {
+        Item existingItem = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
+
+        itemRepository.delete(existingItem);
+        return "Item deleted";
     }
 }
