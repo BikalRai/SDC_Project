@@ -11,6 +11,8 @@ import com.raicod3.SDC.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ItemService {
 
@@ -31,5 +33,13 @@ public class ItemService {
         Item savedItem = itemRepository.save(item);
 
         return new ItemResponseDto(savedItem);
+    }
+
+    public List<ItemResponseDto> getAllItems() {
+        List<Item> items = itemRepository.findAll();
+
+        if(items.isEmpty()) {
+            t
+        }
     }
 }

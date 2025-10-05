@@ -42,4 +42,8 @@ public class ItemContoller {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public ResponseEntity<?> getAllItemsHandler() {
+        return null;
+    }
 }
