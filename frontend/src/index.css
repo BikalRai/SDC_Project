@@ -11,3 +11,10 @@
   --color-border: #B3B3B3;
   --color-background: #FAFBFC;
 }
+
+:root {
+  --auth-gradient-start: 220 90% 56%; /* Example: blue */
+  --auth-gradient-end: 280 80% 60%;   /* Example: purple */
+}
+
+
