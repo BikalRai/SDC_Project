@@ -29,7 +29,7 @@ export const Button = ({
     outline: "border border-gray-300 text-gray-700 bg-transparent hover:bg-gray-50 focus:ring-gray-500",
     
     // Secondary button
-    secondary: "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500",
+    secondary: "bg-secondary-button text-gray-700 hover:bg-gray-400 focus:ring-gray-500",
     
     // Danger button
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
