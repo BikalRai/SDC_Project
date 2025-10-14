@@ -6,6 +6,7 @@ import Index from './pages/index'
 import Profile from './pages/Profile'
 import CompleteProfile from './pages/completeProfile'
 import Verification from './pages/verificationPage'
+import LandingPage from './pages/landingPage'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/complete-profile" element={<CompleteProfile />} />
             <Route path="/verification" element={<Verification />} />
+            <Route path="/landing" element={<LandingPage />} />
 
           </Routes>
         </Router>
