@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../components/button";
-import { Input } from "../components/input";
-import { Label } from "../components/label";
+import { Button } from "../components/Button";
+import { Input } from "../components/Input";
+import { Label } from "../components/Label";
+import FloatingBlobs from "../components/FloatingBlobs";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -20,14 +21,13 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left side - Gradient Background */}
-      <div className="lg:w-4/10 bg-gradient-to-br from-[hsl(var(--auth-gradient-start))] to-[hsl(var(--auth-gradient-end))]" />
+    <FloatingBlobs>
+    <div className="min-h-screen flex bg-transparent justify-end">
 
       {/* Right side - Registration Form */}
-      <div className="w-6/10 flex items-center justify-center p-8 py-0 rounded-tl-3xl rounded-bl-3xl border">
+      <div className="w-7/10 flex items-center justify-center p-8 py-0 rounded-tl-4xl rounded-bl-4xl bg-white">
         <div className="w-full">
-          <div className="bg-transparent rounded-2xl p-8 md:p-12 w-full">
+          <div className="bg-white rounded-2xl p-8 md:p-12 w-full">
             <h1 className="text-4xl font-bold text-text-black mb-8">
               Create Account
             </h1>
@@ -44,7 +44,7 @@ const Register = () => {
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="h-12"
+                    className="h-12 mb-7"
                     required
                   />
                 </div>
@@ -57,7 +57,7 @@ const Register = () => {
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="h-12"
+                    className="h-12 mb-7"
                     required
                   />
                 </div>
@@ -73,7 +73,7 @@ const Register = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
+                  className="h-12 mb-7"
                   required
                 />
               </div>
@@ -88,7 +88,7 @@ const Register = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12"
+                  className="h-12 mb-8"
                   required
                 />
               </div>
@@ -96,7 +96,7 @@ const Register = () => {
               {/* Create Account Button */}
               <Button
                 type="submit"
-                className="w-full h-14 text-lg bg-amber-400 hover:bg-amber-500"
+                className="w-full h-14 text-lg"
                 size="lg"
               >
                 Create Account
@@ -104,11 +104,11 @@ const Register = () => {
             </form>
 
             {/* Login Link */}
-            <p className="text-left mt-6 text-text-muted">
+            <p className="text-left mt-6 text-text-muted text-xl font-bold">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-primary hover:underline font-medium"
+                className="text-light-primary hover:text-primary underline"
               >
                 Login
               </Link>
@@ -122,23 +122,7 @@ const Register = () => {
             </div>
 
             {/* Social Signup Buttons */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="h-14"
-                onClick={() => handleSocialSignup("facebook")}
-              >
-                Signup with
-                <svg
-                  className="w-5 h-5 ml-2"
-                  viewBox="0 0 24 24"
-                  fill="#1877F2"
-                >
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              </Button>
-
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <Button
                 type="button"
                 variant="outline"
@@ -170,6 +154,7 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </FloatingBlobs>
   );
 };
 
