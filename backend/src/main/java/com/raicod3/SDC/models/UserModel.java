@@ -26,6 +26,8 @@ public class UserModel {
     @JsonManagedReference
     private List<Item> items;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Rental> rentals;
 
     public UserModel() {
     }
