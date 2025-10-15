@@ -5,13 +5,18 @@ import com.raicod3.SDC.dtos.item.ItemRequestDto;
 import com.raicod3.SDC.enums.ItemCondition;
 import com.raicod3.SDC.enums.ItemStatus;
 import jakarta.persistence.*;
+import lombok.*;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
-
 public class Item {
 
     @Id
@@ -54,24 +59,9 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
-    public Item() {
-    }
+    @OneToMany(mappedBy = "itemId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Rental> rentals;
 
-    public Item(long id, String title, String description, double dailyRate, double weeklyRate, double monthlyRate, List<String> imageUrls, String location, LocalDate createdAt, UserModel owner, Category category, ItemCondition conditionType, ItemStatus itemStatus) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.dailyRate = dailyRate;
-        this.weeklyRate = weeklyRate;
-        this.monthlyRate = monthlyRate;
-        this.imageUrls = imageUrls;
-        this.location = location;
-        this.createdAt = createdAt;
-        this.owner = owner;
-        this.category = category;
-        this.conditionType = conditionType;
-        this.itemStatus = itemStatus;
-    }
 
     public Item(ItemRequestDto itemRequestDto, Category category) {
         this.title = itemRequestDto.getTitle();
@@ -85,110 +75,7 @@ public class Item {
         this.category = category;
         this.conditionType = itemRequestDto.getCondition();
         this.itemStatus = itemRequestDto.getStatus();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getDailyRate() {
-        return dailyRate;
-    }
-
-    public void setDailyRate(double dailyRate) {
-        this.dailyRate = dailyRate;
-    }
-
-    public double getWeeklyRate() {
-        return weeklyRate;
-    }
-
-    public void setWeeklyRate(double weeklyRate) {
-        this.weeklyRate = weeklyRate;
-    }
-
-    public double getMonthlyRate() {
-        return monthlyRate;
-    }
-
-    public void setMonthlyRate(double monthlyRate) {
-        this.monthlyRate = monthlyRate;
-    }
-
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public UserModel getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserModel owner) {
-        this.owner = owner;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public ItemCondition getConditionType() {
-        return conditionType;
-    }
-
-    public void setConditionType(ItemCondition conditionType) {
-        this.conditionType = conditionType;
-    }
-
-    public ItemStatus getItemStatus() {
-        return itemStatus;
-    }
-
-    public void setItemStatus(ItemStatus itemStatus) {
-        this.itemStatus = itemStatus;
+        this.rentals = new ArrayList<>();
     }
 
     @Override
