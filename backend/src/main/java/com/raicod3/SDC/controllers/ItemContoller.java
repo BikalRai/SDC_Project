@@ -49,7 +49,7 @@ public class ItemContoller {
             List<ItemResponseDto> allItems = itemService.getAllItems();
             return ResponseBuilder.buildResponse("All items", HttpStatus.OK, allItems);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("No items found", HttpStatus.NOT_FOUND, null);
+            return ResponseBuilder.buildResponse("No items found", HttpStatus.NOT_FOUND, null, e);
         }
     }
 
@@ -59,7 +59,7 @@ public class ItemContoller {
             ItemResponseDto item = itemService.getItemById(id);
             return ResponseBuilder.buildResponse("Item", HttpStatus.OK, item);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("No item found", HttpStatus.NOT_FOUND, null);
+            return ResponseBuilder.buildResponse("No item found", HttpStatus.NOT_FOUND, null, e);
         }
     }
 
