@@ -32,6 +32,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String jwtToken;
         String username = "";  // this will be phone or email
 
+
         if(authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -44,9 +45,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setHeader("X-Epired-Token", "true");
+            return;
         } catch(Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setHeader("X-Invalid-Token", "true");
+            return;
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

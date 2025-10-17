@@ -1,6 +1,7 @@
 package com.raicod3.SDC.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.raicod3.SDC.dtos.item.ItemRequestDto;
 import com.raicod3.SDC.enums.ItemCondition;
 import com.raicod3.SDC.enums.ItemStatus;
@@ -36,8 +37,9 @@ public class Item {
     @Column(nullable = false)
     private double monthlyRate;
 
-    @ElementCollection
-    @Column(name = "image_urls")
+    @ElementCollection(fetch = FetchType.EAGER) // or LAZY
+    @CollectionTable(name = "item_images", joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "image_url")
     private List<String> imageUrls;
 
     @Column(nullable = false)
@@ -46,7 +48,6 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    @JsonBackReference
     private UserModel owner;
 
     @ManyToOne
@@ -59,7 +60,7 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Rental> rentals;
 
 

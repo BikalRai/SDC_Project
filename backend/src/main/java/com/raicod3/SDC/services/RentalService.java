@@ -1,6 +1,8 @@
 package com.raicod3.SDC.services;
 
 import com.raicod3.SDC.custom.CustomUserDetails;
+import com.raicod3.SDC.dtos.item.ItemResponseDto;
+import com.raicod3.SDC.dtos.rental.BookingResponseDto;
 import com.raicod3.SDC.dtos.rental.RentalRequestDto;
 import com.raicod3.SDC.enums.BookingStatus;
 import com.raicod3.SDC.enums.ItemStatus;
@@ -33,19 +35,15 @@ public class RentalService {
     @Autowired
     private BookingRepository bookingRepository;
 
-    public Booking requestRental(RentalRequestDto rentalRequestDto, CustomUserDetails userDetails) {
-        Item item = itemRepository.findById(rentalRequestDto.getItemId()).orElse(null);
-
-        if (item == null) {
-            throw new HttpNotFoundException("Item not found");
-        }
+    public BookingResponseDto requestRental(RentalRequestDto rentalRequestDto, CustomUserDetails userDetails) {
+        Item item = itemRepository.findById(rentalRequestDto.getItemId()).orElseThrow(() -> new HttpNotFoundException("Item not found"));
 
         UserModel user = userDetails.getUser();
 
         Booking booking = new Booking(rentalRequestDto, user, item);
         bookingRepository.save(booking);
 
-        return booking;
+        return new BookingResponseDto(booking);
     }
 
 

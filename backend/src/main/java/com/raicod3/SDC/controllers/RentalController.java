@@ -1,8 +1,10 @@
 package com.raicod3.SDC.controllers;
 
 import com.raicod3.SDC.custom.CustomUserDetails;
+import com.raicod3.SDC.dtos.rental.BookingResponseDto;
 import com.raicod3.SDC.dtos.rental.RentalRequestDto;
 import com.raicod3.SDC.exceptions.HttpNotFoundException;
+import com.raicod3.SDC.models.Booking;
 import com.raicod3.SDC.models.Rental;
 import com.raicod3.SDC.services.RentalService;
 import com.raicod3.SDC.utilities.ResponseBuilder;
@@ -24,17 +26,13 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Map<String, Object>> createRental(@RequestBody RentalRequestDto request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("/request")
+    public ResponseEntity<Map<String, Object>> requestRental(@RequestBody RentalRequestDto request, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            Rental rental = rentalService.createRental(request, userDetails);
-            return ResponseBuilder.buildResponse("Rental created", HttpStatus.CREATED, rental);
-        }catch (IllegalArgumentException e) {
-            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
-        } catch (HttpNotFoundException e) {
-            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.NOT_FOUND, null);
+            BookingResponseDto booking = rentalService.requestRental(request, userDetails);
+            return ResponseBuilder.buildResponse("Booking requested", HttpStatus.CREATED, booking);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("Rental not created", HttpStatus.BAD_REQUEST, null);
+            return ResponseBuilder.buildResponse("Booking not created", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
         }
     }
 
