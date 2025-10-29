@@ -4,6 +4,8 @@ import com.raicod3.SDC.custom.CustomUserDetails;
 import com.raicod3.SDC.dtos.item.ItemResponseDto;
 import com.raicod3.SDC.dtos.rental.BookingResponseDto;
 import com.raicod3.SDC.dtos.rental.RentalRequestDto;
+import com.raicod3.SDC.dtos.rental.RentalResponseDto;
+import com.raicod3.SDC.dtos.user.UserResponseDto;
 import com.raicod3.SDC.enums.BookingStatus;
 import com.raicod3.SDC.enums.ItemStatus;
 import com.raicod3.SDC.enums.RentalStatus;
@@ -21,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RentalService {
@@ -47,7 +51,7 @@ public class RentalService {
     }
 
 
-    public Rental approveRental(String bookingId, CustomUserDetails userDetails) {
+    public BookingResponseDto approveRental(String bookingId, CustomUserDetails userDetails) {
 
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new HttpNotFoundException("Booking not found"));
 
@@ -81,24 +85,30 @@ public class RentalService {
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
 
-        return rental;
+        return new BookingResponseDto(booking);
 
     }
 
-    public List<Rental> getAllRentals() {
-        return rentalRepository.findAll();
+    public List<BookingResponseDto> getAllRentals() {
+        return bookingRepository.findAll().stream().map(BookingResponseDto::new).collect(Collectors.toList());
     }
 
-    public List<Rental> getRentalsByUser(CustomUserDetails userDetails) {
+    public List<BookingResponseDto> getRentalsByUser(CustomUserDetails userDetails) {
         UserModel user = userDetails.getUser();
-    return rentalRepository.findByUser(user);
+    List<Booking> rentals = bookingRepository.findBookingsByUser(user);
+
+    return rentals.stream().map(BookingResponseDto::new).collect(Collectors.toList());
+
+
     }
 
-    public Rental getRentalById(Integer id) {
-        return rentalRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("Rental not found"));
+    public BookingResponseDto getRentalById(String id) {
+        Booking booking =bookingRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("booking not found"));
+        return new BookingResponseDto(booking);
     }
 
-//    public Rental updateRental(RentalRequestDto req) {
-//
-//    }
+    public String deleteRental(String id) {
+        bookingRepository.deleteById(id);
+        return "Booking deleted successfully";
+    }
 }
