@@ -100,7 +100,7 @@ const blobsY = [
 
 const FloatingBlobs = ({ children }) => {
   return (
-    <div className="relative overflow-visible bg-gray-100">
+    <div className="relative overflow-x-hidden bg-gray-100">
       {/* Horizontal floating blobs */}
       {blobsX.map((blob, idx) => (
         <img
