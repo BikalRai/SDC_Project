@@ -1,7 +1,9 @@
 package com.raicod3.SDC.dtos.kyc;
 
 import com.raicod3.SDC.dtos.user.UserResponseDto;
+import com.raicod3.SDC.enums.KYCStatus;
 import com.raicod3.SDC.models.KYCModel;
+import com.raicod3.SDC.models.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,12 +56,12 @@ public class KYCResponseDto {
 
 
     // verification
-    private String KYCStatus;
+    private KYCStatus KYCStatus;
     private LocalDate submittedDate;
     private LocalDateTime verifiedDate;
 
-    public KYCResponseDto(UserResponseDto user, KYCModel kyc) {
-        this.user = user;
+    public KYCResponseDto(UserModel user, KYCModel kyc) {
+        this.user = new UserResponseDto(user);
         this.fullName = kyc.getFullName();
         this.fatherName = kyc.getFatherName();
         this.birthDate = kyc.getBirthDate();
@@ -76,7 +78,7 @@ public class KYCResponseDto {
         this.issuedDate = kyc.getIssuedDate();
         this.citizenshipFrontImageUrl = kyc.getCitizenshipFrontImageUrl();
         this.citizenshipBackImageUrl = kyc.getCitizenshipBackImageUrl();
-        this.KYCStatus = kyc.getKYCStatus();
+        this.KYCStatus = kyc.getStatus();
         this.submittedDate = kyc.getSubmittedDate();
         this.verifiedDate = kyc.getVerifiedDate();
     }
