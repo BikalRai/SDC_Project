@@ -1,6 +1,7 @@
 package com.raicod3.SDC.dtos.kyc;
 
 
+import com.raicod3.SDC.enums.KYCStatus;
 import com.raicod3.SDC.models.KYCModel;
 import com.raicod3.SDC.models.UserModel;
 import jakarta.validation.constraints.NotNull;
@@ -73,7 +74,7 @@ public class KYCRequestDto {
 
 
     // verification
-    private String KYCStatus;
+    private KYCStatus KYCStatus;
     private LocalDate submittedDate;
     private LocalDateTime verifiedDate;
 
@@ -95,7 +96,7 @@ public class KYCRequestDto {
         this.issuedDate = kyc.getIssuedDate();
         this.citizenshipFrontImageUrl = kyc.getCitizenshipFrontImageUrl();
         this.citizenshipBackImageUrl = kyc.getCitizenshipBackImageUrl();
-        this.KYCStatus = kyc.getKYCStatus();
+        this.KYCStatus = kyc.getStatus();
         this.submittedDate = kyc.getSubmittedDate();
         this.verifiedDate = kyc.getVerifiedDate();
     }
