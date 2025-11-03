@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/items")
-public class ItemContoller {
+public class ItemController {
 
     @Autowired
     private ItemService itemService;
@@ -69,7 +69,7 @@ public class ItemContoller {
             ItemResponseDto updatedItem = itemService.updateItem(id, itemRequestDto, category);
             return ResponseBuilder.buildResponse("Item updated successfully", HttpStatus.OK, updatedItem);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("No item found", HttpStatus.NOT_FOUND, null);
+            return ResponseBuilder.buildResponse("Item did was not updated", HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 
