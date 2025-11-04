@@ -3,77 +3,23 @@ import FloatingBlobs from "../components/FloatingBlobs";
 import { Button } from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import circle from "../assets/Circle.svg?react";
+import AboutUs from "../components/section/AboutUs";
 import RentalMarketplace from "../components/section/RentalMarketplace";
 import Testimonial from "../components/section/Testimonial";
 import Footer from "../components/section/Footer";
+import Navbar from "../components/section/Navbar";
 
 function LandingPage() {
   const navigate = useNavigate();
   return (
     <>
-        <div className="min-h-screen bg-transparent">
-          <FloatingBlobs>
+      <div className="min-h-screen bg-transparent">
+        <FloatingBlobs>
           {/* Navigation */}
-          <nav className="bg-transparent shadow-sm sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-16">
-                {/* Logo */}
-                <div className="flex-shrink-0">
-                  <h1 className="text-2xl font-bold text-blue-600">LOGO</h1>
-                </div>
-
-                {/* Navigation Links */}
-                <div className="hidden md:block">
-                  <div className="ml-10 flex items-baseline space-x-8">
-                    <a
-                      href="#home"
-                      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300"
-                    >
-                      Home
-                    </a>
-                    <a
-                      href="#categories"
-                      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300"
-                    >
-                      Categories
-                    </a>
-                    <a
-                      href="#pricing"
-                      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300"
-                    >
-                      Pricing
-                    </a>
-                    <a
-                      href="#about"
-                      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300"
-                    >
-                      About Us
-                    </a>
-                  </div>
-                </div>
-
-                {/* Auth Buttons */}
-                <div className="flex items-center space-x-4">
-                  <Button
-                    variant="outline"
-                    className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300 shadow-xl"
-                    onClick={() => navigate("/login")}
-                  >
-                    Log in
-                  </Button>
-                  <button
-                    className="bg-primary hover:bg-light-primary text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-xl"
-                    onClick={() => navigate("/register")}
-                  >
-                    Join now
-                  </button>
-                </div>
-              </div>
-            </div>
-          </nav>
+          <Navbar />
 
           {/* Hero Section */}
-          <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="max-w-7xl mx-auto py-16">
             <div className="text-center pb-8 pt-20">
               {/* Main Heading */}
               <h1 className="text-5xl font-medium text-gray-900 mb-6">
@@ -88,21 +34,21 @@ function LandingPage() {
             </div>
 
             {/* Search Filters */}
-            <div className="bg-transparent p-4 md:p-6 w-[92%] mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-[80%_1fr] items-center justify-center w-full mx-auto">
+            <div className="bg-transparent w-full mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-[80%_1fr] items-center justify-center w-full mx-auto px-16 md:px-2">
                 <div className="bg-white rounded-lg grid grid-cols-1 md:grid-cols-[40%_1fr_1fr] items-center ">
                   {/* Location Search */}
                   <div className="space-y-2">
                     <input
                       type="text"
                       placeholder="Search Location"
-                      className="w-full px-4 py-5 rounded-bl-lg rounded-tl-lg border-gray-400 border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                      className="w-full px-4 py-5 rounded-bl-lg rounded-tl-lg border-gray-400 border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 sm:placeholder:text-sm lg:placeholder:text-base"
                     />
                   </div>
 
                   {/* Rental Types */}
                   <div className="space-y-2">
-                    <select className="w-full px-4 py-5 border-y-2 border-gray-400  focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    <select className="w-full px-4 py-5 border-y-2 border-gray-400  focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 sm:text-sm lg:text-base">
                       <option value="">Rental types</option>
                       <option value="scooters">Scooters</option>
                       <option value="cars">Cars</option>
@@ -113,7 +59,7 @@ function LandingPage() {
 
                   {/* Price Range */}
                   <div className="space-y-2">
-                    <select className="w-full px-4 py-5 border-gray-400 border-2 rounded-br-lg rounded-tr-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    <select className="w-full px-4 py-5 border-gray-400 border-2 rounded-br-lg rounded-tr-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 sm:text-sm lg:text-base">
                       <option value="">Price Range</option>
                       <option value="0-20">100rs - 1500rs</option>
                       <option value="20-50">1500rs - 3750rs</option>
@@ -124,8 +70,8 @@ function LandingPage() {
                 </div>
 
                 {/* Check Results Button */}
-                <div className="text-center">
-                  <button className="ml-3 bg-primary hover:bg-light-primary text-white font-semibold py-5 px-8 text-lg transition duration-300 transform hover:scale-105">
+                <div className="text-right">
+                  <button className="md:mt-0 mt-4 md:ml-3 bg-primary hover:bg-light-primary text-white py-5 px-7 sm:font-normal lg:font-semibold sm:text-md lg:text-lg transition duration-300 transform hover:scale-105 w-full md:w-auto">
                     Check results
                   </button>
                 </div>
@@ -147,11 +93,7 @@ function LandingPage() {
                   A smarter, greener, and more affordable way to <br />
                   access what you love.
                 </p>
-                <Button
-                  size="lg"
-                  
-                  className="relative left-64 py-7 px-11"
-                >
+                <Button size="lg" className="relative left-64 py-7 px-11">
                   Explore Now{" "}
                   <span className="material-symbols-outlined pl-4">
                     arrow_right
@@ -168,7 +110,9 @@ function LandingPage() {
             </div>
           </div>
         </FloatingBlobs>
-        </div>
+      </div>
+
+      <AboutUs />
       <RentalMarketplace />
       <Testimonial />
       <Footer />

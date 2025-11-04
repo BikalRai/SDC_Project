@@ -3,7 +3,6 @@
 @import "@fontsource/poppins/500.css";  /* Medium */
 @import "@fontsource/poppins/700.css";  /* Bold */
 
-
 @theme {
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --color-primary: #0090B8;

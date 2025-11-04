@@ -31,7 +31,7 @@ const RentalMarketplace = () => {
     <>
       <div className="min-h-screen bg-card-bg p-6 mb-8">
         {/* Header */}
-        <header className="text-center mb-8">
+        <header className="text-center my-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">
             Find Your Rental
           </h1>

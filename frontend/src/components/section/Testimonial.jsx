@@ -10,7 +10,7 @@ const Testimonial = () => {
         {/* description */}
         <div className='max-w-4xl mx-auto text-center text-gray-600'>
             <p className='mb-4 w-4/10 mx-auto'>"Rented a scooter from Kiraya Bazar the process was super easy, affordable, and the ride was smooth all day!"</p>
-            <div className='flex justify-center'>
+            <div className='flex justify-center items-center'>
               <img src="https://images.unsplash.com/photo-1627087820883-7a102b79179a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687" alt="User" className='rounded-full w-12 h-12 mr-2 object-cover' />
               <p className='font-semibold'>- Alex Johnson</p>
             </div>
