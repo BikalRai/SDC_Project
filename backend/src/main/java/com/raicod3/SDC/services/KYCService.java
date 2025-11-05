@@ -4,6 +4,7 @@ import com.raicod3.SDC.custom.CustomUserDetails;
 import com.raicod3.SDC.dtos.kyc.KYCRequestDto;
 import com.raicod3.SDC.dtos.kyc.KYCResponseDto;
 import com.raicod3.SDC.dtos.user.UserResponseDto;
+import com.raicod3.SDC.enums.KYCStatus;
 import com.raicod3.SDC.exceptions.HttpNotFoundException;
 import com.raicod3.SDC.models.KYCModel;
 import com.raicod3.SDC.models.UserModel;
@@ -31,6 +32,8 @@ public class KYCService {
 
         UserModel user = userRepo.findById(customUserDetails.getUser().getId()).orElseThrow(() -> new HttpNotFoundException("User does not exist"));
 
+        kycRepo.save(kyc);
+
         return new KYCResponseDto(user, kyc);
     }
 
@@ -49,5 +52,52 @@ public class KYCService {
     public List<KYCResponseDto> getAllKYCs() {
         List<KYCModel> kycs = kycRepo.findAll();
         return  kycs.stream().map(kyc -> new KYCResponseDto(kyc.getUser(), kyc)).collect(Collectors.toList());
+    }
+
+    public KYCResponseDto getKYCById(int id) {
+        KYCModel existingKYC = kycRepo.findById(id).orElseThrow(() -> new HttpNotFoundException("KYC does not exist"));
+
+        return new KYCResponseDto(existingKYC.getUser(), existingKYC);
+    }
+
+    public KYCResponseDto updateKYC(int id, KYCRequestDto kycRequestDto) {
+        KYCModel existingKYC = kycRepo.findById(id).orElseThrow(() -> new HttpNotFoundException("KYC does not exist"));
+
+        existingKYC.setFullName(kycRequestDto.getFullName());
+        existingKYC.setFatherName(kycRequestDto.getFatherName());
+        existingKYC.setBirthDate(kycRequestDto.getBirthDate());
+        existingKYC.setGender(kycRequestDto.getGender());
+        existingKYC.setEmail(kycRequestDto.getEmail());
+        existingKYC.setPhone(kycRequestDto.getPhone());
+        existingKYC.setProvince(kycRequestDto.getProvince());
+        existingKYC.setDistrict(kycRequestDto.getDistrict());
+        existingKYC.setMunicipality(kycRequestDto.getMunicipality());
+        existingKYC.setWardNumber(kycRequestDto.getWardNumber());
+        existingKYC.setStreet(kycRequestDto.getStreet());
+        existingKYC.setCitizenshipId(kycRequestDto.getCitizenshipId());
+        existingKYC.setIssuedDate(kycRequestDto.getIssuedDate());
+        existingKYC.setIssuedDistrict(kycRequestDto.getIssuedDistrict());
+        existingKYC.setCitizenshipFrontImageUrl(kycRequestDto.getCitizenshipFrontImageUrl());
+        existingKYC.setCitizenshipBackImageUrl(kycRequestDto.getCitizenshipBackImageUrl());
+
+        kycRepo.save(existingKYC);
+
+
+        return new KYCResponseDto(existingKYC.getUser(), existingKYC);
+    }
+
+    public KYCResponseDto updateKYCStatus(int id, KYCStatus kycStatus) {
+        KYCModel existingKYC = kycRepo.findById(id).orElseThrow(() -> new HttpNotFoundException("KYC does not exist"));
+        existingKYC.setStatus(kycStatus);
+
+        return new KYCResponseDto(existingKYC.getUser(), existingKYC);
+    }
+
+    public String deleteKYC(int id) {
+        KYCModel existingKYC = kycRepo.findById(id).orElseThrow(() -> new HttpNotFoundException("KYC does not exist"));
+
+        kycRepo.deleteById(existingKYC.getId());
+
+        return "KYC has been deleted";
     }
 }
