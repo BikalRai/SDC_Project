@@ -6,11 +6,11 @@ const Footer = () => {
       <footer className="bg-primary text-white py-8 px-4">
         <div className="max-w-full mx-auto">
           {/* Main Footer Content */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-24 mt-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1 sm:gap-8 mb-4 sm:mb-24 sm:mt-12 max-w-6xl mx-auto">
             {/* Frame Column */}
             <div>
-              <h3 className="font-medium text-lg mb-4">Rents</h3>
-              <ul className="space-y-2">
+              <h3 className="font-medium text-sm sm:text-lg mb-4 sm:text-left text-center">Rents</h3>
+              <ul className="space-y-2 hidden sm:block">
                 <li className="text-gray-300 hover:text-white cursor-pointer">
                   Scooter
                 </li>
@@ -28,8 +28,8 @@ const Footer = () => {
 
             {/* Company Column */}
             <div>
-              <h3 className="font-medium text-lg mb-4">Company</h3>
-              <ul className="space-y-2">
+              <h3 className="font-medium text-sm sm:text-lg mb-4 text-left sm:text-left">Company</h3>
+              <ul className="space-y-2 hidden sm:block">
                 <li className="text-gray-300 hover:text-white cursor-pointer">
                   About Us
                 </li>
@@ -47,8 +47,8 @@ const Footer = () => {
 
             {/* Support Column */}
             <div>
-              <h3 className="font-medium text-lg mb-4">Support</h3>
-              <ul className="space-y-2">
+              <h3 className="font-medium text-sm sm:text-lg mb-4 text-center sm:text-left">Support</h3>
+              <ul className="space-y-2 hidden sm:block">
                 <li className="text-gray-300 hover:text-white cursor-pointer">
                   Help Center
                 </li>
@@ -66,8 +66,8 @@ const Footer = () => {
 
             {/* For Providers Column */}
             <div>
-              <h3 className="font-medium text-lg mb-4">For Providers</h3>
-              <ul className="space-y-2">
+              <h3 className="font-medium text-sm sm:text-lg mb-4 text-left">For Providers</h3>
+              <ul className="space-y-2 hidden sm:block">
                 <li className="text-gray-300 hover:text-white cursor-pointer">
                   Join as Provider
                 </li>

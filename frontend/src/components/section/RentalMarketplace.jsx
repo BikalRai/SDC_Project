@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef } from "react";
 import { Button } from "../Button";
 
 const RentalMarketplace = () => {
@@ -25,14 +26,35 @@ const RentalMarketplace = () => {
       price: "Rs.1,350/day",
       features: ["Helmet", "Raincoat"],
     },
+    {
+      name: "TVS Jupiter",
+      price: "Rs.1,150/day",
+      features: ["Helmet", "Raincoat"],
+    },
   ];
+
+  const sliderRef = useRef(null);
+
+  const scrollLeft = () => {
+    sliderRef.current.scrollBy({
+      left: -300, // adjust scroll distance
+      behavior: "smooth",
+    });
+  };
+
+  const scrollRight = () => {
+    sliderRef.current.scrollBy({
+      left: 300,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <>
       <div className="min-h-screen bg-card-bg p-6 mb-8">
         {/* Header */}
         <header className="text-center my-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
             Find Your Rental
           </h1>
 
@@ -48,7 +70,7 @@ const RentalMarketplace = () => {
           {categories.map((category, index) => (
             <button
               key={index}
-              className="border border-gray-300 text-gray-700 bg-transparent hover:bg-primary focus:ring-gray-500 font-light inline-flex items-center justify-center rounded-2xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed h-10 px-6 text-base focus:bg-primary"
+              className="border border-gray-300 text-gray-700 bg-transparent hover:bg-light-primary focus:ring-gray-500 font-light inline-flex items-center justify-center rounded-2xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed h-10 sm:px-6 px-3 text-base focus:bg-light-primary"
             >
               {category}
             </button>
@@ -73,8 +95,9 @@ const RentalMarketplace = () => {
 
             {/* Scrollable Cards */}
             <div
+              ref={sliderRef}
               id="scooter-slider"
-              className="flex gap-6 scroll-smooth no-scrollbar px-8"
+              className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar px-8"
             >
               {scooters.map((scooter, index) => (
                 <div
@@ -121,7 +144,10 @@ const RentalMarketplace = () => {
                       </ul>
                     </div>
 
-                    <Button variant="outline" className="hover:bg-light-primary">
+                    <Button
+                      variant="outline"
+                      className="hover:bg-light-primary"
+                    >
                       Hire now
                       <span className="material-symbols-outlined pl-1">
                         arrow_right
