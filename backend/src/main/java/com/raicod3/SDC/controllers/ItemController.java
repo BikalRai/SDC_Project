@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/items")
+@RequestMapping("/api/item")
 public class ItemController {
 
     @Autowired
@@ -43,9 +43,22 @@ public class ItemController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllItemsHandler() {
+    @GetMapping("/items")
+    public ResponseEntity<Map<String, Object>> getAllItemsHandler(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) double dailyRate,
+            @RequestParam(required = false) double weeklyRate,
+            @RequestParam(required = false) double monthlyRate) {
         try {
+            List<ItemResponseDto> items;
+            Map<String, Object> whereQuery = new HashMap<>();
+
+            if (title != null) {
+                whereQuery.put("title", title);
+            }
+
             List<ItemResponseDto> allItems = itemService.getAllItems();
             return ResponseBuilder.buildResponse("All items", HttpStatus.OK, allItems);
         } catch (Exception e) {
