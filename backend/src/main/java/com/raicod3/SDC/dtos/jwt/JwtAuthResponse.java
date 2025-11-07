@@ -1,21 +1,20 @@
 package com.raicod3.SDC.dtos.jwt;
 
+import lombok.*;
+
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtAuthResponse {
 
-    private String token;
+    private String accessToken;
 
-    public JwtAuthResponse() {
-    }
+    private String refreshToken;
 
-    public JwtAuthResponse(String token) {
-        this.token = token;
-    }
+    private List<String> roles;
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }
