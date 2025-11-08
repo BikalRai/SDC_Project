@@ -1,66 +1,75 @@
-import { useNavigate } from "react-router-dom";
-import { Button } from "../Button";
+import PrimaryButton from "../buttons/PrimaryButton";
+import ReContainer from "../containers/ReContainer";
+import SecondaryButton from "../buttons/SecondaryButton";
+import AppNavLink from "./AppNavLink";
+import { Link } from "react-router-dom";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useState } from "react";
+
+const navLinks = [
+  { id: 1, name: "home", path: "/" },
+  { id: 2, name: "categories", path: "/categories" },
+  { id: 3, name: "pricing", path: "/pricing" },
+  { id: 4, name: "about", path: "/about" },
+];
 
 const AppNavBar = () => {
-  const navigate = useNavigate();
-  return (
-    <nav className='bg-transparent sticky top-0 z-50'>
-      <div className='mx-auto'>
-        <div className='flex justify-between items-center h-16'>
-          {/* Logo */}
-          <div className='flex-shrink-0'>
-            <h1 className='text-2xl font-bold text-blue-600'>LOGO</h1>
-          </div>
+  const [open, setIsOpen] = useState(false);
 
-          {/* Navigation Links */}
-          <div className='hidden md:block'>
-            <div className='ml-10 flex items-baseline space-x-8'>
-              <a
-                href='#home'
-                className='text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300'
-              >
-                Home
-              </a>
-              <a
-                href='#categories'
-                className='text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300'
-              >
-                Categories
-              </a>
-              <a
-                href='#pricing'
-                className='text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300'
-              >
-                Pricing
-              </a>
-              <a
-                href='#about'
-                className='text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300'
-              >
-                About Us
-              </a>
+  const handleNavIsOpen = () => {
+    setIsOpen(!open);
+  };
+
+  return (
+    <ReContainer>
+      <nav className='bg-transparent sticky top-0 z-50'>
+        <div className='mx-auto'>
+          <div className='flex items-center h-16'>
+            {/* Logo */}
+            <div className='flex-shrink-0 grow'>
+              <h1 className='text-2xl font-bold text-primary'>LOGO</h1>
+            </div>
+
+            {/* hamburger */}
+            <GiHamburgerMenu
+              className={`lg:hidden h-6 w-6 cursor-pointer hover:fill-light-primary transition ${
+                open ? `hidden` : "block"
+              }`}
+              fill='#0090B8'
+              onClick={handleNavIsOpen}
+            />
+
+            <div
+              className={`${
+                open ? "flex" : "hidden"
+              } absolute top-0 right-0 bg-card-bg p-5 rounded-2xl flex-col min-h-dvh gap-4 lg:static lg:min-h-fit lg:bg-transparent lg:flex lg:flex-row lg:grow lg:justify-between lg:p-0`}
+            >
+              {/* Navigation Links */}
+              <div className='flex flex-col items-center gap-5 mt-4 lg:flex-row lg:mt-0'>
+                <div
+                  className='text-primary cursor-pointer absolute right-4 top-4 lg:hidden'
+                  onClick={handleNavIsOpen}
+                >
+                  x
+                </div>
+                {navLinks.map((link) => (
+                  <AppNavLink key={link.id} link={link} />
+                ))}
+              </div>
+
+              <div className='flex items-center gap-4 ml-auto'>
+                <Link to='/login'>
+                  <SecondaryButton btnText='Log In' />
+                </Link>
+                <Link to='/register'>
+                  <PrimaryButton btnText='Join Now' />
+                </Link>
+              </div>
             </div>
           </div>
-
-          {/* Auth Buttons */}
-          <div className='flex items-center space-x-4'>
-            <Button
-              variant='outline'
-              className='text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300 shadow-xl'
-              onClick={() => navigate("/login")}
-            >
-              Log in
-            </Button>
-            <button
-              className='bg-primary hover:bg-light-primary text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-xl'
-              onClick={() => navigate("/register")}
-            >
-              Join now
-            </button>
-          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </ReContainer>
   );
 };
 
