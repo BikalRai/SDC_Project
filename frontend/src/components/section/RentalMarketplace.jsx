@@ -1,7 +1,12 @@
 import React from "react";
+import { useRef } from "react";
 import { Button } from "../Button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useState } from "react";
 
 const RentalMarketplace = () => {
+  const [category, setCategory] = useState("category");
+
   const categories = ["Scooter", "Car", "Furniture", "Clothes"];
 
   const scooters = [
@@ -25,14 +30,35 @@ const RentalMarketplace = () => {
       price: "Rs.1,350/day",
       features: ["Helmet", "Raincoat"],
     },
+    {
+      name: "TVS Jupiter",
+      price: "Rs.1,150/day",
+      features: ["Helmet", "Raincoat"],
+    },
   ];
+
+  const sliderRef = useRef(null);
+
+  const scrollLeft = () => {
+    sliderRef.current.scrollBy({
+      left: -300, // adjust scroll distance
+      behavior: "smooth",
+    });
+  };
+
+  const scrollRight = () => {
+    sliderRef.current.scrollBy({
+      left: 300,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <>
       <div className="min-h-screen bg-card-bg p-6 mb-8">
         {/* Header */}
-        <header className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        <header className="text-center my-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
             Find Your Rental
           </h1>
 
@@ -44,21 +70,43 @@ const RentalMarketplace = () => {
         </header>
 
         {/* Categories */}
-        <div className="flex justify-center space-x-6 mb-6">
+        {/* <div className="flex justify-center space-x-6 mb-6">
           {categories.map((category, index) => (
             <button
               key={index}
-              className="border border-gray-300 text-gray-700 bg-transparent hover:bg-primary focus:ring-gray-500 font-light inline-flex items-center justify-center rounded-2xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed h-10 px-6 text-base focus:bg-primary"
+              className="border border-gray-300 text-gray-700 bg-transparent hover:bg-light-primary focus:ring-gray-500 font-light inline-flex items-center justify-center rounded-2xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed h-10 sm:px-6 px-3 text-base focus:bg-light-primary"
             >
               {category}
             </button>
           ))}
-        </div>
+        </div> */}
+
+        <ToggleGroup
+          type="single"
+          value={category}
+          onValueChange={setCategory}
+          className="mx-auto mb-6 flex justify-evenly border-2 border-gray-300"
+        >
+          {categories.map((category, index) => (
+            <ToggleGroupItem
+              key={index}
+              value={category}
+              className={`
+        relative px-6 py-2 rounded-full font-medium transition-all duration-300
+        data-[state=on]:bg-primary data-[state=on]:text-white
+        data-[state=off]:bg-transparent data-[state=off]:text-gray-700
+        hover:scale-105 hover:bg-primary/10
+      `}
+            >
+              {category}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
 
         {/* Scooter Listings */}
         <div className="relative max-w-7xl mx-auto bg-white py-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-8 pl-12">
-            Available [Scooters]
+            Available {category}
           </h2>
 
           {/* Slider Container */}
@@ -73,8 +121,9 @@ const RentalMarketplace = () => {
 
             {/* Scrollable Cards */}
             <div
+              ref={sliderRef}
               id="scooter-slider"
-              className="flex gap-6 scroll-smooth no-scrollbar px-8"
+              className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar px-8"
             >
               {scooters.map((scooter, index) => (
                 <div
@@ -121,7 +170,10 @@ const RentalMarketplace = () => {
                       </ul>
                     </div>
 
-                    <Button variant="outline" className="hover:bg-light-primary">
+                    <Button
+                      variant="outline"
+                      className="hover:bg-light-primary"
+                    >
                       Hire now
                       <span className="material-symbols-outlined pl-1">
                         arrow_right

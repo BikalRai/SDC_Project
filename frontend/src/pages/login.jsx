@@ -4,7 +4,7 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Label } from "../components/Label";
 import FloatingBlobs from "../components/FloatingBlobs";
-import PrimaryButton from "../components/buttons/PrimaryButton";
+import { TextField } from "@mui/material";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -21,30 +21,37 @@ const Register = () => {
 
   return (
     <FloatingBlobs>
-      <div className='min-h-screen bg-transparent flex justify-center items-center'>
+      <div className="min-h-[90vh] bg-transparent flex justify-center items-center">
         {/* Card - Registration Form */}
-        <div className='w-4/10 flex items-center justify-center'>
-          <div className='w-9/10 flex justify-center items-center'>
-            <div className='bg-white rounded-3xl py-10 px-18 w-full shadow-lg'>
-              <h1 className='text-3xl font-bold text-primary'>Welcome Back!</h1>
-              <h2 className='text-xl font-bold text-text-black mb-8'>
+        <div className="w-[570px] flex items-center justify-center">
+          <div className="w-9/10 flex justify-center items-center">
+            <div className="bg-white rounded-3xl py-8 px-12 w-full shadow-lg">
+              {/* Headings */}
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
+                Welcome Back!
+              </h1>
+              <h2 className="text-base sm:text-lg md:text-xl font-semibold text-text-black mt-1 mb-4">
                 Login to continue
               </h2>
 
-              <form onSubmit={handleSubmit} className='grid'>
+              {/* Form */}
+              <form onSubmit={handleSubmit}>
                 {/* Username Field */}
-                <div className='space-y-2'>
-                  <Label htmlFor='username' className='text-text-muted'>
-                    Username
-                  </Label>
-                  <Input
-                    id='username'
-                    type='username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className='h-12 mb-8'
+                <div className="space-y-2 mb-6">
+                  <TextField
+                    label="Email"
+                    variant="filled"
+                    fullWidth
                     required
-                    variant='filled'
+                    sx={{
+                      "& .MuiFilledInput-root": {
+                        "&:before": { borderBottomWidth: "3px" },
+                        "&:after": { borderBottomWidth: "3px" },
+                        "&:hover:not(.Mui-disabled):before": {
+                          borderBottomWidth: "3px",
+                        },
+                      },
+                    }}
                   />
                 </div>
 
@@ -77,7 +84,7 @@ const Register = () => {
                       className='ml-2 text-text-muted top-0.5 relative'
                     >
                       Remember me
-                    </Label>
+                    </span>
                   </div>
                   <Link
                     to='/forgot-password'
@@ -90,8 +97,7 @@ const Register = () => {
                 {/* Create Account Button */}
                 {/* <Button
                   type="submit"
-                  className="w-full h-14 bg-amber-400 hover:bg-amber-500"
-                  size="xl"
+                  className="w-full h-12 sm:h-13 bg-amber-400 hover:bg-amber-500 text-sm sm:text-base md:text-lg"
                 >
                   Login Now
                 </Button> */}
@@ -133,6 +139,9 @@ const Register = () => {
                       d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'
                     />
                   </svg>
+                  <span className="ml-3 text-xs sm:text-sm md:text-base text-text-black font-medium">
+                    Google
+                  </span>
                 </Button>
               </div>
 
