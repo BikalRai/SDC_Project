@@ -32,13 +32,13 @@ function LandingPage() {
           <div className="max-w-7xl mx-auto py-16">
             <div className="text-center pb-8 pt-20">
               {/* Main Heading */}
-              <h1 className="text-5xl font-medium text-gray-900 mb-6">
+              <h1 className='text-5xl font-medium text-gray-900 mb-6'>
                 Discover Your{" "}
-                <span className="text-primary">Perfect Rental</span>
+                <span className='text-primary'>Perfect Rental</span>
               </h1>
 
               {/* Subheading */}
-              <p className="text-xl md:text-2xl text-text-muted max-w-3xl mx-auto">
+              <p className='text-xl md:text-2xl text-text-muted max-w-3xl mx-auto'>
                 Rent Scooters, Cars, Clothes and Items in just a click.
               </p>
             </div>
@@ -113,25 +113,26 @@ function LandingPage() {
                 <h2 className="text-4xl font-semibold mb-4 text-primary">
                   Rent What You Need.
                 </h2>
-                <h2 className="text-4xl font-semibold mb-4 text-primary">
+                <h2 className='text-4xl font-semibold mb-4 text-primary'>
                   Return When You're Done.
                 </h2>
-                <p className="text-lg font-normal mb-4">
+                <p className='text-lg font-normal mb-4'>
                   A smarter, greener, and more affordable way to <br />
                   access what you love.
                 </p>
                 <Button size="lg" className="relative md:left-64 py-7 px-11">
                   Explore Now{" "}
-                  <span className="material-symbols-outlined pl-4">
+                  <span className='material-symbols-outlined pl-4'>
                     arrow_right
                   </span>
-                </Button>
+                </Button> */}
+                <PrimaryButton btnText='Explore Now' />
               </div>
               <div className="p-8 hidden lg:block">
                 <img
-                  src="/Group15.png"
-                  alt="decorative"
-                  className="w-full h-full object-contain pointer-events-none relative right-16 bottom-24"
+                  src='/Group15.png'
+                  alt='decorative'
+                  className='w-full h-full object-contain pointer-events-none relative right-16 bottom-24'
                 />
               </div>
             </div>
