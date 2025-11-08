@@ -84,4 +84,21 @@ public class JwtUtils {
 
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateRefreshToken(Map<String, Object> claims, UserDetails userDetails) {
+        claims.put("roles", userDetails.getAuthorities().stream()
+                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                .collect(Collectors.toList()));
+
+        UserModel user = userRepository.findByEmailOrPhone(userDetails.getUsername(), userDetails.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        claims.put("userId", user.getId());
+
+        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
+    }
 }

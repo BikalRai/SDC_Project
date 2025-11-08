@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/items")
-public class ItemContoller {
+@RequestMapping("/api/item")
+public class ItemController {
 
     @Autowired
     private ItemService itemService;
@@ -43,13 +43,26 @@ public class ItemContoller {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllItemsHandler() {
+    @GetMapping("/items")
+    public ResponseEntity<Map<String, Object>> getAllItemsHandler(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) double dailyRate,
+            @RequestParam(required = false) double weeklyRate,
+            @RequestParam(required = false) double monthlyRate) {
         try {
+            List<ItemResponseDto> items;
+            Map<String, Object> whereQuery = new HashMap<>();
+
+            if (title != null) {
+                whereQuery.put("title", title);
+            }
+
             List<ItemResponseDto> allItems = itemService.getAllItems();
             return ResponseBuilder.buildResponse("All items", HttpStatus.OK, allItems);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("No items found", HttpStatus.NOT_FOUND, null);
+            return ResponseBuilder.buildResponse("No items found", HttpStatus.NOT_FOUND, null, e);
         }
     }
 
@@ -59,7 +72,7 @@ public class ItemContoller {
             ItemResponseDto item = itemService.getItemById(id);
             return ResponseBuilder.buildResponse("Item", HttpStatus.OK, item);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("No item found", HttpStatus.NOT_FOUND, null);
+            return ResponseBuilder.buildResponse("No item found", HttpStatus.NOT_FOUND, null, e);
         }
     }
 
@@ -69,7 +82,7 @@ public class ItemContoller {
             ItemResponseDto updatedItem = itemService.updateItem(id, itemRequestDto, category);
             return ResponseBuilder.buildResponse("Item updated successfully", HttpStatus.OK, updatedItem);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("No item found", HttpStatus.NOT_FOUND, null);
+            return ResponseBuilder.buildResponse("Item did was not updated", HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 

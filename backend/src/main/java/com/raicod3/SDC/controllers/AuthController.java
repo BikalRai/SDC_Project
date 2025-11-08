@@ -3,7 +3,7 @@ package com.raicod3.SDC.controllers;
 
 import com.raicod3.SDC.dtos.jwt.AuthRegistrationRequest;
 import com.raicod3.SDC.dtos.jwt.JwtAuthRequest;
-import com.raicod3.SDC.dtos.jwt.JwtAuthResponse;
+import com.raicod3.SDC.dtos.jwt.JwtRefreshRequest;
 import com.raicod3.SDC.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register (@RequestBody AuthRegistrationRequest request) {
+    public ResponseEntity<?> register(@RequestBody AuthRegistrationRequest request) {
         try {
             return ResponseEntity.ok(authService.register(request));
         } catch (Exception e) {
@@ -32,11 +32,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login (@RequestBody JwtAuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody JwtAuthRequest request) {
         try {
             return ResponseEntity.ok(authService.authenticate(request));
         } catch (BadCredentialsException e) {
-            return new ResponseEntity<>(  "Login credentials do not match: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Login credentials do not match: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody JwtRefreshRequest request) {
+        try {
+            return ResponseEntity.ok(authService.refreshToken(request));
+        }catch (BadCredentialsException e) {
+            return new ResponseEntity<>("Login credentials do not match: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }
