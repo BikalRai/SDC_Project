@@ -8,6 +8,7 @@ import CompleteProfile from "./pages/completeProfile";
 import Verification from "./pages/verificationPage";
 import LandingPage from "./pages/landingPage";
 import Layout from "./components/layout/Layout";
+import Admin from "./pages/admin";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/complete-profile" element={<CompleteProfile />} />
           <Route path="/verification" element={<Verification />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
       </Routes>
     </Router>

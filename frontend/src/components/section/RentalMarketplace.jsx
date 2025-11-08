@@ -1,8 +1,12 @@
 import React from "react";
 import { useRef } from "react";
 import { Button } from "../Button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useState } from "react";
 
 const RentalMarketplace = () => {
+  const [category, setCategory] = useState("category");
+
   const categories = ["Scooter", "Car", "Furniture", "Clothes"];
 
   const scooters = [
@@ -66,7 +70,7 @@ const RentalMarketplace = () => {
         </header>
 
         {/* Categories */}
-        <div className="flex justify-center space-x-6 mb-6">
+        {/* <div className="flex justify-center space-x-6 mb-6">
           {categories.map((category, index) => (
             <button
               key={index}
@@ -75,12 +79,34 @@ const RentalMarketplace = () => {
               {category}
             </button>
           ))}
-        </div>
+        </div> */}
+
+        <ToggleGroup
+          type="single"
+          value={category}
+          onValueChange={setCategory}
+          className="mx-auto mb-6 flex justify-evenly border-2 border-gray-300"
+        >
+          {categories.map((category, index) => (
+            <ToggleGroupItem
+              key={index}
+              value={category}
+              className={`
+        relative px-6 py-2 rounded-full font-medium transition-all duration-300
+        data-[state=on]:bg-primary data-[state=on]:text-white
+        data-[state=off]:bg-transparent data-[state=off]:text-gray-700
+        hover:scale-105 hover:bg-primary/10
+      `}
+            >
+              {category}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
 
         {/* Scooter Listings */}
         <div className="relative max-w-7xl mx-auto bg-white py-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-8 pl-12">
-            Available [Scooters]
+            Available {category}
           </h2>
 
           {/* Slider Container */}
