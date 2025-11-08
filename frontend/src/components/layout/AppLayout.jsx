@@ -3,7 +3,7 @@ import FloatingBlobs from "../FloatingBlobs";
 const AppLayout = ({ children }) => {
   return (
     <FloatingBlobs>
-      <div className='max-w-[1440px] px-[120px] mx-auto'>{children}</div>
+      <div className='min-h-dvh text-text-black'>{children}</div>
     </FloatingBlobs>
   );
 };
