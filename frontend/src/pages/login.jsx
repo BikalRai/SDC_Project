@@ -10,22 +10,25 @@ import ButtonWithIcon from "@/components/buttons/ButtonWithIcon";
 import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Registration attempt:", { username, password });
+    console.log("Registration attempt:", { email, password });
   };
 
-  const handleSocialSignup = (provider) => {
-    console.log(`Signup with ${provider}`);
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 
   return (
     <FloatingBlobs>
       <div className='p-4 min-h-dvh flex justify-center items-center'>
-        <form className='bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto grid gap-6'>
+        <form
+          onSubmit={handleSubmit}
+          className='bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto grid gap-6'
+        >
           {/* heading */}
           <div>
             <h1 className='text-xl md:text-3xl lg:text-[40px] font-bold text-primary'>
@@ -43,12 +46,17 @@ const Login = () => {
               label='Email'
               variant='outlined'
               className='w-full'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               id='outlined-suffix-shrink'
               label='Password'
+              type='password'
               variant='outlined'
               className='w-full'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
@@ -70,7 +78,11 @@ const Login = () => {
           </p>
 
           <div className='grid'>
-            <ButtonWithIcon icon={<FcGoogle />} btnText='Google' />
+            <ButtonWithIcon
+              icon={<FcGoogle />}
+              btnText='Google'
+              onClick={handleGoogleLogin}
+            />
           </div>
           <p className='text-sm font-medium'>
             Don't have an account?{" "}

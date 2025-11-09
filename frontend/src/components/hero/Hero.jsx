@@ -50,7 +50,7 @@ const Hero = () => {
             </div>
             <div className='border border-text-muted pr-4'>
               <select className='bg-transparent outline-0 border-0 px-8 py-4 text-text-muted  w-full'>
-                <option value='type'>Rental type</option>
+                <option value='type'>Price range</option>
                 {rentalPriceRanges.map((range) => (
                   <option key={range.id} value={range.range}>
                     {range.range}

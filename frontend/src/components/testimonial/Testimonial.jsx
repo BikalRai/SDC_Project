@@ -27,6 +27,7 @@ const Testimonial = () => {
                 prevEl: ".prev-btn",
                 nextEl: ".next-btn",
               }}
+              autoplay={true}
               modules={[Navigation]}
               className='mySwiper max-w-sm mb-8'
             >
