@@ -12,6 +12,7 @@ const AppNavLink = ({ link }) => {
     >
       {link.name[0].toUpperCase() + link.name.slice(1)}{" "}
       {link.name === "about" && "Us"}
+      {link.name === "how" && "it Works"}
     </NavLink>
   );
 };
