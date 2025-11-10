@@ -1,6 +1,7 @@
 import React from "react";
 import { MdShoppingCart } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa6";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 const ItemCard = ({ name, price, image, features = [] }) => {
   return (
@@ -12,9 +13,6 @@ const ItemCard = ({ name, price, image, features = [] }) => {
           alt={name}
           className="w-full h-full object-cover [clip-path:polygon(12%_0%,100%_0%,100%_88%,88%_100%,0%_100%,0%_12%)]"
         />
-        <div className="absolute bottom-0 -right-4">
-          <MdShoppingCart className="fill-primary w-6 h-6 hover:fill-light-primary transition cursor-pointer" />
-        </div>
       </div>
 
       {/* Info Section */}
@@ -39,7 +37,10 @@ const ItemCard = ({ name, price, image, features = [] }) => {
               ))}
             </div>
           </div>
-        )}
+          <div className='mt-5'>
+            <PrimaryButton btnText='Book Now' />
+          </div>
+        </div>
       </div>
     </div>
   );
