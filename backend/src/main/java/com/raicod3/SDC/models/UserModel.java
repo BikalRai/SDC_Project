@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class UserModel {
     private String phone;
     private String password;
     private String role;
+    private String provider;
+    private String image;
+    private LocalDate createdAt;
 
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;
@@ -37,17 +42,4 @@ public class UserModel {
     private List<Rental> rentals;
 
 
-    @Override
-    public String toString() {
-        return "UserModel{" +
-                "id=" + id +
-                ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                ", userKyc=" + userKyc +
-                ", items=" + items +
-                '}';
-    }
 }

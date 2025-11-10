@@ -42,7 +42,6 @@ const Login = () => {
           {/* input fields */}
           <div className='grid gap-5'>
             <TextField
-              id='outlined-suffix-shrink'
               label='Email'
               variant='outlined'
               className='w-full'
@@ -50,7 +49,6 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
-              id='outlined-suffix-shrink'
               label='Password'
               type='password'
               variant='outlined'
