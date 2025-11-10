@@ -1,6 +1,7 @@
 import AboutUs from "@/components/aboutUs/AboutUs";
 import FindYourRental from "@/components/findYourRental/FindYourRental";
 import Hero from "@/components/hero/Hero";
+import HowItWorks from "@/components/howItWorks/HowItWorks";
 import AppLayout from "@/components/layout/AppLayout";
 import AppNavBar from "@/components/navbar/AppNavBar";
 import Footer from "@/components/section/Footer";
@@ -15,6 +16,7 @@ const Home = () => {
         <AboutUs />
         <FindYourRental />
         <Testimonial />
+        <HowItWorks />
         <Footer />
       </AppLayout>
     </div>
