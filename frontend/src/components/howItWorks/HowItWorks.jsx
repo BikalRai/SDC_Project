@@ -2,6 +2,18 @@ import React from "react";
 import ReContainer from "../containers/ReContainer";
 import HowItWorksCard from "../card/HowItWorksCard";
 import SectionHeader from "../header/SectionHeader";
+import { IoSearch } from "react-icons/io5";
+
+const items = [
+  {
+    id: 1,
+    icon: <IoSearch className='fill-text-white h-10 w-10' />,
+    title: "Choose your car",
+    number: "01",
+    description:
+      "Browse our extensive fleet and select the perfect vehicle for your need",
+  },
+];
 
 const HowItWorks = () => {
   return (
@@ -13,12 +25,12 @@ const HowItWorks = () => {
             Renting a product has never been easier. Follow these simple steps
             to get on the road in minutes.{" "}
           </p>
-          <div className='grid md:grid-cols-2 xl:grid-cols-4 grid-rows-1 gap-4 w-9/10 mx-auto'>
+          <div className='grid md:grid-cols-2 xl:grid-cols-4 gap-10'>
             <HowItWorksCard
-              img='/Vector.png'
-              title='Choose your car'
-              number='01'
-              description='Browse our extensive fleet and select the perfect vehicle for your need'
+              icon={items[0].icon}
+              title={items[0].title}
+              number={items[0].number}
+              description={items[0].description}
             />
             <HowItWorksCard
               img='/Vector(1).png'
