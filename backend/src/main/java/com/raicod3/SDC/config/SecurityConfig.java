@@ -31,15 +31,17 @@ public class SecurityConfig {
 
     private CustomUserDetailsService customUserDetailsService;
 
+    private PasswordEncoder passwordEncoder;
 
     private JwtAuthFilter jwtAuthFilter;
 
     private CustomOAuth2Service customOAuth2UserService;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter, CustomOAuth2Service customOAuth2UserService) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter, CustomOAuth2Service customOAuth2UserService, PasswordEncoder passwordEncoder) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
         this.customOAuth2UserService = customOAuth2UserService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -48,6 +50,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(("/api/user/**")).permitAll()
                         .requestMatchers( "/api/item/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/categories/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(("/api/rental/**")).hasAnyRole("ADMIN", "USER")
@@ -74,30 +77,28 @@ public class SecurityConfig {
 
 
                             // Redirect to frontend with JWT token
-                            String redirectUrl = "http://localhost:5173/login?token=" + token;
+                            String redirectUrl = "http://localhost:5173/oauth2/redirect?token=" + token;
                             response.sendRedirect(redirectUrl);
                         })
                         .failureHandler((request, response, exception) -> {
                             log.error("OAuth2 login failed: {}", exception.getMessage());
+                            exception.printStackTrace();
                             response.sendRedirect("http://localhost:5173/login?error=true");
                         })
 
-                );
+                )
+                .cors(cors -> cors.disable());
 
 
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(customUserDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder);
 
         return authProvider;
     }
