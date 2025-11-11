@@ -1,5 +1,4 @@
 import React from "react";
-import { MdShoppingCart } from "react-icons/md";
 import { FaChevronRight } from "react-icons/fa6";
 import PrimaryButton from "../buttons/PrimaryButton";
 
