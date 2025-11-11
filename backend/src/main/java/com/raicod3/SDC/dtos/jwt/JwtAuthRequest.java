@@ -1,31 +1,23 @@
 package com.raicod3.SDC.dtos.jwt;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@Getter
+@Setter
 public class JwtAuthRequest {
 
-    private String emailOrPhone;
+    private String email;
     private String password;
 
     public JwtAuthRequest() {
     }
 
-    public JwtAuthRequest(String emailOrPhone, String password) {
-        this.emailOrPhone = emailOrPhone;
+    public JwtAuthRequest(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
-    public String getEmailOrPhone() {
-        return emailOrPhone;
-    }
-
-    public void setEmailOrPhone(String emailOrPhone) {
-        this.emailOrPhone = emailOrPhone;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

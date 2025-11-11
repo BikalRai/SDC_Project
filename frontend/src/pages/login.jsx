@@ -1,26 +1,55 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
-import { Label } from "../components/Label";
+import { Link, useNavigate } from "react-router-dom";
 import FloatingBlobs from "../components/FloatingBlobs";
 import { TextField } from "@mui/material";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import ButtonWithIcon from "@/components/buttons/ButtonWithIcon";
 import { FcGoogle } from "react-icons/fc";
+import { useDispatch, useSelector } from "react-redux";
+import { loginFailure, loginRequest, loginSuccess } from "@/slices/auth.slice";
+import axios from "axios";
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginDetails, setloginDetails] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { isAuthenticated, user, error } = useSelector((state) => state.auth);
+
+  const loginDetailsHandler = (e) => {
+    const { name, value } = e.target;
+
+    setloginDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registration attempt:", { email, password });
+
+    try {
+      dispatch(loginRequest());
+      const res = await axios.post(`${backendUrl}/auth/login`, {
+        ...loginDetails,
+      });
+      console.log(res);
+      // dispatch(loginSuccess({ user: res.data.body.data }));
+    } catch (error) {
+      console.error(error, "error!!");
+      dispatch(loginFailure(error?.response && error.response.data));
+    }
   };
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
+
+  console.log("user", user);
+  console.log("ERROR", error);
 
   return (
     <FloatingBlobs>
@@ -45,16 +74,18 @@ const Login = () => {
               label='Email'
               variant='outlined'
               className='w-full'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name='email'
+              value={loginDetails.email}
+              onChange={loginDetailsHandler}
             />
             <TextField
               label='Password'
               type='password'
               variant='outlined'
               className='w-full'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name='password'
+              value={loginDetails.password}
+              onChange={loginDetailsHandler}
             />
           </div>
 
@@ -85,7 +116,7 @@ const Login = () => {
           <p className='text-sm font-medium'>
             Don't have an account?{" "}
             <span className='text-primary underline hover:text-light-primary transition'>
-              <Link>Sign Up</Link>
+              <Link to='/register'>Sign Up</Link>
             </span>
           </p>
         </form>

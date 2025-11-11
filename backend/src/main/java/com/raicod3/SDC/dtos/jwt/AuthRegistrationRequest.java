@@ -1,5 +1,8 @@
 package com.raicod3.SDC.dtos.jwt;
 
+import lombok.ToString;
+
+@ToString
 public class AuthRegistrationRequest {
 
     private String email;

@@ -1,5 +1,6 @@
 package com.raicod3.SDC.dtos.jwt;
 
+import com.raicod3.SDC.dtos.user.UserResponseDto;
 import lombok.*;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public class JwtAuthResponse {
     private String refreshToken;
 
     private List<String> roles;
+
+    private UserResponseDto user;
 
 }
