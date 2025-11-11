@@ -18,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class AuthService {
     public ResponseEntity<Map<String, Object>> register(AuthRegistrationRequest request) {
 
         try {
+//            System.out.println(request.getPassword() + ": PASSWORD RECEIVED");
             UserModel user = new UserModel();
             user.setEmail(request.getEmail());
             user.setPhone(request.getPhone());
@@ -63,14 +65,19 @@ public class AuthService {
     }
 
     public JwtAuthResponse authenticate(JwtAuthRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmailOrPhone(), request.getPassword()));
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getEmailOrPhone());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getEmail());
+
+        UserModel user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+
         String accessToken = jwtUtils.generateToken(userDetails);
         String refreshToken = jwtUtils.generateRefreshToken(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-        return new JwtAuthResponse(accessToken, refreshToken, roles);
+        return new JwtAuthResponse(accessToken, refreshToken, roles, userResponseDto);
     }
 
     public JwtAuthResponse refreshToken(JwtRefreshRequest request) {
@@ -84,10 +91,14 @@ public class AuthService {
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
+        UserModel user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+
         String newAccessToken = jwtUtils.generateToken(userDetails);
 
         List<String> role = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-        return new JwtAuthResponse(newAccessToken, refreshToken, role);
+        return new JwtAuthResponse(newAccessToken, refreshToken, role, userResponseDto);
     }
 }

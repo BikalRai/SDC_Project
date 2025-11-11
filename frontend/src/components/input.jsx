@@ -12,6 +12,7 @@ import clsx from "clsx";
 export const Input = ({
   id,
   type = "text",
+  name,
   value,
   onChange,
   placeholder,
@@ -49,6 +50,7 @@ export const Input = ({
       id={id}
       type={type}
       value={value}
+      name={name}
       onChange={onChange}
       placeholder={placeholder}
       required={required}
@@ -56,4 +58,3 @@ export const Input = ({
     />
   );
 };
-
