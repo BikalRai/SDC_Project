@@ -18,10 +18,12 @@ const Login = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isAuthenticated, user, error } = useSelector((state) => state.auth);
+  const { isAuthenticated, authToken } = useSelector((state) => state.auth);
 
   const loginDetailsHandler = (e) => {
     const { name, value } = e.target;
@@ -32,13 +34,47 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const newErrors = {};
+
+    const { email, password } = loginDetails;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) newErrors.email = "Email is required";
+    else if (!emailRegex.test(email))
+      newErrors.email = "Invalid email format: E.g: example@example.com";
+
+    if (!password) newErrors.password = "Password is required";
+    else if (password.length < 8)
+      newErrors.password = "Password must be at least 8 characters long";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    dispatch(loginRequest());
     try {
-      dispatch(loginRequest());
       const res = await axios.post(`${backendUrl}/auth/login`, {
         ...loginDetails,
       });
-      console.log(res);
-      // dispatch(loginSuccess({ user: res.data.body.data }));
+      console.log(res.data);
+
+      dispatch(
+        loginSuccess({
+          user: res?.data?.user,
+          token: res?.data?.accessToken,
+          message: "Logged in successfully",
+        })
+      );
+
+      if (authToken) {
+        localStorage.setItem("authToken", authToken);
+      }
+
+      if (isAuthenticated) {
+        navigate("/");
+      }
+
+      console.log(authToken);
     } catch (error) {
       console.error(error, "error!!");
       dispatch(loginFailure(error?.response && error.response.data));
@@ -48,9 +84,6 @@ const Login = () => {
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
-
-  console.log("user", user);
-  console.log("ERROR", error);
 
   return (
     <FloatingBlobs>
