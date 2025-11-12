@@ -62,12 +62,13 @@ const Login = () => {
         loginSuccess({
           user: res?.data?.user,
           token: res?.data?.accessToken,
-          message: "Logged in successfully",
+          message: "Logged in successfully.",
         })
       );
 
       if (authToken) {
         localStorage.setItem("authToken", authToken);
+        toast.success("Logged in successfully.");
       }
 
       if (isAuthenticated) {
@@ -78,6 +79,7 @@ const Login = () => {
     } catch (error) {
       console.error(error, "error!!");
       dispatch(loginFailure(error?.response && error.response.data));
+      toast.error("Invalid email or password");
     }
   };
 
@@ -121,6 +123,7 @@ const Login = () => {
               value={loginDetails.email}
               onChange={loginDetailsHandler}
             />
+            <p className='text-red-400 text-xs'>{errors && errors.email}</p>
             <TextField
               label="Password"
               type="password"
@@ -130,6 +133,7 @@ const Login = () => {
               value={loginDetails.password}
               onChange={loginDetailsHandler}
             />
+            <p className='text-red-400 text-xs'>{errors && errors.password}</p>
           </div>
 
           {/* remember and forget password */}
