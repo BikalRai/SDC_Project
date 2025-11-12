@@ -92,7 +92,7 @@ const Furniture = () => {
         >
           {/* Scrollable Cards */}
           {items.map((item, index) => (
-            <div key={index} className="flex-shrink-0">
+            <div key={index} className="flex overflow-auto shrink-0">
               <ItemCard {...item} />
             </div>
           ))}

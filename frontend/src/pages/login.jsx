@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailure, loginRequest, loginSuccess } from "@/slices/auth.slice";
 import axios from "axios";
+import { MdArrowBack } from "react-icons/md";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -53,70 +54,81 @@ const Login = () => {
 
   return (
     <FloatingBlobs>
-      <div className='p-4 min-h-dvh flex justify-center items-center'>
+      <div className="p-4 min-h-dvh flex justify-center items-center">
         <form
           onSubmit={handleSubmit}
-          className='bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto grid gap-6'
+          className="bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto grid gap-6"
         >
           {/* heading */}
           <div>
-            <h1 className='text-xl md:text-3xl lg:text-[40px] font-bold text-primary'>
-              Welcome Back!
-            </h1>
-            <h2 className='text-sm md:text-lg lg:text-xl font-semibold text-text-black mt-1 mb-4'>
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl md:text-3xl font-bold text-primary">
+                Welcome Back!
+              </h1>
+              <Link
+                to={"/"}
+                className="flex text-text-muted hover:text-primary transition"
+              >
+                <MdArrowBack className="text-2xl" />
+                <span>Home</span>
+              </Link>
+            </div>
+            <h2 className="text-sm md:text-lg font-semibold text-text-black mt-1 mb-4">
               Login to continue
             </h2>
           </div>
 
           {/* input fields */}
-          <div className='grid gap-5'>
+          <div className="grid gap-5">
             <TextField
-              label='Email'
-              variant='outlined'
-              className='w-full'
-              name='email'
+              label="Email"
+              variant="outlined"
+              className="w-full"
+              name="email"
               value={loginDetails.email}
               onChange={loginDetailsHandler}
             />
             <TextField
-              label='Password'
-              type='password'
-              variant='outlined'
-              className='w-full'
-              name='password'
+              label="Password"
+              type="password"
+              variant="outlined"
+              className="w-full"
+              name="password"
               value={loginDetails.password}
               onChange={loginDetailsHandler}
             />
           </div>
 
           {/* remember and forget password */}
-          <div className='text-[#7C7C7C] text-sm flex justify-between items-center font-medium'>
-            <div className='flex items-center gap-3'>
-              <input type='checkbox' />
-              <span>Remember me</span>
+          <div className="text-[#7C7C7C] text-sm flex justify-between items-center font-medium">
+            <div className="flex items-center gap-3">
+              <input type="checkbox" id="remember" name="remember" />
+              <label htmlFor="remember">Remember me</label>
             </div>
-            <Link>Forgot Password?</Link>
+            <Link className="hover:text-primary transition">
+              Forgot Password?
+            </Link>
           </div>
 
           {/* button */}
-          <div className='grid'>
-            <PrimaryButton btnText='Login Now' />
+          <div className="grid">
+            <PrimaryButton btnText="Login Now" />
           </div>
-          <p className='text-text-black text-sm font-medium flex justify-center'>
+          <p className="text-text-black text-sm font-medium flex justify-center">
             Or Login With
           </p>
 
-          <div className='grid'>
+          <div className="grid">
             <ButtonWithIcon
               icon={<FcGoogle />}
-              btnText='Google'
+              btnText="Google"
               onClick={handleGoogleLogin}
             />
           </div>
-          <p className='text-sm font-medium'>
+          <p className="text-sm font-medium">
             Don't have an account?{" "}
-            <span className='text-primary underline hover:text-light-primary transition'>
-              <Link to='/register'>Sign Up</Link>
+            <span className="text-primary underline hover:text-light-primary transition">
+              <Link to="/register">Sign Up</Link>
             </span>
           </p>
         </form>
