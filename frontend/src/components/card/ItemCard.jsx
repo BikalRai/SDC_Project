@@ -4,13 +4,13 @@ import PrimaryButton from "../buttons/PrimaryButton";
 
 const ItemCard = ({ name, price, image, features = [] }) => {
   return (
-    <div className='p-5 grid gap-4 rounded-xl bg-gray-100 hover:bg-gray-300 hover:shadow-lg transition cursor-pointer'>
+    <div className='p-5 grid gap-4 bg-gray-100 hover:bg-gray-300 hover:shadow-lg transition cursor-pointer'>
       {/* Image Section */}
-      <div className='lg:max-h-80 relative'>
+      <div className='lg:max-h-80 relative h-[323px] w-56'>
         <img
           src={image}
           alt={name}
-          className='w-full h-full object-cover [clip-path:polygon(12%_0%,100%_0%,100%_88%,88%_100%,0%_100%,0%_12%)]'
+          className='w-full h-full object-cover rounded-xl'
         />
       </div>
 

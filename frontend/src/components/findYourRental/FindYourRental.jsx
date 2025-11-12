@@ -60,7 +60,7 @@ const FindYourRental = () => {
             </div>
 
             {/* Item Grid */}
-              <Outlet />
+              
           </div>
         </div>
       </section>
