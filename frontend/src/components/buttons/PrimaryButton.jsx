@@ -1,7 +1,11 @@
-const PrimaryButton = ({ btnText }) => {
+const PrimaryButton = ({ btnText, className = "", onClick, ...props }) => {
   return (
-    <button className='px-6 py-3 rounded-sm text-sm text-text-white bg-primary hover:bg-light-primary transition cursor-pointer'>
-      <div>{btnText}</div>
+    <button
+      onClick={onClick}
+      className={`px-6 py-3 rounded-sm text-sm text-white bg-primary hover:bg-light-primary transition cursor-pointer ${className}`}
+      {...props}
+    >
+      {btnText}
     </button>
   );
 };
