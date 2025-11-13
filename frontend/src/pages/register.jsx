@@ -23,6 +23,7 @@ import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { MdArrowBack } from "react-icons/md";
 import ButtonWithIcon from "@/components/buttons/ButtonWithIcon";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -102,9 +103,11 @@ const Register = () => {
           message: res.data.body.message,
         })
       );
+      toast.success("Logged in successfully");
     } catch (error) {
       console.error(error, "RES!!");
       dispatch(registerFailure(error.data.body.message));
+      toast.error("Failed to login");
     }
   };
 
@@ -247,7 +250,7 @@ const Register = () => {
             <p className='text-sm font-medium'>
               Already have an account?{" "}
               <span className='text-primary underline hover:text-light-primary transition'>
-                <Link to='/logij'>Sign In</Link>
+                <Link to='/login'>Sign In</Link>
               </span>
             </p>
           </div>
