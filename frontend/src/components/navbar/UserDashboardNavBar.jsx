@@ -20,13 +20,13 @@ const navLinks = [
     id: 3,
     icon: <LuShoppingBag />,
     linkName: "My Rentals",
-    path: "/user/my-rentals",
+    path: "/user/rentals",
   },
   {
     id: 4,
     icon: <LuSettings />,
     linkName: "Profile & Settings",
-    path: "/user/my-rentals",
+    path: "/user/settings",
   },
 ];
 
