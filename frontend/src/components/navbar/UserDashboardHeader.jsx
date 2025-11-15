@@ -12,7 +12,7 @@ const navIcons = [
 
 const UserDashboardHeader = () => {
   return (
-    <div className='max-h-[100px] shadow'>
+    <div className='max-h-[100px] shadow bg-background'>
       <div className='flex items-center justify-between py-6 px-12'>
         <NavSearch />
         <div className='flex items-center gap-5 text-text-muted'>

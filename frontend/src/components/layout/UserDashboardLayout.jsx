@@ -10,7 +10,7 @@ const UserDashboardLayout = () => {
         <UserDashboardNavBar />
       </div>
       <div className=''>
-        <div>
+        <div className='sticky top-0'>
           <UserDashboardHeader />
         </div>
         <div>
