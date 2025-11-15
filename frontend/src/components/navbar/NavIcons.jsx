@@ -4,7 +4,7 @@ const NavIcons = ({ icon: Icon, title }) => {
     <div>
       {
         <Icon
-          className='text-xl cursor-pointer hover:text-primary transition-all duration-300'
+          className='text-base md:text-lg lg:text-xl cursor-pointer hover:text-primary transition-all duration-300'
           title={title}
         />
       }
