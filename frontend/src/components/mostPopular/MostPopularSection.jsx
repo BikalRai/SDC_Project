@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import ReContainer from "../containers/ReContainer";
 import SectionHeader from "../header/SectionHeader";
 import PopularCard from "../card/PopularCard";
-import { Button } from "@mui/material";
-import ButtonWithIcon from "../buttons/ButtonWithIcon";
-import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 
 // Mock data — replace this with your API or JSON later
@@ -112,17 +109,17 @@ const MostPopularSection = () => {
 
   return (
     <ReContainer>
-      <section className="mt-20">
-        <div className="bg-background rounded-[8px] py-8 px-10">
-          <SectionHeader header="Most Popular Products" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center mt-6">
+      <section className='mt-20'>
+        <div className='bg-background rounded-[8px] py-8 px-10'>
+          <SectionHeader header='Most Popular Products' />
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center mt-6'>
             {cars.slice(0, visible).map((car, index) => (
               <PopularCard key={index} {...car} />
             ))}
           </div>
           {visible < cars.length && (
-            <div className="flex justify-center items-center mt-8">
-              <SecondaryButton btnText="load more" onClick={handleLoadMore} />
+            <div className='flex justify-center items-center mt-8'>
+              <SecondaryButton btnText='load more' onClick={handleLoadMore} />
             </div>
           )}
         </div>

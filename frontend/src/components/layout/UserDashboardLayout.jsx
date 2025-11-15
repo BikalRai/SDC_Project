@@ -5,11 +5,11 @@ import UserDashboardContentLayout from "./UserDashboardContentLayout";
 
 const UserDashboardLayout = () => {
   return (
-    <div className='min-h-dvh bg-background transition-all duration-300 grid grid-cols-[80px_1fr] md:grid-cols-[240px_1fr] text-text-black'>
+    <div className='h-dvh bg-background transition-all duration-300 grid grid-cols-[80px_1fr] md:grid-cols-[240px_1fr] text-text-black'>
       <div className='min-h-full'>
         <UserDashboardNavBar />
       </div>
-      <div className=''>
+      <div className='flex flex-col h-full'>
         <div className='sticky top-0'>
           <UserDashboardHeader />
         </div>

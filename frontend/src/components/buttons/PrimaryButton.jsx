@@ -16,10 +16,10 @@ const PrimaryButton = ({
       {icon ? (
         <p className='flex items-center gap-2'>
           <span>{icon}</span>
-          <span>{btnText}</span>
+          <span className='hidden md:inline'>{btnText}</span>
         </p>
       ) : (
-        { btnText }
+        <p>{btnText}</p>
       )}
     </button>
   );
