@@ -5,9 +5,9 @@ const UserDashboardLink = ({ icon, linkName, path }) => {
     <NavLink
       to={`${path}`}
       className={({ isActive }) =>
-        `flex items-center font-medium gap-2 p-3 rounded ${
+        `flex items-center font-medium gap-2 p-3 rounded  hover:text-text-white hover:bg-primary transition-all duration-300 cursor-pointer ${
           isActive ? "text-primary bg-[#0090B833]" : ""
-        } hover:text-text-white hover:bg-primary transition-all duration-300 cursor-pointer`
+        }`
       }
     >
       <span className='text-lg'>{icon}</span>

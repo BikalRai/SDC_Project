@@ -20,19 +20,19 @@ const navLinks = [
     id: 3,
     icon: <LuShoppingBag />,
     linkName: "My Rentals",
-    path: "/user/my-rentals",
+    path: "/user/rentals",
   },
   {
     id: 4,
     icon: <LuSettings />,
     linkName: "Profile & Settings",
-    path: "/user/my-rentals",
+    path: "/user/settings",
   },
 ];
 
 const UserDashboardNavBar = () => {
   return (
-    <nav className='min-h-full w-full flex flex-col items-center gap-10 py-8 shadow-lg'>
+    <nav className='min-h-dvh w-full flex flex-col items-center gap-10 py-8 shadow-lg sticky top-0'>
       <div>LOGO</div>
       <div className='flex flex-col gap-10'>
         {navLinks.map((link) => (

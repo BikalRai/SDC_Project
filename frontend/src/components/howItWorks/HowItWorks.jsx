@@ -10,7 +10,7 @@ import { AiOutlineLike } from "react-icons/ai";
 const items = [
   {
     id: 1,
-    icon: <IoSearch className="fill-text-white h-10 w-10" />,
+    icon: <IoSearch className='fill-text-white h-10 w-10' />,
     title: "Choose your car",
     number: "01",
     description:
@@ -18,7 +18,7 @@ const items = [
   },
   {
     id: 2,
-    icon: <BsCalendar2Date className="fill-text-white h-10 w-10" />,
+    icon: <BsCalendar2Date className='fill-text-white h-10 w-10' />,
     title: "Pick Date & Location",
     number: "02",
     description:
@@ -26,7 +26,7 @@ const items = [
   },
   {
     id: 3,
-    icon: <IoKeyOutline className="stroke-text-white h-10 w-10" />,
+    icon: <IoKeyOutline className='stroke-text-white h-10 w-10' />,
     title: "Book & Pay",
     number: "03",
     description:
@@ -34,7 +34,7 @@ const items = [
   },
   {
     id: 4,
-    icon: <AiOutlineLike className="fill-text-white h-10 w-10" />,
+    icon: <AiOutlineLike className='fill-text-white h-10 w-10' />,
     title: "Choose your car",
     number: "04",
     description:
@@ -46,15 +46,16 @@ const HowItWorks = () => {
   return (
     <>
       <ReContainer>
-        <div className="bg-white p-10 flex flex-col justify-center items-center">
-          <SectionHeader header="How It Works" />
-          <p className="mt-2 mb-10 mx-auto text-text-muted">
+        <div className='bg-white p-10 flex flex-col justify-center items-center'>
+          <SectionHeader header='How It Works' />
+          <p className='mt-2 mb-10 mx-auto text-text-muted'>
             Renting a product has never been easier. Follow these simple steps
             to get on the road in minutes.{" "}
           </p>
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-10">
+          <div className='grid md:grid-cols-2 xl:grid-cols-4 gap-10'>
             {items.map((item) => (
               <HowItWorksCard
+                key={item.id}
                 icon={item.icon}
                 title={item.title}
                 number={item.number}
