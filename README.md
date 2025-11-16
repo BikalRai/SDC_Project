@@ -13,14 +13,14 @@ React for the frontend
 # 📘 Overview
 
 The platform enables:
-
+```
 ✔ Users to create an account
 ✔ Browse a variety of rental items
 ✔ Rent items listed by others
 ✔ Providers to list items for rent
 ✔ Manage listed items (edit, delete, update availability)
 ✔ A dedicated user dashboard for rental activity and item management
-
+```
 The project demonstrates solid software engineering principles, database design, RESTful APIs, authentication, and a clean user experience.
 
 ---
