@@ -1,5 +1,5 @@
 # 🛒 SDC Project — Rental Marketplace Platform
-```
+
 A Software Development Capstone Project built to solve a real-world need:
 A platform where users can sign up either as consumers or providers, browse rentable items, or list their own items for rent.
 
@@ -8,7 +8,7 @@ This project is designed and developed with a full-stack architecture using:
 Spring Boot (Java) for the backend
 
 React for the frontend
-```
+
 ---
 # 📘 Overview
 
