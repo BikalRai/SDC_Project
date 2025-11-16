@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import ReContainer from "../containers/ReContainer";
 import SectionHeader from "../header/SectionHeader";
 import PopularCard from "../card/PopularCard";
-import { Button } from "@mui/material";
-import ButtonWithIcon from "../buttons/ButtonWithIcon";
-import PrimaryButton from "../buttons/PrimaryButton";
+
 import SecondaryButton from "../buttons/SecondaryButton";
 
 // Mock data — replace this with your API or JSON later
