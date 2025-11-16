@@ -1,5 +1,6 @@
 import AboutUsPage from "@/pages/AboutUsPage";
 import Checkout from "@/pages/Checkout";
+import CompleteProfile from "@/pages/completeProfile";
 import Furniture from "@/pages/Furniture";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
@@ -25,6 +26,7 @@ const Approutes = () => {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/completeprofile" element={<CompleteProfile />}></Route>
       </Routes>
     </>
   );
