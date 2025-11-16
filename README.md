@@ -5,9 +5,9 @@ A platform where users can sign up either as consumers or providers, browse rent
 
 This project is designed and developed with a full-stack architecture using:
 
-Spring Boot (Java) for the backend
+- Spring Boot (Java) for the backend
 
-React for the frontend
+- React for the frontend
 
 ---
 # 📘 Overview
