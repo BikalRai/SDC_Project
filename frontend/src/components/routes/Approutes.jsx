@@ -8,6 +8,8 @@ import NotFoundPage from "@/pages/NotFoundPage";
 import OAuth2Redirect from "@/pages/OAuth2Redirect";
 import Register from "@/pages/Register";
 import Vehicle from "@/pages/vehicle";
+import VerificationPage from "@/pages/verificationPage";
+import Verification from "@/pages/Verfication";
 import { Route, Routes } from "react-router-dom";
 
 const Approutes = () => {
@@ -26,7 +28,9 @@ const Approutes = () => {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/about" element={<AboutUsPage />} />
-        <Route path="/completeprofile" element={<CompleteProfile />}></Route>
+        <Route path="/completeprofile" element={<CompleteProfile />} />
+        <Route path="/verificationpage" element={<VerificationPage />} />
+        <Route path="/verification" element={<Verification />} />
       </Routes>
     </>
   );
