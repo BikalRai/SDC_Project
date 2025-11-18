@@ -33,7 +33,7 @@ export default function InfoMobile({ totalPrice }) {
         endIcon={<ExpandMoreRoundedIcon />}
         onClick={toggleDrawer(true)}
       >
-        View details
+        steps
       </Button>
       <Drawer
         open={open}

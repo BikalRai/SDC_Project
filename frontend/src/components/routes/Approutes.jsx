@@ -16,12 +16,7 @@ const Approutes = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />}>
-          <Route path="/find/vehicle" element={<Vehicle />} />
-          <Route path="/find/furniture" element={<Furniture />} />
-          <Route path="/find/vehicle" element={<Vehicle />} />
-          <Route path="/find/vehicle" element={<Vehicle />} />
-        </Route>
+        <Route path="/" element={<Home />}/>
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
