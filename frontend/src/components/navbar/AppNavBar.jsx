@@ -5,6 +5,9 @@ import AppNavLink from "./AppNavLink";
 import { Link } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Avatar } from "@mui/material";
+import { logout } from "@/slices/auth.slice";
 
 const navLinks = [
   { id: 1, name: "home", path: "/" },
@@ -15,9 +18,16 @@ const navLinks = [
 
 const AppNavBar = () => {
   const [open, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleNavIsOpen = () => {
     setIsOpen(!open);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -57,14 +67,20 @@ const AppNavBar = () => {
                 ))}
               </div>
 
-              <div className='flex items-center gap-4 ml-auto'>
-                <Link to='/login'>
-                  <SecondaryButton btnText='Log In' />
-                </Link>
-                <Link to='/register'>
-                  <PrimaryButton btnText='Join Now' />
-                </Link>
-              </div>
+              {isAuthenticated ? (
+                <div onClick={handleLogout} className='cursor-pointer'>
+                  <Avatar />
+                </div>
+              ) : (
+                <div className='flex items-center gap-4 ml-auto'>
+                  <Link to='/login'>
+                    <SecondaryButton btnText='Log In' />
+                  </Link>
+                  <Link to='/register'>
+                    <PrimaryButton btnText='Join Now' />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
