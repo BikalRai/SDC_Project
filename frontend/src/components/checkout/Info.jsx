@@ -50,6 +50,6 @@ export default function Info({ totalPrice }) {
           </ListItem>
         ))}
       </List>
-    </React.Fragment>
+    </Box>
   );
 }
