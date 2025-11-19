@@ -15,7 +15,7 @@ const Home = () => {
         <AppNavBar />
         <Hero />
         <AboutUs />
-        {/* <FindYourRental /> */}
+        <FindYourRental />
         <MostPopularSection />
         <HowItWorks />
         <Testimonial />

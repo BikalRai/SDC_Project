@@ -1,5 +1,6 @@
 import AboutUsPage from "@/pages/AboutUsPage";
 import Checkout from "@/pages/Checkout";
+import CompleteProfile from "@/pages/completeProfile";
 import Furniture from "@/pages/Furniture";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
