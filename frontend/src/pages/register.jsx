@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
-import { Input } from "../components/Input";
-import { Label } from "../components/Label";
 import FloatingBlobs from "../components/FloatingBlobs";
 import { useDispatch } from "react-redux";
 import {
@@ -12,14 +10,47 @@ import {
 } from "@/slices/auth.slice";
 import axios from "axios";
 import { backendUrl } from "@/utils/imports";
+import {
+  FormControl,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  TextField,
+  InputLabel,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
+import { MdArrowBack } from "react-icons/md";
+import ButtonWithIcon from "@/components/buttons/ButtonWithIcon";
+import { FcGoogle } from "react-icons/fc";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
     password: "",
+    cPassword: "",
     role: "USER",
   });
+
+  const [errors, setErrors] = useState({
+    email: "",
+    phone: "",
+    password: "",
+    cPassword: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showCpassword, setShowCpassword] = useState(false);
+
+  const handleshowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleshowCpassword = () => {
+    setShowCpassword((prev) => !prev);
+  };
 
   const dispatch = useDispatch();
 
@@ -32,6 +63,36 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const newErrors = {};
+      const { email, phone, password, cPassword } = formData;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!email) newErrors.email = "This field is required.";
+      else if (!emailRegex.test(email))
+        newErrors.email = "Invalid email format: E.g: example@example.com";
+
+      if (!phone) newErrors.phone = "This field is required.";
+      else if (phone.length !== 10)
+        newErrors.phone = "Phone number must be 10 digits long.";
+
+      if (!password) {
+        newErrors.password = "This field is required.";
+        console.log(password, "pass");
+      } else if (password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters long";
+        console.log(password, "password");
+      }
+
+      if (!cPassword) newErrors.cPassword = "This field is required.";
+      else if (cPassword.length < 8)
+        newErrors.cPassword = "Password must be at least 8 characters long";
+      else if (password !== cPassword)
+        newErrors.password = "Passwords do not match";
+
+      setErrors(newErrors);
+
+      if (Object.keys(newErrors).length > 0) return;
+
       dispatch(registerStart());
       const res = await axios.post(`${backendUrl}/auth/register`, {
         ...formData,
@@ -42,148 +103,156 @@ const Register = () => {
           message: res.data.body.message,
         })
       );
+      toast.success("Logged in successfully");
     } catch (error) {
       console.error(error, "RES!!");
       dispatch(registerFailure(error.data.body.message));
+      toast.error("Failed to login");
     }
   };
 
-  const handleSocialSignup = (provider) => {
-    console.log(`Signup with ${provider}`);
+  const handleGoogleRegister = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
-
-  console.log(formData);
 
   return (
     <FloatingBlobs>
-      <div className='min-h-screen flex bg-transparent justify-end'>
-        {/* Right side - Registration Form */}
-        <div className='w-7/10 flex items-center justify-center p-8 py-0 rounded-tl-4xl rounded-bl-4xl bg-white'>
-          <div className='w-full'>
-            <div className='bg-white rounded-2xl p-8 md:p-12 w-full'>
-              <h1 className='text-4xl font-bold text-text-black mb-8'>
+      <div className='p-4 min-h-dvh flex items-center justify-center'>
+        <div className='bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto'>
+          <div>
+            <div className='flex justify-between items-center'>
+              <h1 className='text-xl md:text-3xl font-bold text-primary'>
                 Create Account
               </h1>
-
-              <form onSubmit={handleSubmit} className=''>
-                {/* Name Fields */}
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='firstName' className='text-text-muted'>
-                      First name
-                    </Label>
-                    <Input
-                      id='firstName'
-                      type='text'
-                      name='email'
-                      value={formData.email}
-                      onChange={handleFormData}
-                      className='h-12 mb-7'
-                      required
-                    />
-                  </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='lastName' className='text-text-muted'>
-                      Last name
-                    </Label>
-                    <Input
-                      id='lastName'
-                      type='text'
-                      name='phone'
-                      value={formData.phone}
-                      onChange={handleFormData}
-                      className='h-12 mb-7'
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Email Field */}
-                {/* <div className='space-y-2'>
-                  <Label htmlFor='email' className='text-text-muted'>
-                    Email
-                  </Label>
-                  <Input
-                    id='email'
-                    type='email'
-                    name='email'
-                    value={formData.email}
-                    onChange={handleFormData}
-                    className='h-12 mb-7'
-                    required
-                  />
-                </div> */}
-
-                {/* Password Field */}
-                <div className='space-y-2'>
-                  <Label htmlFor='password' className='text-text-muted'>
-                    Password
-                  </Label>
-                  <Input
-                    id='password'
-                    type='password'
-                    name='password'
-                    value={formData.password}
-                    onChange={handleFormData}
-                    className='h-12 mb-8'
-                    required
-                  />
-                </div>
-
-                {/* Create Account Button */}
-                <Button type='submit' className='w-full h-14 text-lg' size='lg'>
-                  Create Account
-                </Button>
-              </form>
-
-              {/* Login Link */}
-              <p className='text-left mt-6 text-text-muted text-xl font-bold'>
-                Already have an account?{" "}
-                <Link
-                  to='/login'
-                  className='text-light-primary hover:text-primary underline'
-                >
-                  Login
-                </Link>
-              </p>
-
-              {/* Divider */}
-              <div className='relative my-8 flex items-center'>
-                <div className='w-5/10 border-t border-border'></div>
-                <div className='mx-7'>or</div>
-                <div className='w-5/10 border-t border-border'></div>
-              </div>
-
-              {/* Social Signup Buttons */}
-              <div className='grid grid-cols-1 md:grid-cols-1 gap-4'>
-                <Button
-                  type='button'
-                  variant='outline'
-                  className='h-14'
-                  onClick={() => handleSocialSignup("google")}
-                >
-                  Signup with
-                  <svg className='w-5 h-5 ml-2' viewBox='0 0 24 24'>
-                    <path
-                      fill='#4285F4'
-                      d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
-                    />
-                    <path
-                      fill='#34A853'
-                      d='M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z'
-                    />
-                    <path
-                      fill='#FBBC05'
-                      d='M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z'
-                    />
-                    <path
-                      fill='#EA4335'
-                      d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'
-                    />
-                  </svg>
-                </Button>
-              </div>
+              <Link
+                to={"/login"}
+                className='flex text-text-muted hover:text-primary transition'
+              >
+                <MdArrowBack className='text-2xl' />
+                <span>Home</span>
+              </Link>
             </div>
+            <h2 className='text-sm md:text-lg font-semibold text-text-black mt-1 mb-4'>
+              Create an account to continue
+            </h2>
+          </div>
+          <form onSubmit={handleSubmit} className='grid gap-6'>
+            {/* Name Fields */}
+            <div>
+              <TextField
+                label='Email'
+                variant='outlined'
+                className='w-full'
+                name='email'
+                value={formData.email}
+                onChange={handleFormData}
+              />
+              <p className='text-red-400 text-xs'>{errors && errors.email}</p>
+            </div>
+            <div>
+              <TextField
+                label='Phone number'
+                variant='outlined'
+                className='w-full'
+                name='phone'
+                value={formData.phone}
+                onChange={handleFormData}
+              />
+              <p className='text-red-400 text-xs'>{errors && errors.phone}</p>
+            </div>
+            {/* Password Field */}
+            <div>
+              <FormControl variant='outlined' className='w-full'>
+                <InputLabel htmlFor='password'>Password</InputLabel>
+                <OutlinedInput
+                  id='password'
+                  type={showPassword ? "text" : "password"}
+                  name='password'
+                  className='w-full'
+                  onChange={handleFormData}
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "hide the password"
+                            : "display the password"
+                        }
+                        onClick={handleshowPassword}
+                        edge='end'
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label='Password'
+                />
+              </FormControl>
+              <p className='text-red-400 text-xs'>
+                {errors && errors.password}
+              </p>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div>
+              <FormControl
+                variant='outlined'
+                className='w-full'
+                // sx={{ marginTop: "24px" }}
+              >
+                <InputLabel htmlFor='cPassword'>Confirm Password</InputLabel>
+                <OutlinedInput
+                  id='cPassword'
+                  type={showCpassword ? "text" : "password"}
+                  name='cPassword'
+                  onChange={handleFormData}
+                  className='w-full'
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "hide the password"
+                            : "display the password"
+                        }
+                        onClick={handleshowCpassword}
+                        edge='end'
+                      >
+                        {showCpassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label='Confirm Password'
+                />
+              </FormControl>
+              <p className='text-red-400 text-xs'>
+                {errors && errors.cPassword}
+              </p>
+            </div>
+
+            {/* Create Account Button */}
+            <div className='grid'>
+              <PrimaryButton btnText='Create Account' />
+            </div>
+          </form>
+          <div className='grid gap-6'>
+            <p className='text-text-black text-sm font-medium flex justify-center mt-6'>
+              Or Continue With
+            </p>
+
+            <div className='grid'>
+              <ButtonWithIcon
+                icon={<FcGoogle />}
+                btnText='Google'
+                onClick={handleGoogleRegister}
+              />
+            </div>
+            <p className='text-sm font-medium'>
+              Already have an account?{" "}
+              <span className='text-primary underline hover:text-light-primary transition'>
+                <Link to='/login'>Sign In</Link>
+              </span>
+            </p>
           </div>
         </div>
       </div>
