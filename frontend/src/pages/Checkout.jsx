@@ -46,7 +46,7 @@ export default function KycVerification(props) {
 
   return (
     <AppLayout>
-      <div className="flex justify-center items-center bg-background">
+      <div className="flex justify-center items-center">
         <Grid container marginTop={4}>
           {/* LEFT SIDE SUMMARY (Desktop only) */}
           <Grid
@@ -157,7 +157,7 @@ export default function KycVerification(props) {
               id="mobile-stepper"
               activeStep={activeStep}
               alternativeLabel
-              sx={{ display: { xs: "flex", md: "none", width: '100%'} }}
+              sx={{ display: { xs: "flex", md: "none", width: "100%" } }}
             >
               {steps.map((label) => (
                 <Step key={label}>
@@ -199,6 +199,13 @@ export default function KycVerification(props) {
                         startIcon={<ChevronLeftRoundedIcon />}
                         onClick={handleBack}
                         variant="outlined"
+                        sx={{
+                          borderColor: "#0090b8",
+                          color: "#0090b8",
+                          "&:hover": {
+                            backgroundColor: "#0090b8",color: "#ffffff",
+                          },
+                        }}
                       >
                         Previous
                       </Button>
@@ -208,7 +215,12 @@ export default function KycVerification(props) {
                       variant="contained"
                       endIcon={<ChevronRightRoundedIcon />}
                       onClick={handleNext}
-                      
+                      sx={{
+                        backgroundColor: "#0090b8",
+                        "&:hover": {
+                          backgroundColor: "#00b8eb",
+                        },
+                      }}
                     >
                       {activeStep === steps.length - 1 ? "Submit KYC" : "Next"}
                     </Button>
