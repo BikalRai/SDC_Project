@@ -1,16 +1,21 @@
 import { IoIosArrowDown } from "react-icons/io";
 import FormLabel from "../label/FormLabel";
 
-const KiSelect = ({ arr }) => {
+const KiSelect = ({ arr, labelText }) => {
   return (
-    <div className='max-w-md'>
+    <div className='grid gap-1 flex-1'>
       <div>
-        <FormLabel labelText={`Category`} />
+        <FormLabel
+          labelText={`${labelText[0].toUpperCase()}${labelText
+            .slice(1)
+            .toLowerCase()}`}
+          htmlFor={labelText}
+        />
       </div>
       <div className='flex items-center justify-between gap-2 border border-border rounded text-text-muted relative'>
         <select
-          name='category'
-          id='category'
+          name={labelText}
+          id={labelText}
           className='appearance-none outline-0 border-0 w-full px-8 py-3'
         >
           {arr.map((item) => (
