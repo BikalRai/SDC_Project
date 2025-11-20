@@ -3,7 +3,7 @@ import { LuUpload } from "react-icons/lu";
 const ImageUploader = () => {
   return (
     <div>
-      <div className='bg-background p-8 rounded'>
+      <div className='bg-[#F5F5F5] p-8 rounded'>
         <div className='border border-dashed border-text-muted rounded flex flex-col justify-center items-center p-8 relative'>
           <div className='flex flex-col justify-center items-center gap-8'>
             <div className='bg-[#3b82f830] w-12 h-12  rounded-full flex items-center justify-center'>
@@ -13,7 +13,7 @@ const ImageUploader = () => {
           </div>
           <input
             type='file'
-            className='w-full h-full cursor-pointer  absolute opacity-0 top-0 left-0'
+            className='w-full h-full cursor-pointer  absolute z-0 opacity-0 top-0 left-0'
           />
         </div>
       </div>
