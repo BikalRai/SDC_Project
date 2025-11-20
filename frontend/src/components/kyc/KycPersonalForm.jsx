@@ -87,7 +87,7 @@ export default function KycPersonalForm() {
 
   return (
     <Box sx={{ width: "100%", maxWidth: 700 }}>
-      <Typography variant="h6" gutterBottom>
+      <Typography gutterBottom fontSize={20} mb={2}>
         Personal details
       </Typography>
 
@@ -177,7 +177,7 @@ export default function KycPersonalForm() {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12}}>
+        <Grid item size={{ xs: 12 }}>
           <TextField
             fullWidth
             multiline
@@ -193,7 +193,7 @@ export default function KycPersonalForm() {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12}}>
+        <Grid item size={{ xs: 12 }}>
           <TextField
             fullWidth
             label="Government ID / Citizen number"
@@ -208,8 +208,37 @@ export default function KycPersonalForm() {
         </Grid>
 
         <Grid item xs={12} sx={{ mt: 1 }}>
-          <SecondaryButton btnText="RESET" className="mr-3"/>
-          <PrimaryButton btnText="SAVE DETAILS"/>
+          <SecondaryButton
+            btnText="RESET"
+            className="mr-3"
+            onClick={() => {
+              setData(initialState);
+              setErrors({});
+              localStorage.removeItem(STORAGE_KEY);
+            }}
+          />
+          <PrimaryButton
+            btnText="SAVE DETAILS"
+            className="mr-3"
+            onClick={() => {
+              const ok = isValid();
+              if (!ok) {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                const el = document.createElement("div");
+                el.innerText = "Personal details saved";
+                el.style.position = "fixed";
+                el.style.right = "1rem";
+                el.style.top = "4rem";
+                el.style.background = "rgba(0,0,0,0.7)";
+                el.style.color = "white";
+                el.style.padding = "8px 12px";
+                el.style.borderRadius = "6px";
+                document.body.appendChild(el);
+                setTimeout(() => document.body.removeChild(el), 1500);
+              }
+            }}
+          />
         </Grid>
       </Grid>
     </Box>

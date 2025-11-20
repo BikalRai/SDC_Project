@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SecondaryButton from "../buttons/SecondaryButton";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 const STORAGE_KEY = "kyc_docs_v1";
 
@@ -51,7 +53,12 @@ export default function KycDocumentUpload() {
     const file = e.target.files?.[0];
     if (!file) return;
     // accept images and pdfs
-    const validTypes = ["image/png", "image/jpeg", "image/jpg", "application/pdf"];
+    const validTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "application/pdf",
+    ];
     if (!validTypes.includes(file.type)) {
       alert("Only JPG/PNG/PDF files are accepted.");
       return;
@@ -59,7 +66,10 @@ export default function KycDocumentUpload() {
     setUploading(true);
     try {
       const dataUrl = await fileToDataUrl(file);
-      setFiles((s) => ({ ...s, [key]: { name: file.name, mime: file.type, dataUrl } }));
+      setFiles((s) => ({
+        ...s,
+        [key]: { name: file.name, mime: file.type, dataUrl },
+      }));
     } catch (err) {
       console.error(err);
       alert("Failed to read file.");
@@ -84,15 +94,30 @@ export default function KycDocumentUpload() {
           gap: 2,
         }}
       >
-        <Box sx={{ width: 84, height: 84, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Box
+          sx={{
+            width: 84,
+            height: 84,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {f ? (
             f.mime === "application/pdf" ? (
               <Avatar variant="rounded">{/* PDF icon fallback */}PDF</Avatar>
             ) : (
-              <Avatar variant="rounded" src={f.dataUrl} sx={{ width: 82, height: 82 }} />
+              <Avatar
+                variant="rounded"
+                src={f.dataUrl}
+                sx={{ width: 82, height: 82 }}
+              />
             )
           ) : (
-            <Avatar variant="rounded" sx={{ width: 82, height: 82, bgcolor: "background.default" }}>
+            <Avatar
+              variant="rounded"
+              sx={{ width: 82, height: 82, bgcolor: "background.default" }}
+            >
               <UploadFileIcon />
             </Avatar>
           )}
@@ -140,69 +165,53 @@ export default function KycDocumentUpload() {
       </Typography>
 
       <Typography variant="body2" sx={{ mb: 2 }}>
-        Upload clear pictures of your ID (front and back) and a selfie for identity verification.
-        We accept JPG, PNG, PDF.
+        Upload clear pictures of your ID (front and back) and a selfie for
+        identity verification. We accept JPG, PNG, PDF.
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6} width={'100%'}>
+        <Grid item xs={12} md={6} width={"100%"}>
           {previewBox("Selfie (clear face)", "selfie")}
         </Grid>
 
-        <Grid item xs={12} md={6} width={'100%'}>
+        <Grid item xs={12} md={6} width={"100%"}>
           {previewBox("ID / Passport (front)", "idFront")}
         </Grid>
 
-        <Grid item xs={12} md={6} width={'100%'}>
+        <Grid item xs={12} md={6} width={"100%"}>
           {previewBox("ID / Passport (back)", "idBack")}
         </Grid>
 
-        <Grid item xs={12} md={6} width={'100%'}>
+        <Grid item xs={12} md={6} width={"100%"}>
           {previewBox("Optional: additional document", "other")}
         </Grid>
 
-        <Grid item xs={12} >
+        <Grid item xs={12}>
           <Typography variant="caption" color="text.secondary">
-            Tip: Use a well-lit, straight-on photo. Photos that are blurred or cropped may be rejected.
+            Tip: Use a well-lit, straight-on photo. Photos that are blurred or
+            cropped may be rejected.
           </Typography>
         </Grid>
 
         <Grid item xs={12} sx={{ mt: 1 }}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              // quick check: require selfie + idFront
-              if (!files.selfie || !files.idFront) {
-                alert("Please upload at least a selfie and the front of your ID before saving.");
-                return;
-              }
-              // localStorage already updated - show confirmation
-              const el = document.createElement("div");
-              el.innerText = "Documents saved";
-              el.style.position = "fixed";
-              el.style.right = "1rem";
-              el.style.top = "4rem";
-              el.style.background = "rgba(0,0,0,0.7)";
-              el.style.color = "white";
-              el.style.padding = "8px 12px";
-              el.style.borderRadius = "6px";
-              document.body.appendChild(el);
-              setTimeout(() => document.body.removeChild(el), 1400);
-            }}
-          >
-            Save uploads
-          </Button>
-
-          <Button
-            variant="outlined"
-            sx={{ ml: 2 }}
+          {/* MYBUTTON */}
+          <PrimaryButton
+            btnText="SAVE UPLOADS"
+            className="mr-3"
             onClick={() => {
               setFiles(emptyState);
               localStorage.removeItem(STORAGE_KEY);
             }}
-          >
-            Clear all
-          </Button>
+          />
+
+          <SecondaryButton
+            btnText="CLEAR ALL"
+            className="mr-3"
+            onClick={() => {
+              setFiles(emptyState);
+              localStorage.removeItem(STORAGE_KEY);
+            }}
+          />
         </Grid>
       </Grid>
     </Box>
