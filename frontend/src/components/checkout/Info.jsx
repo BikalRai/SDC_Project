@@ -29,7 +29,7 @@ const products = [
 
 export default function Info({ totalPrice }) {
   return (
-    <React.Fragment>
+    <>
       <Typography variant='subtitle2' sx={{ color: "text.secondary" }}>
         Total
       </Typography>
@@ -50,6 +50,6 @@ export default function Info({ totalPrice }) {
           </ListItem>
         ))}
       </List>
-    </Box>
+    </>
   );
 }

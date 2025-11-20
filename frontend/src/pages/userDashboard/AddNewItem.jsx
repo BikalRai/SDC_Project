@@ -1,8 +1,9 @@
 import UserDashboardTitle from "@/components/header/UserDashboardTitle";
 import ImageUploader from "@/components/image/ImageUploader";
 import FormLabel from "@/components/label/FormLabel";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { IoIosArrowDown } from "react-icons/io";
 import React from "react";
+import KiSelect from "@/components/input/KiSelect";
 
 const categories = [
   { id: 1, name: "scooter" },
@@ -49,22 +50,7 @@ const AddNewItem = () => {
           </div>
         </div>
         <div>
-          <div>
-            <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-label'>Category</InputLabel>
-              <Select
-                labelId='demo-simple-select-label'
-                id='demo-simple-select'
-                label='Age'
-              >
-                {categories.map((category) => (
-                  <MenuItem key={category.id}>{`${
-                    category.name[0]
-                  }${category.name.slice(1).toLowerCase()}`}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
+          <KiSelect arr={categories} />
         </div>
       </form>
     </div>
