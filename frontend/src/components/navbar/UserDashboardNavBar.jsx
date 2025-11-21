@@ -32,7 +32,7 @@ const navLinks = [
 
 const UserDashboardNavBar = () => {
   return (
-    <nav className='min-h-dvh w-full flex flex-col items-center gap-10 py-8 shadow-lg sticky top-0'>
+    <nav className='min-h-dvh w-full flex flex-col items-center gap-10 py-8 shadow-lg sticky top-0 bg-gray-300'>
       <div>LOGO</div>
       <div className='flex flex-col gap-10'>
         {navLinks.map((link) => (
