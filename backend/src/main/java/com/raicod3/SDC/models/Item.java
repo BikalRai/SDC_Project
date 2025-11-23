@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Entity
 public class Item {
 
@@ -29,15 +30,9 @@ public class Item {
     private String description;
 
     @Column(nullable = false)
-    private double dailyRate;
+    private String rate;
 
-    @Column(nullable = false)
-    private double weeklyRate;
-
-    @Column(nullable = false)
-    private double monthlyRate;
-
-    @ElementCollection(fetch = FetchType.EAGER) // or LAZY
+    @ElementCollection(fetch = FetchType.LAZY) // or LAZY
     @CollectionTable(name = "item_images", joinColumns = @JoinColumn(name = "item_id"))
     @Column(name = "image_url")
     private List<String> imageUrls;
@@ -57,44 +52,24 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemCondition conditionType;
 
-    @Enumerated(EnumType.STRING)
-    private ItemStatus itemStatus;
+//    @Enumerated(EnumType.STRING)
+    private String status;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rental> rentals;
 
 
     public Item(ItemRequestDto itemRequestDto, Category category) {
         this.title = itemRequestDto.getTitle();
         this.description = itemRequestDto.getDescription();
-        this.dailyRate = itemRequestDto.getDailyRate();
-        this.weeklyRate = itemRequestDto.getWeeklyRate();
-        this.monthlyRate = itemRequestDto.getMonthlyRate();
+        this.rate = itemRequestDto.getRate();
         this.imageUrls = itemRequestDto.getImageUrls();
         this.location = itemRequestDto.getLocation();
         this.createdAt = LocalDate.now();
         this.category = category;
-        this.conditionType = itemRequestDto.getCondition();
-        this.itemStatus = itemRequestDto.getStatus();
+//        this.conditionType = itemRequestDto.getCondition();
+        this.status = itemRequestDto.getStatus();
         this.rentals = new ArrayList<>();
     }
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", dailyRate=" + dailyRate +
-                ", weeklyRate=" + weeklyRate +
-                ", monthlyRate=" + monthlyRate +
-                ", imageUrls=" + imageUrls +
-                ", location='" + location + '\'' +
-                ", createdAt=" + createdAt +
-                ", owner=" + owner +
-                ", category=" + category +
-                ", conditionType=" + conditionType +
-                ", itemStatus=" + itemStatus +
-                '}';
-    }
 }

@@ -30,11 +30,11 @@ public class Rental {
     private LocalDate createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId")
     private UserModel user;
 
     @ManyToOne
-    @JoinColumn(name = "itemId", nullable = false)
+    @JoinColumn(name = "itemId")
     private Item item;
 
     public Rental(RentalRequestDto req, Item item, UserModel user) {

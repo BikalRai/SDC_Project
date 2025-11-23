@@ -1,7 +1,7 @@
 import { IoIosArrowDown } from "react-icons/io";
 import FormLabel from "../label/FormLabel";
 
-const KiSelect = ({ arr, labelText }) => {
+const KiSelect = ({ arr, labelText, onChangeFunc }) => {
   return (
     <div className='grid gap-1 flex-1'>
       <div>
@@ -17,10 +17,17 @@ const KiSelect = ({ arr, labelText }) => {
           name={labelText}
           id={labelText}
           className='appearance-none outline-0 border-0 w-full px-8 py-3'
+          onChange={onChangeFunc}
         >
           {arr.map((item) => (
-            <option key={item.id} value={item.name} className='p-2'>
-              {`${item.name[0].toUpperCase()}${item.name
+            <option
+              key={item.id}
+              value={item.status ? item.status : item.id}
+              className='p-2'
+            >
+              {`${(item.name || item.status)[0].toUpperCase()}${(
+                item.name || item.status
+              )
                 .slice(1)
                 .toLowerCase()}`}
             </option>
