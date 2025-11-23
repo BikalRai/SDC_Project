@@ -2,51 +2,18 @@ import PrimaryButton from "@/components/buttons/PrimaryButton";
 import UserDashboardTitle from "@/components/header/UserDashboardTitle";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { CiEdit } from "react-icons/ci";
-
-const items = [
-  {
-    id: 1,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "",
-    price: "price",
-    status: "status",
-  },
-  {
-    id: 2,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "",
-    price: "price",
-    status: "status",
-  },
-  {
-    id: 3,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "",
-    price: "price",
-    status: "status",
-  },
-  {
-    id: 4,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "",
-    price: "price",
-    status: "status",
-  },
-  {
-    id: 5,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "",
-    price: "price",
-    status: "status",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { deleteItem, getAllItems } from "@/slices/item.slice";
+import { useEffect } from "react";
 
 const MyListedItems = () => {
+  const dispatch = useDispatch();
+  const { items } = useSelector((state) => state.item);
+
+  useEffect(() => {
+    dispatch(getAllItems());
+  }, [dispatch]);
+
   return (
     <div className='grid gap-8'>
       <div className='flex items-center justify-between'>
@@ -76,21 +43,24 @@ const MyListedItems = () => {
               <div className='flex items-center gap-4 ps-8'>
                 <img
                   src={item.img}
-                  alt={item.name}
+                  alt={item.title}
                   className='w-12 h-12 object-cover rounded'
                 />
                 <div className='text-left'>
-                  <p className='font-medium'>{item.name}</p>
-                  <p className='text-xs'>{item.type}</p>
+                  <p className='font-medium'>{item.title}</p>
+                  <p className='text-xs'>{item.category.name}</p>
                 </div>
               </div>
 
-              <div>{item.price}</div>
+              <div>{item.rate}</div>
               <div>{item.status}</div>
 
               <div className='flex justify-center gap-4 text-xl'>
                 <CiEdit className='cursor-pointer hover:text-primary transition-all duration-300' />
-                <LuTrash2 className='cursor-pointer hover:text-red-500 transition-all duration-300' />
+                <LuTrash2
+                  className='cursor-pointer hover:text-red-500 transition-all duration-300'
+                  onClick={() => dispatch(deleteItem(item.id))}
+                />
               </div>
             </div>
           ))}

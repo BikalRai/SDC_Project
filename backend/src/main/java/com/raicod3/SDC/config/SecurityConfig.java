@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,27 +38,26 @@ public class SecurityConfig {
 
     private CustomOAuth2Service customOAuth2UserService;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter, CustomOAuth2Service customOAuth2UserService, PasswordEncoder passwordEncoder) {
+    private JwtUtils jwtUtils;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter, CustomOAuth2Service customOAuth2UserService, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
         this.customOAuth2UserService = customOAuth2UserService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtils jwtUtils) throws Exception {
+    @Order(1)
+    public SecurityFilterChain oauth2FilterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/oauth2/**", "/login/oauth2/code/**")
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(("/api/user/**")).permitAll()
-                        .requestMatchers( "/api/item/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/categories/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(("/api/rental/**")).hasAnyRole("ADMIN", "USER")
-                        .anyRequest().authenticated())
+                .cors(cors -> {})
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().permitAll()
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(auth -> auth
                                 .baseUri("/oauth2/authorization") // backend route to start OAuth
@@ -72,8 +72,8 @@ public class SecurityConfig {
                             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
 
-                             UserDetails user = oAuth2User.getUser();
-                             String token = jwtUtils.generateToken(user);
+                            UserDetails user = oAuth2User.getUser();
+                            String token = jwtUtils.generateToken(user);
 
 
                             // Redirect to frontend with JWT token
@@ -85,11 +85,31 @@ public class SecurityConfig {
                             exception.printStackTrace();
                             response.sendRedirect("http://localhost:5173/login?error=true");
                         })
+                );
 
-                )
-                .cors(cors -> cors.disable());
+        return http.build();
+    }
 
-
+    @Bean
+    @Order(2)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtils jwtUtils) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(cor -> {}) // uses the config that is in the application level
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(("/api/user/**")).permitAll()
+                        .requestMatchers("/oauth2/**").permitAll()
+                        .requestMatchers("/login/oauth2/code/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers( "/api/item/**").hasRole("USER")
+                        .requestMatchers("/api/category/**").permitAll()
+                        .requestMatchers(("/api/rental/**")).hasAnyRole("ADMIN", "USER")
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                ;
         return http.build();
     }
 

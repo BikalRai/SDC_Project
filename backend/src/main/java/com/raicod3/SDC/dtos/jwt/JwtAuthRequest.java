@@ -9,14 +9,14 @@ import lombok.ToString;
 @Setter
 public class JwtAuthRequest {
 
-    private String email;
+    private String username;
     private String password;
 
     public JwtAuthRequest() {
     }
 
-    public JwtAuthRequest(String email, String password) {
-        this.email = email;
+    public JwtAuthRequest(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 

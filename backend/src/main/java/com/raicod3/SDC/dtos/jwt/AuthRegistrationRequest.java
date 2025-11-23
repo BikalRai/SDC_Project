@@ -8,17 +8,17 @@ public class AuthRegistrationRequest {
     private String email;
     private String phone;
     private String password;
-    private String role;
+//    private String role;
 
 
     public AuthRegistrationRequest() {
     }
 
-    public AuthRegistrationRequest(String email, String phone, String password, String role) {
+    public AuthRegistrationRequest(String email, String phone, String password) {
         this.email = email;
         this.phone = phone;
         this.password = password;
-        this.role = role;
+//        this.role = role;
     }
 
     public String getEmail() {
@@ -45,11 +45,11 @@ public class AuthRegistrationRequest {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
 }
