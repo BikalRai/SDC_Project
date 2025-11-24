@@ -7,16 +7,8 @@ import MostPopularSection from "@/components/mostPopular/MostPopularSection";
 import AppNavBar from "@/components/navbar/AppNavBar";
 import Footer from "@/components/section/Footer";
 import Testimonial from "@/components/testimonial/Testimonial";
-import { getCategories } from "@/slices/category.slice";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
 const Home = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
   return (
     <div>
       <AppLayout>
