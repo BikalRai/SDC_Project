@@ -17,8 +17,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAllByOwner(UserModel owner);
 
 
-    @Transactional
-    @Modifying
-    @Query(value = "DELETE FROM item WHERE id = ?1", nativeQuery = true)
-    void deleteItemNative(long itemId);
+
 }

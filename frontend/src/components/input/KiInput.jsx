@@ -1,6 +1,6 @@
 import FormLabel from "../label/FormLabel";
 
-const KiInput = ({ name, placeholderText, onChangeFunc }) => {
+const KiInput = ({ name, placeholderText, onChangeFunc, value }) => {
   return (
     <div className='grid gap-1 flex-1'>
       <div>
@@ -17,6 +17,7 @@ const KiInput = ({ name, placeholderText, onChangeFunc }) => {
           placeholder={placeholderText}
           className='outline-0 border-0 w-full py-3 ps-6'
           onChange={onChangeFunc}
+          value={value}
         />
       </div>
     </div>

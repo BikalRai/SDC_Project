@@ -9,6 +9,8 @@ const request = {
   item: {
     create: (data) => api.post("/item/create", data),
     items: () => api.get("/item/items"),
+    getItem: (id) => api.get(`/item/${id}`),
+    update: (id, data) => api.put(`/item/${id}/update`, data),
     delete: (id) => api.delete(`/item/${id}/delete`),
   },
   category: {
