@@ -6,6 +6,7 @@ import UserDashboardTitle from "@/components/header/UserDashboardTitle";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { CiEdit } from "react-icons/ci";
 import Swal from "sweetalert2";
+import { HiViewfinderCircle } from "react-icons/hi2";
 
 const initialItems = [
   {
@@ -31,24 +32,24 @@ const MyListedItems = () => {
   const [items, setItems] = useState(initialItems);
 
   const handleEdit = (id) => navigate(`/user/item-detail/${id}`);
-  const handleView = (id) => navigate(`/view-item/${id}`);
+  const handleView = (id) => navigate(`/user/view-item/${id}`);
 
   const handleDelete = (id) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setItems((prev) => prev.filter((item) => item.id !== id));
-      toast.success("Item deleted successfully!");
-    }
-  });
-};
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setItems((prev) => prev.filter((item) => item.id !== id));
+        toast.success("Item deleted successfully!");
+      }
+    });
+  };
 
   return (
     <div className="grid gap-8">
@@ -97,12 +98,11 @@ const MyListedItems = () => {
               </div>
 
               <div className="flex justify-center gap-4 text-xl">
-                <button
+                <HiViewfinderCircle
                   onClick={() => handleView(item.id)}
-                  title="View Details"
-                >
-                  👁
-                </button>
+                  className="cursor-pointer hover:text-primary"
+                />
+
                 <CiEdit
                   onClick={() => handleEdit(item.id)}
                   className="cursor-pointer hover:text-primary"

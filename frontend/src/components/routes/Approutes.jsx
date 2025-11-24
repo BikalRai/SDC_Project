@@ -15,6 +15,7 @@ import MyRentals from "@/pages/userDashboard/MyRentals";
 import ProfileAndSettings from "@/pages/userDashboard/ProfileAndSettings";
 import UserDashboardLayout from "../layout/UserDashboardLayout";
 import ItemDetail from "@/pages/userDashboard/ItemDetail";
+import ViewItem from "@/pages/userDashboard/ViewItem";
 
 const Approutes = () => {
   return (
@@ -38,6 +39,8 @@ const Approutes = () => {
           <Route path="rentals" element={<MyRentals />} />
           <Route path="settings" element={<ProfileAndSettings />} />
           <Route path="item-detail" element={<ItemDetail />} />
+          {/* <Route path="view-item" element={<ViewItem />} /> */}
+          <Route path="view-item/:id" element={<ViewItem />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
