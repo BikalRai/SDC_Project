@@ -1,7 +1,10 @@
+import { useDispatch, useSelector } from "react-redux";
 import ItemCard from "../card/ItemCard";
 import ReContainer from "../containers/ReContainer";
 import SectionHeader from "../header/SectionHeader";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { getCategories } from "@/slices/category.slice";
+import { getAllItems } from "@/slices/item.slice";
 
 const FindYourRental = () => {
   const sliderRef = useRef(null);
@@ -20,11 +23,25 @@ const FindYourRental = () => {
     });
   };
 
-  const categories = ["Vehicle", "Furniture", "Electronics", "Clothes"];
+  // const categories = ["Vehicle", "Furniture", "Electronics", "Clothes"];
 
-  const [selectedCategory, setSelectedCategory] = useState("Vehicle");
+  const [selectedCategory, setSelectedCategory] = useState("scooter");
 
-  const [items, setItems] = useState([]);
+  // const [items, setItems] = useState([]);
+
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.category);
+  const { items } = useSelector((state) => state.item);
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllItems());
+  }, [dispatch]);
+
+  console.log(items, "items");
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -74,7 +91,7 @@ const FindYourRental = () => {
                       }
                     `}
                   >
-                    {cat}
+                    {cat.name}
                   </button>
                 );
               })}
@@ -95,6 +112,18 @@ const FindYourRental = () => {
                 ref={sliderRef}
                 className='flex gap-6 overflow-x-auto overflow-y-hidden py-2 scrollbar-hide'
               >
+                {/* {items
+                  ?.filter((item) => item.name === selectedCategory)
+                  .map((item) => ( */}
+                <div className='flex-shrink-0'>
+                  <ItemCard
+                    name={items[0]?.title}
+                    price={items[0]?.rate}
+                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
+                    features={["Eat", "Sleep", "Repeat"]}
+                  />
+                </div>
+                {/* ))} */}
                 {/* Wrap each card to prevent shrinking */}
                 <div className='flex-shrink-0'>
                   <ItemCard
