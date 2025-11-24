@@ -3,15 +3,34 @@ import UserDashboardTitle from "@/components/header/UserDashboardTitle";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteItem, getAllItems } from "@/slices/item.slice";
+import { clearMessages, deleteItem, getAllItems } from "@/slices/item.slice";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getCategories } from "@/slices/category.slice";
+import { toast } from "react-toastify";
 
 const MyListedItems = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { items } = useSelector((state) => state.item);
+  const { items, successMessage } = useSelector((state) => state.item);
+
+  const handleDelete = (id) => {
+    dispatch(deleteItem(id));
+  };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      setTimeout(() => dispatch(clearMessages()), 500);
+    }
+  }, [successMessage]);
 
   useEffect(() => {
     dispatch(getAllItems());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCategories());
   }, [dispatch]);
 
   return (
@@ -56,10 +75,13 @@ const MyListedItems = () => {
               <div>{item.status}</div>
 
               <div className='flex justify-center gap-4 text-xl'>
-                <CiEdit className='cursor-pointer hover:text-primary transition-all duration-300' />
+                <CiEdit
+                  className='cursor-pointer hover:text-primary transition-all duration-300'
+                  onClick={() => navigate(`/user/edit/${item.id}`)}
+                />
                 <LuTrash2
                   className='cursor-pointer hover:text-red-500 transition-all duration-300'
-                  onClick={() => dispatch(deleteItem(item.id))}
+                  onClick={() => handleDelete(item.id)}
                 />
               </div>
             </div>

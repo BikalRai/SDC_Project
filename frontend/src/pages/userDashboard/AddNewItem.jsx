@@ -8,10 +8,15 @@ import KiInput from "@/components/input/KiInput";
 import TertiaryButton from "@/components/buttons/TertiaryButton";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, clearAddItemMessages } from "@/slices/item.slice";
+import {
+  addItem,
+  clearMessages,
+  fetchItemById,
+  updateItem,
+} from "@/slices/item.slice";
 import { getCategories } from "@/slices/category.slice";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const statuses = [
   { id: 1, status: "available" },
@@ -31,7 +36,10 @@ const AddNewItem = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { categories } = useSelector((state) => state.category);
-  const { successMessage } = useSelector((state) => state.item);
+  const { successMessage, item } = useSelector((state) => state.item);
+  const { id } = useParams();
+
+  const editMode = Boolean(id);
 
   const handleItemChange = (e) => {
     const { name, value } = e.target;
@@ -43,7 +51,9 @@ const AddNewItem = () => {
     e.preventDefault();
 
     try {
-      dispatch(addItem(itemData));
+      editMode
+        ? dispatch(updateItem({ id: Number(id), updateData: itemData }))
+        : dispatch(addItem(itemData));
       setItemData({
         title: "",
         description: "",
@@ -58,19 +68,46 @@ const AddNewItem = () => {
   };
 
   useEffect(() => {
+    dispatch(clearMessages());
+  }, []);
+
+  useEffect(() => {
     if (successMessage) {
-      toast.success("Item added successfully.");
-      dispatch(clearAddItemMessages());
+      toast.success(successMessage);
+      dispatch(clearMessages());
       navigate("/user/dashboard");
     }
-
-    dispatch(getCategories());
   }, [dispatch, successMessage, navigate]);
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchItemById(id));
+    }
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (id && item) {
+      setItemData({
+        title: item?.title,
+        description: item?.description,
+        categoryId: item?.category?.id,
+        location: item?.location,
+        rate: item?.rate,
+        status: item?.status,
+      });
+    }
+  }, [id, item]);
 
   return (
     <div>
       <div>
-        <UserDashboardTitle title={`List Your Item`} />
+        <UserDashboardTitle
+          title={editMode ? "Edit item details" : `List Your Item`}
+        />
         <p className='text-text-muted tex-sm'>
           Add photos and details about your item to get ready for renters.
         </p>
@@ -95,6 +132,7 @@ const AddNewItem = () => {
                   placeholder='e.g. Honda Activa'
                   id='title'
                   name='title'
+                  value={itemData.title}
                   onChange={handleItemChange}
                 />
               </div>
@@ -105,6 +143,7 @@ const AddNewItem = () => {
                 <textarea
                   name='description'
                   id='description'
+                  value={itemData.description}
                   onChange={handleItemChange}
                   rows={5}
                   className='w-full h-full resize-none outline-0 border-0 px-8 py-3'
@@ -117,11 +156,13 @@ const AddNewItem = () => {
                 arr={categories}
                 labelText='category'
                 onChangeFunc={handleItemChange}
+                value={itemData.categoryId}
               />
               <KiInput
                 name='location'
                 placeholderText='e.g., Kathmandu, Lalitpur'
                 onChangeFunc={handleItemChange}
+                value={itemData.location}
               />
             </div>
           </div>
@@ -132,11 +173,13 @@ const AddNewItem = () => {
                 name='rate'
                 placeholderText='e.g., 1350'
                 onChangeFunc={handleItemChange}
+                value={itemData.rate}
               />
               <KiSelect
                 arr={statuses}
                 labelText='status'
                 onChangeFunc={handleItemChange}
+                value={itemData.status}
               />
             </div>
           </div>

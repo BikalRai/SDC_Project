@@ -34,6 +34,7 @@ const Approutes = () => {
           <Route index element={<Navigate to='dashboard' replace />} />
           <Route path='dashboard' element={<MyListedItems />} />
           <Route path='add' element={<AddNewItem />} />
+          <Route path='edit/:id' element={<AddNewItem />} />
           <Route path='rentals' element={<MyRentals />} />
           <Route path='settings' element={<ProfileAndSettings />} />
         </Route>

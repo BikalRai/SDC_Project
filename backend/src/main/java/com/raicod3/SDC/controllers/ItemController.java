@@ -73,13 +73,13 @@ public class ItemController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateItemHandler(@PathVariable("id") long id, @RequestBody ItemRequestDto itemRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Category category) {
+    @PutMapping("/{id}/update")
+    public ResponseEntity<Map<String, Object>> updateItemHandler(@PathVariable("id") long id, @RequestBody ItemRequestDto itemRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            ItemResponseDto updatedItem = itemService.updateItem(id, itemRequestDto, category);
+            ItemResponseDto updatedItem = itemService.updateItem(id, itemRequestDto, userDetails);
             return ResponseBuilder.buildResponse("Item updated successfully", HttpStatus.OK, updatedItem);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("Item did was not updated", HttpStatus.INTERNAL_SERVER_ERROR, null);
+            return ResponseBuilder.buildResponse("Item was not updated", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
         }
     }
 
@@ -89,11 +89,13 @@ public class ItemController {
         try {
             String message = itemService.deleteItemById(id, userDetails);
             response.put("message", message);
+            response.put("id", id);
             response.put("statusCode", HttpStatusConstants.OK);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("message", "Item not found");
             response.put("statusCode", HttpStatusConstants.INTERNAL_SERVER_ERROR);
+
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

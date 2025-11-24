@@ -51,12 +51,33 @@ public class ItemService {
         return new ItemResponseDto(itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found")));
     }
 
-    public ItemResponseDto updateItem(long id, ItemRequestDto itemRequestDto, Category category) {
-        Item existingItem = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
+    public ItemResponseDto updateItem(long id, ItemRequestDto itemRequestDto, CustomUserDetails userDetails) {
 
-        Item updatedItem = new Item(itemRequestDto, category);
-        itemRepository.save(updatedItem);
-        return new ItemResponseDto(existingItem);
+        Item existingItem = itemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+
+        // Verify ownership
+        if (existingItem.getOwner().getId() != userDetails.getUser().getId()) {
+            throw new RuntimeException("You don't have permission to update this item");
+        }
+
+        // Get category if it's being updated
+        Category category = categoryRepository.findById(itemRequestDto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        // Update the existing item's fields
+        existingItem.setTitle(itemRequestDto.getTitle());
+        existingItem.setDescription(itemRequestDto.getDescription());
+        existingItem.setRate(itemRequestDto.getRate());
+        existingItem.setImageUrls(itemRequestDto.getImageUrls());
+        existingItem.setLocation(itemRequestDto.getLocation());
+        existingItem.setCategory(category);
+        existingItem.setStatus(itemRequestDto.getStatus());
+        // existingItem.setConditionType(itemRequestDto.getCondition());
+
+        Item savedItem = itemRepository.save(existingItem);
+        return new ItemResponseDto(savedItem);
     }
 
 
@@ -70,11 +91,7 @@ public class ItemService {
         System.out.println("Deleting rentals linked to item");
         rentalRepository.deleteByItem(existingItem);
 
-        System.out.println("Deleting item itself");
-        if(existingItem.getOwner().equals(userDetails.getUser())) {
-            itemRepository.deleteItemNative(id);
-            itemRepository.flush();
-        }
+       itemRepository.delete(existingItem);
 
         System.out.println("Deletion completed");
         return "Item deleted";

@@ -35,6 +35,34 @@ export const getAllItems = createAsyncThunk(
   }
 );
 
+export const fetchItemById = createAsyncThunk(
+  "item/get",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await request.item.getItem(id);
+      return res.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+export const updateItem = createAsyncThunk(
+  "item/update",
+  async (data, { rejectWithValue }) => {
+    try {
+      const { id, updateData } = data;
+
+      const res = await request.item.update(id, updateData);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to update item."
+      );
+    }
+  }
+);
+
 export const deleteItem = createAsyncThunk(
   "item/delete",
   async (id, { rejectWithValue }) => {
@@ -53,7 +81,7 @@ const itemSlice = createSlice({
   name: "item",
   initialState,
   reducers: {
-    clearAddItemMessages: (state) => {
+    clearMessages: (state) => {
       state.error = null;
       state.successMessage = null;
     },
@@ -68,7 +96,7 @@ const itemSlice = createSlice({
       .addCase(addItem.fulfilled, (state, action) => {
         state.loading = false;
         state.item = action.payload;
-        state.successMessage = "Created message successfully.";
+        state.successMessage = "Created item successfully.";
       })
       .addCase(addItem.rejected, (state, action) => {
         state.loading = false;
@@ -90,6 +118,43 @@ const itemSlice = createSlice({
         state.items = [];
         state.error = action.payload;
       })
+      .addCase(fetchItemById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(fetchItemById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.item = action.payload;
+      })
+      .addCase(fetchItemById.rejected, (state, action) => {
+        state.loading = false;
+        state.successMessage = null;
+        state.error = action.payload;
+      })
+      .addCase(updateItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(updateItem.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const updatedItem = action.payload;
+
+        state.items = state.items.map((item) =>
+          item.id === updatedItem.id ? updatedItem : item
+        );
+
+        state.item = updatedItem;
+
+        state.successMessage = "Updated item successfully.";
+      })
+      .addCase(updateItem.rejected, (state, action) => {
+        state.loading = false;
+        state.successMessage = null;
+        state.error = action.payload;
+      })
       .addCase(deleteItem.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -98,9 +163,8 @@ const itemSlice = createSlice({
       .addCase(deleteItem.fulfilled, (state, action) => {
         state.loading = false;
         state.successMessage = action.payload.message;
-        state.items = state.items.filter(
-          (item) => item.id !== action.payload.id
-        );
+        const deletedId = action.payload.id;
+        state.items = state.items.filter((item) => item.id !== deletedId);
       })
       .addCase(deleteItem.rejected, (state, action) => {
         state.loading = false;
@@ -110,6 +174,6 @@ const itemSlice = createSlice({
   },
 });
 
-export const { clearAddItemMessages } = itemSlice.actions;
+export const { clearMessages } = itemSlice.actions;
 
 export default itemSlice.reducer;
