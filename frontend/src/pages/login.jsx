@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FloatingBlobs from "../components/FloatingBlobs";
 import { TextField } from "@mui/material";
@@ -6,12 +6,10 @@ import PrimaryButton from "@/components/buttons/PrimaryButton";
 import ButtonWithIcon from "@/components/buttons/ButtonWithIcon";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { loginFailure, loginRequest, loginSuccess } from "@/slices/auth.slice";
-import axios from "axios";
+
 import { MdArrowBack } from "react-icons/md";
 import { toast } from "react-toastify";
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { clearMessages, loginUser } from "@/slices/auth.slice";
 
 const Login = () => {
   const [loginDetails, setloginDetails] = useState({
@@ -21,10 +19,12 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { isAuthenticated, authToken } = useSelector((state) => state.auth);
+  const { isAuthenticated, loading, successMessage, error } = useSelector(
+    (state) => state.auth
+  );
 
   const loginDetailsHandler = (e) => {
     const { name, value } = e.target;
@@ -52,41 +52,31 @@ const Login = () => {
 
     if (Object.keys(newErrors).length > 0) return;
 
-    dispatch(loginRequest());
+    setErrors({});
+
     try {
-      const res = await axios.post(`${backendUrl}/auth/login`, {
-        ...loginDetails,
-      });
-      console.log(res.data);
-
-      dispatch(
-        loginSuccess({
-          user: res?.data?.user,
-          token: res?.data?.accessToken,
-          message: "Logged in successfully.",
-        })
-      );
-
-      if (authToken) {
-        localStorage.setItem("authToken", authToken);
-        toast.success("Logged in successfully.");
-      }
-
-      if (isAuthenticated) {
-        navigate("/");
-      }
-
-      console.log(authToken);
+      dispatch(loginUser({ username: email, password }));
     } catch (error) {
       console.error(error, "error!!");
-      dispatch(loginFailure(error?.response && error.response.data));
-      toast.error("Invalid email or password");
     }
   };
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
+
+  useEffect(() => {
+    if (successMessage && isAuthenticated) {
+      toast.success("Logged in successfully.");
+      dispatch(clearMessages());
+      navigate("/");
+    }
+
+    if (error) {
+      toast.error("Log in failed.");
+      dispatch(clearMessages());
+    }
+  }, [isAuthenticated, dispatch, successMessage, loading, error, navigate]);
 
   return (
     <FloatingBlobs>
@@ -150,7 +140,7 @@ const Login = () => {
 
           {/* button */}
           <div className='grid'>
-            <PrimaryButton btnText='Login Now' />
+            <PrimaryButton btnText='Login Now' type='submit' />
           </div>
           <p className='text-text-black text-sm font-medium flex justify-center'>
             Or Login With

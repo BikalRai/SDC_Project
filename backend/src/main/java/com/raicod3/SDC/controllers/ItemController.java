@@ -25,7 +25,7 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createItemHandler(@Valid @RequestBody ItemRequestDto itemRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -47,10 +47,7 @@ public class ItemController {
     public ResponseEntity<Map<String, Object>> getAllItemsHandler(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String location,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) double dailyRate,
-            @RequestParam(required = false) double weeklyRate,
-            @RequestParam(required = false) double monthlyRate) {
+            @RequestParam(required = false) String category, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             List<ItemResponseDto> items;
             Map<String, Object> whereQuery = new HashMap<>();
@@ -59,7 +56,7 @@ public class ItemController {
                 whereQuery.put("title", title);
             }
 
-            List<ItemResponseDto> allItems = itemService.getAllItems();
+            List<ItemResponseDto> allItems = itemService.getAllItems(userDetails);
             return ResponseBuilder.buildResponse("All items", HttpStatus.OK, allItems);
         } catch (Exception e) {
             return ResponseBuilder.buildResponse("No items found", HttpStatus.NOT_FOUND, null, e);
@@ -76,27 +73,29 @@ public class ItemController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateItemHandler(@PathVariable("id") long id, @RequestBody ItemRequestDto itemRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody Category category) {
+    @PutMapping("/{id}/update")
+    public ResponseEntity<Map<String, Object>> updateItemHandler(@PathVariable("id") long id, @RequestBody ItemRequestDto itemRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            ItemResponseDto updatedItem = itemService.updateItem(id, itemRequestDto, category);
+            ItemResponseDto updatedItem = itemService.updateItem(id, itemRequestDto, userDetails);
             return ResponseBuilder.buildResponse("Item updated successfully", HttpStatus.OK, updatedItem);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse("Item did was not updated", HttpStatus.INTERNAL_SERVER_ERROR, null);
+            return ResponseBuilder.buildResponse("Item was not updated", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteItemHandler(@PathVariable("id") long id) {
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Object> deleteItemHandler(@PathVariable("id") long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String message = itemService.deleteItemById(id);
+            String message = itemService.deleteItemById(id, userDetails);
             response.put("message", message);
+            response.put("id", id);
             response.put("statusCode", HttpStatusConstants.OK);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("message", "Item not found");
             response.put("statusCode", HttpStatusConstants.INTERNAL_SERVER_ERROR);
+
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

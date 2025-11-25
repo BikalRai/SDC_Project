@@ -10,6 +10,7 @@ import com.raicod3.SDC.jwt.JwtUtils;
 import com.raicod3.SDC.models.UserModel;
 import com.raicod3.SDC.repositories.UserRepository;
 import com.raicod3.SDC.utilities.ResponseBuilder;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class AuthService {
             user.setEmail(request.getEmail());
             user.setPhone(request.getPhone());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setRole(request.getRole().toUpperCase());
+            user.setRole("USER");
 
             UserModel savedUser = userRepository.save(user);
 
@@ -65,40 +66,41 @@ public class AuthService {
     }
 
     public JwtAuthResponse authenticate(JwtAuthRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getEmail());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
 
-        UserModel user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        UserResponseDto userResponseDto = new UserResponseDto(user);
 
         String accessToken = jwtUtils.generateToken(userDetails);
         String refreshToken = jwtUtils.generateRefreshToken(userDetails);
 
-        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        UserModel user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->  new UsernameNotFoundException("User not found"));
 
-        return new JwtAuthResponse(accessToken, refreshToken, roles, userResponseDto);
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+
+        return new JwtAuthResponse(accessToken, refreshToken, userResponseDto);
     }
 
     public JwtAuthResponse refreshToken(JwtRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
-        if(jwtUtils.isTokenExpired(refreshToken)) {
-            throw new BadCredentialsException("Invalid refresh token");
+        try {
+            if(jwtUtils.isTokenExpired(refreshToken)) {
+                throw new BadCredentialsException("Invalid or expired refresh token");
+            }
+        } catch (ExpiredJwtException e) {
+            throw new BadCredentialsException("Expired refresh token, please login again");
         }
 
         String username = jwtUtils.extractUsername(refreshToken);
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-        UserModel user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        String newAccessToken = jwtUtils.generateToken(userDetails);
+
+        UserModel user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->  new UsernameNotFoundException("User not found"));
 
         UserResponseDto userResponseDto = new UserResponseDto(user);
 
-        String newAccessToken = jwtUtils.generateToken(userDetails);
-
-        List<String> role = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-
-        return new JwtAuthResponse(newAccessToken, refreshToken, role, userResponseDto);
+        return new JwtAuthResponse(newAccessToken, refreshToken, userResponseDto);
     }
 }

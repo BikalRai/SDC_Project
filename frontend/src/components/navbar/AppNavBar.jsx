@@ -5,9 +5,9 @@ import AppNavLink from "./AppNavLink";
 import { Link } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Avatar } from "@mui/material";
-import { logout } from "@/slices/auth.slice";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "@/slices/auth.slice";
 
 const navLinks = [
   { id: 1, name: "home", path: "/" },
@@ -18,8 +18,8 @@ const navLinks = [
 
 const AppNavBar = () => {
   const [open, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleNavIsOpen = () => {
@@ -27,7 +27,7 @@ const AppNavBar = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
   };
 
   return (
@@ -68,7 +68,7 @@ const AppNavBar = () => {
               </div>
 
               {isAuthenticated ? (
-                <div onClick={handleLogout} className='cursor-pointer'>
+                <div className='cursor-pointer' onClick={handleLogout}>
                   <Avatar />
                 </div>
               ) : (
