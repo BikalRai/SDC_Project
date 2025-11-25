@@ -111,6 +111,7 @@ const AddNewItem = () => {
         <p className='text-text-muted tex-sm'>
           Add photos and details about your item to get ready for renters.
         </p>
+        <ItemDetail />
       </div>
       <form
         className='grid lg:grid-cols-2 gap-8 mt-5 pb-10'
