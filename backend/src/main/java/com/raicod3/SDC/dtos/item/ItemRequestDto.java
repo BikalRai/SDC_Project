@@ -2,44 +2,53 @@ package com.raicod3.SDC.dtos.item;
 
 
 
+
+import com.raicod3.SDC.enums.Category;
 import com.raicod3.SDC.enums.ItemCondition;
 import com.raicod3.SDC.enums.ItemStatus;
-import com.raicod3.SDC.models.UserModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
-
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemRequestDto {
-    private long id;
 
-    @NotBlank(message = "Title is required")
-    private String title;
+    @NotBlank(message = "Item name is required")
+    private String name;
+
+    @NotBlank(message = "Brand is required")
+    private String brand;
+
+    private String model;
+
+    @NotBlank(message = "Description is required")
     private String description;
 
-    private String rate;
+    private List<String> specifications;
 
-    private List<String> imageUrls;
+    @NotBlank(message = "Category is required")
+    private Category category;
 
-    @NotBlank(message = "Location cannot be blanked")
-    private String location;
+    @NotNull(message = "Daily rate is required")
+    private String dailyRate;
 
-    @NotNull(message = "Status is required")
-    private String status;
+    private ItemStatus status;
 
-//    private ItemCondition condition;
-//    private LocalDate createdAt;
-//    private UserModel owner;
+    private boolean isNegotiable;
 
-    @NotNull(message = "Category is required")
-    private int categoryId;
+    @NotBlank(message = "Condition is required")
+    private ItemCondition condition;
+
+    private List<String> images;
+
 
 }

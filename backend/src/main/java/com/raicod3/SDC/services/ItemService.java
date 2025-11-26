@@ -1,99 +1,107 @@
 package com.raicod3.SDC.services;
 
+
 import com.raicod3.SDC.custom.CustomUserDetails;
 import com.raicod3.SDC.dtos.item.ItemRequestDto;
 import com.raicod3.SDC.dtos.item.ItemResponseDto;
-import com.raicod3.SDC.models.Category;
+import com.raicod3.SDC.exceptions.HttpBadRequestException;
+import com.raicod3.SDC.exceptions.HttpForbiddenException;
+import com.raicod3.SDC.exceptions.HttpNotFoundException;
 import com.raicod3.SDC.models.Item;
 import com.raicod3.SDC.models.UserModel;
-import com.raicod3.SDC.repositories.CategoryRepository;
 import com.raicod3.SDC.repositories.ItemRepository;
 import com.raicod3.SDC.repositories.RentalRepository;
-import jakarta.transaction.Transactional;
+import com.raicod3.SDC.repositories.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ItemService {
 
     @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private RentalRepository rentalRepository;
 
-    public ItemResponseDto createItem(ItemRequestDto itemRequestDto, CustomUserDetails userDetails) {
-        UserModel user = userDetails.getUser();
+    @Autowired
+    private ReviewRepository reviewRepository;
 
-        Category category = categoryRepository.findById(itemRequestDto.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+    public ItemResponseDto createItem(ItemRequestDto itemRequestDto, CustomUserDetails customUserDetails) {
+        UserModel userModel = customUserDetails.getUser();
 
-        Item item = new Item(itemRequestDto, category);
-        item.setOwner(user);
+        Item item = new Item(itemRequestDto, userModel);
 
-        Item savedItem = itemRepository.save(item);
+        itemRepository.save(item);
 
-        return new ItemResponseDto(savedItem);
+        return new ItemResponseDto(item);
+
     }
 
-    public List<ItemResponseDto> getAllItems(CustomUserDetails userDetails) {
-        List<Item> items = itemRepository.findAllByOwner(userDetails.getUser());
-        return items.stream().map(item -> new ItemResponseDto(item)).collect(Collectors.toList());
-    }
+    public List<ItemResponseDto> getItems(CustomUserDetails customUserDetails) {
+        List<Item> items = itemRepository.findAllByUser(customUserDetails.getUser());
 
-    public ItemResponseDto getItemById(long id) {
-        return new ItemResponseDto(itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found")));
-    }
-
-    public ItemResponseDto updateItem(long id, ItemRequestDto itemRequestDto, CustomUserDetails userDetails) {
-
-        Item existingItem = itemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
-
-
-        // Verify ownership
-        if (existingItem.getOwner().getId() != userDetails.getUser().getId()) {
-            throw new RuntimeException("You don't have permission to update this item");
+        if(items == null) {
+            throw new HttpNotFoundException("No items found");
         }
 
-        // Get category if it's being updated
-        Category category = categoryRepository.findById(itemRequestDto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        return items.stream().map(ItemResponseDto::new).collect(Collectors.toList());
+    }
 
-        // Update the existing item's fields
-        existingItem.setTitle(itemRequestDto.getTitle());
+    public ItemResponseDto getItem(@PathVariable long id ) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("Item not found"));
+
+       return new ItemResponseDto(item);
+    }
+
+
+    public ItemResponseDto updateItem(long id, ItemRequestDto itemRequestDto, CustomUserDetails customUserDetails) {
+
+        Item existingItem = itemRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("Item not found"));
+
+        if(existingItem.getUser().getId() != customUserDetails.getUser().getId()) {
+            throw new HttpForbiddenException("You are not allowed to update this item");
+        }
+
+        existingItem.setName(itemRequestDto.getName());
+        existingItem.setBrand(itemRequestDto.getBrand());
+        existingItem.setModel(itemRequestDto.getModel());
         existingItem.setDescription(itemRequestDto.getDescription());
-        existingItem.setRate(itemRequestDto.getRate());
-        existingItem.setImageUrls(itemRequestDto.getImageUrls());
-        existingItem.setLocation(itemRequestDto.getLocation());
-        existingItem.setCategory(category);
+        existingItem.setSpecifications(itemRequestDto.getSpecifications());
+        existingItem.setCategory(itemRequestDto.getCategory());
+        existingItem.setDailyRate(itemRequestDto.getDailyRate());
         existingItem.setStatus(itemRequestDto.getStatus());
-        // existingItem.setConditionType(itemRequestDto.getCondition());
+        existingItem.setNegotiable(itemRequestDto.isNegotiable());
+        existingItem.setCondition(itemRequestDto.getCondition());
+        existingItem.setImages(itemRequestDto.getImages());
 
-        Item savedItem = itemRepository.save(existingItem);
-        return new ItemResponseDto(savedItem);
+       itemRepository.save(existingItem);
+
+       return new ItemResponseDto(existingItem);
+
     }
 
 
     @Transactional
-    public String deleteItemById(long id, CustomUserDetails userDetails) {
-        System.out.println("Attempting to delete Item with id: " + id);
+    public String deleteItem(long itemId, CustomUserDetails customUserDetails) {
 
-        Item existingItem = itemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+        Item existingItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new HttpNotFoundException("Item not found"));
 
-        System.out.println("Deleting rentals linked to item");
-        rentalRepository.deleteByItem(existingItem);
+        if (existingItem.getUser().getId() != customUserDetails.getUser().getId()) {
+            throw new HttpForbiddenException("You are not authorized to delete this item.");
+        }
 
-       itemRepository.delete(existingItem);
+        // JPA cascade will automatically delete rentals and reviews
+        itemRepository.delete(existingItem);
 
-        System.out.println("Deletion completed");
-        return "Item deleted";
+        return "Item successfully deleted";
     }
 }
