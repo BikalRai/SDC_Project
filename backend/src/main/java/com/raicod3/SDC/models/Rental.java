@@ -24,7 +24,6 @@ public class Rental {
     private LocalDate endDate;
     private LocalDate returnDate;
     private double totalAmount;
-    private double securityDeposit;
 
     @Enumerated(EnumType.STRING)
     private RentalStatus status;
@@ -43,7 +42,6 @@ public class Rental {
         this.startDate = req.getStartDate();
         this.endDate = req.getEndDate();
         this.totalAmount = req.getTotalAmount();
-        this.securityDeposit = req.getSecurityDeposit();
         this.status = RentalStatus.ACTIVE;
         this.createdAt = LocalDate.now();
         this.renter = user;
