@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public class Rental {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rentalId;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -30,11 +31,11 @@ public class Rental {
     private LocalDate createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private UserModel user;
+    @JoinColumn(name = "renterId")
+    private UserModel renter;
 
     @ManyToOne
-    @JoinColumn(name = "itemId", nullable = false)
+    @JoinColumn(name = "itemId")
     private Item item;
 
     public Rental(RentalRequestDto req, Item item, UserModel user) {
@@ -45,7 +46,7 @@ public class Rental {
         this.securityDeposit = req.getSecurityDeposit();
         this.status = RentalStatus.ACTIVE;
         this.createdAt = LocalDate.now();
-        this.user = user;
+        this.renter = user;
         this.item = item;
     }
 }

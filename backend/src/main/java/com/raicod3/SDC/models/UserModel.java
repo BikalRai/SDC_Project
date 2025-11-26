@@ -28,18 +28,22 @@ public class UserModel {
     private String phone;
     private String password;
     private String role;
+    private String location;
     private String provider;
     private String image;
     private LocalDate createdAt;
+    private LocalDateTime lastActive;
 
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Item> items;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rental> rentals;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Review> reviews;
 
 }

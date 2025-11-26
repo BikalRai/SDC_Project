@@ -1,8 +1,7 @@
 package com.raicod3.SDC.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.raicod3.SDC.dtos.item.ItemRequestDto;
+import com.raicod3.SDC.enums.Category;
 import com.raicod3.SDC.enums.ItemCondition;
 import com.raicod3.SDC.enums.ItemStatus;
 import jakarta.persistence.*;
@@ -10,7 +9,7 @@ import lombok.*;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,83 +17,67 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "items")
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(nullable = false)
-    private String title;
+    private String name;
+    private String brand;
     private String description;
 
-    @Column(nullable = false)
-    private double dailyRate;
+    @ElementCollection
+    private List<String> specifications;
 
-    @Column(nullable = false)
-    private double weeklyRate;
-
-    @Column(nullable = false)
-    private double monthlyRate;
-
-    @ElementCollection(fetch = FetchType.EAGER) // or LAZY
-    @CollectionTable(name = "item_images", joinColumns = @JoinColumn(name = "item_id"))
-    @Column(name = "image_url")
-    private List<String> imageUrls;
-
-    @Column(nullable = false)
-    private String location;
-    private LocalDate createdAt;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private UserModel owner;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
+    private String model;
+    private double rating;
+    private String dailyRate;
+    private boolean isNegotiable;
+
+    private int totalRented;
 
     @Enumerated(EnumType.STRING)
-    private ItemCondition conditionType;
+    private ItemStatus status;
 
     @Enumerated(EnumType.STRING)
-    private ItemStatus itemStatus;
+    private ItemCondition condition;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @ElementCollection
+    private List<String> images;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Rental> rentals;
 
+    @ManyToOne
+    @JoinColumn(name = "ownerId")
+    private UserModel user;
 
-    public Item(ItemRequestDto itemRequestDto, Category category) {
-        this.title = itemRequestDto.getTitle();
-        this.description = itemRequestDto.getDescription();
-        this.dailyRate = itemRequestDto.getDailyRate();
-        this.weeklyRate = itemRequestDto.getWeeklyRate();
-        this.monthlyRate = itemRequestDto.getMonthlyRate();
-        this.imageUrls = itemRequestDto.getImageUrls();
-        this.location = itemRequestDto.getLocation();
-        this.createdAt = LocalDate.now();
-        this.category = category;
-        this.conditionType = itemRequestDto.getCondition();
-        this.itemStatus = itemRequestDto.getStatus();
-        this.rentals = new ArrayList<>();
-    }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", dailyRate=" + dailyRate +
-                ", weeklyRate=" + weeklyRate +
-                ", monthlyRate=" + monthlyRate +
-                ", imageUrls=" + imageUrls +
-                ", location='" + location + '\'' +
-                ", createdAt=" + createdAt +
-                ", owner=" + owner +
-                ", category=" + category +
-                ", conditionType=" + conditionType +
-                ", itemStatus=" + itemStatus +
-                '}';
+    public Item(ItemRequestDto requestDto, UserModel user) {
+        this.name = requestDto.getName();
+        this.brand = requestDto.getBrand();
+        this.description = requestDto.getDescription();
+        this.specifications = requestDto.getSpecifications();
+        this.category = requestDto.getCategory();
+        this.model = requestDto.getModel();
+        this.dailyRate = requestDto.getDailyRate();
+        this.isNegotiable = requestDto.isNegotiable();
+        this.status = requestDto.getStatus();
+        this.condition = requestDto.getCondition();
+        this.images = requestDto.getImages();
+        this.user = user;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.rating = 0;
+        this.totalRented = 0;
+        this.status = ItemStatus.AVAILABLE;
     }
 }

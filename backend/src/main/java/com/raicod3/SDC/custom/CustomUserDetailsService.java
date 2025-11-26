@@ -23,10 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<UserModel> userOp = userRepository.findByEmail(username);
 
-        if(!userOp.isPresent()) {
-            userOp = userRepository.findByPhone(username);
-        }
-
         UserModel user = userOp.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new CustomUserDetails(user);
