@@ -5,51 +5,36 @@ import PrimaryButton from "@/components/buttons/PrimaryButton";
 import UserDashboardTitle from "@/components/header/UserDashboardTitle";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { CiEdit } from "react-icons/ci";
-import Swal from "sweetalert2";
-import { HiViewfinderCircle } from "react-icons/hi2";
-
-const initialItems = [
-  {
-    id: 1,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "https://images.unsplash.com/photo-1554223789-df81106a45ed?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    price: "1500",
-    status: "available",
-  },
-  {
-    id: 2,
-    name: "NTorq 125",
-    type: "Scooter",
-    img: "https://images.unsplash.com/photo-1554223789-df81106a45ed?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    price: "1200",
-    status: "rented out",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { clearMessages, deleteItem, getAllItems } from "@/slices/item.slice";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getCategories } from "@/slices/category.slice";
+import { toast } from "react-toastify";
 
 const MyListedItems = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(initialItems);
-
-  const handleEdit = (id) => navigate(`/user/item-detail/${id}`);
-  const handleView = (id) => navigate(`/user/view-item/${id}`);
+  const dispatch = useDispatch();
+  const { items, successMessage } = useSelector((state) => state.item);
 
   const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setItems((prev) => prev.filter((item) => item.id !== id));
-        toast.success("Item deleted successfully!");
-      }
-    });
+    dispatch(deleteItem(id));
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      setTimeout(() => dispatch(clearMessages()), 500);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    dispatch(getAllItems());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
 
   return (
     <div className="grid gap-8">
@@ -77,39 +62,26 @@ const MyListedItems = () => {
               <div className="flex items-center gap-4 ps-8">
                 <img
                   src={item.img}
-                  className="w-12 h-12 object-cover rounded"
+                  alt={item.title}
+                  className='w-12 h-12 object-cover rounded'
                 />
-                <div className="text-left">
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-xs">{item.type}</p>
+                <div className='text-left'>
+                  <p className='font-medium'>{item.title}</p>
+                  <p className='text-xs'>{item.category.name}</p>
                 </div>
               </div>
 
-              <div>{item.price}</div>
+              <div>{item.rate}</div>
+              <div>{item.status}</div>
 
-              <div
-                className={`rounded-2xl bg-gray-200 text-gray-600 pt-1 align-middle ${
-                  item.status === "available"
-                    ? "text-green-600 bg-green-200"
-                    : "text-red-500 bg-red-200"
-                }`}
-              >
-                {item.status}
-              </div>
-
-              <div className="flex justify-center gap-4 text-xl">
-                <HiViewfinderCircle
-                  onClick={() => handleView(item.id)}
-                  className="cursor-pointer hover:text-primary"
-                />
-
+              <div className='flex justify-center gap-4 text-xl'>
                 <CiEdit
-                  onClick={() => handleEdit(item.id)}
-                  className="cursor-pointer hover:text-primary"
+                  className='cursor-pointer hover:text-primary transition-all duration-300'
+                  onClick={() => navigate(`/user/edit/${item.id}`)}
                 />
                 <LuTrash2
+                  className='cursor-pointer hover:text-red-500 transition-all duration-300'
                   onClick={() => handleDelete(item.id)}
-                  className="cursor-pointer hover:text-red-500"
                 />
               </div>
             </div>

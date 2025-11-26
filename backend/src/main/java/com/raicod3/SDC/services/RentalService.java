@@ -63,7 +63,7 @@ public class RentalService {
             throw new HttpUnauthorizedException("You are not owner of this booking");
         }
 
-        if(item.getItemStatus() == ItemStatus.UNAVAILABLE) {
+        if(item.getStatus() == "unavailable") {
             throw new HttpBadRequestException("Item is unavailable");
         }
 
@@ -79,7 +79,7 @@ public class RentalService {
 
         rentalRepository.save(rental);
 
-        item.setItemStatus(ItemStatus.UNAVAILABLE);
+        item.setStatus("unavailable");
         itemRepository.save(item);
 
         booking.setStatus(BookingStatus.CONFIRMED);
