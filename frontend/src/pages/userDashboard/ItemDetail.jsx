@@ -101,7 +101,7 @@ const ItemDetail = () => {
               <img
                 src={img}
                 alt={`Item ${idx}`}
-                className="w-full h-full object-cover rounded"
+                className="w-full h-full object-cover object-top rounded"
               />
             </div>
           ))}

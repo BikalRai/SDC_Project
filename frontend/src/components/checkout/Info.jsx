@@ -80,6 +80,6 @@ export default function Info({ Title }) {
           <ListItemText secondary="Submit your details and wait for approval from our team." />
         </ListItem>
       </List>
-    </>
+    </Box>
   );
 }

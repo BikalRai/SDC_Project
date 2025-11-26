@@ -8,9 +8,7 @@ import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { clearMessages, deleteItem, getAllItems } from "@/slices/item.slice";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { getCategories } from "@/slices/category.slice";
-import { toast } from "react-toastify";
 
 const MyListedItems = () => {
   const navigate = useNavigate();
