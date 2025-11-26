@@ -23,14 +23,14 @@ const FindYourRental = () => {
     });
   };
 
-  // const categories = ["Vehicle", "Furniture", "Electronics", "Clothes"];
+  const categories = ["Vehicle", "Furniture", "Electronics", "Clothes"];
 
   const [selectedCategory, setSelectedCategory] = useState("scooter");
 
   // const [items, setItems] = useState([]);
 
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.category);
+  // const { categories } = useSelector((state) => state.category);
   const { items } = useSelector((state) => state.item);
 
   useEffect(() => {
@@ -115,14 +115,14 @@ const FindYourRental = () => {
                 {/* {items
                   ?.filter((item) => item.name === selectedCategory)
                   .map((item) => ( */}
-                <div className='flex-shrink-0'>
+                {/* <div className='flex-shrink-0'>
                   <ItemCard
                     name={items[0]?.title}
                     price={items[0]?.rate}
                     image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
                     features={["Eat", "Sleep", "Repeat"]}
                   />
-                </div>
+                </div> */}
                 {/* ))} */}
                 {/* Wrap each card to prevent shrinking */}
                 <div className='flex-shrink-0'>
