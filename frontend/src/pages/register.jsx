@@ -117,61 +117,61 @@ const Register = () => {
 
   return (
     <FloatingBlobs>
-      <div className='p-4 min-h-dvh flex items-center justify-center'>
-        <div className='bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto'>
+      <div className="p-4 min-h-dvh flex items-center justify-center">
+        <div className="bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto">
           <div>
-            <div className='flex justify-between items-center'>
-              <h1 className='text-xl md:text-3xl font-bold text-primary'>
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl md:text-3xl font-bold text-primary">
                 Create Account
               </h1>
               <Link
-                to={"/login"}
-                className='flex text-text-muted hover:text-primary transition'
+                to={"/"}
+                className="flex text-text-muted hover:text-primary transition"
               >
-                <MdArrowBack className='text-2xl' />
+                <MdArrowBack className="text-2xl" />
                 <span>Home</span>
               </Link>
             </div>
-            <h2 className='text-sm md:text-lg font-semibold text-text-black mt-1 mb-4'>
+            <h2 className="text-sm md:text-lg font-semibold text-text-black mt-1 mb-4">
               Create an account to continue
             </h2>
           </div>
-          <form onSubmit={handleSubmit} className='grid gap-6'>
+          <form onSubmit={handleSubmit} className="grid gap-6">
             {/* Name Fields */}
             <div>
               <TextField
-                label='Email'
-                variant='outlined'
-                className='w-full'
-                name='email'
+                label="Email"
+                variant="outlined"
+                className="w-full"
+                name="email"
                 value={formData.email}
                 onChange={handleFormData}
               />
-              <p className='text-red-400 text-xs'>{errors && errors.email}</p>
+              <p className="text-red-400 text-xs">{errors && errors.email}</p>
             </div>
             <div>
               <TextField
-                label='Phone number'
-                variant='outlined'
-                className='w-full'
-                name='phone'
+                label="Phone number"
+                variant="outlined"
+                className="w-full"
+                name="phone"
                 value={formData.phone}
                 onChange={handleFormData}
               />
-              <p className='text-red-400 text-xs'>{errors && errors.phone}</p>
+              <p className="text-red-400 text-xs">{errors && errors.phone}</p>
             </div>
             {/* Password Field */}
             <div>
-              <FormControl variant='outlined' className='w-full'>
-                <InputLabel htmlFor='password'>Password</InputLabel>
+              <FormControl variant="outlined" className="w-full">
+                <InputLabel htmlFor="password">Password</InputLabel>
                 <OutlinedInput
-                  id='password'
+                  id="password"
                   type={showPassword ? "text" : "password"}
-                  name='password'
-                  className='w-full'
+                  name="password"
+                  className="w-full"
                   onChange={handleFormData}
                   endAdornment={
-                    <InputAdornment position='end'>
+                    <InputAdornment position="end">
                       <IconButton
                         aria-label={
                           showPassword
@@ -179,16 +179,16 @@ const Register = () => {
                             : "display the password"
                         }
                         onClick={handleshowPassword}
-                        edge='end'
+                        edge="end"
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   }
-                  label='Password'
+                  label="Password"
                 />
               </FormControl>
-              <p className='text-red-400 text-xs'>
+              <p className="text-red-400 text-xs">
                 {errors && errors.password}
               </p>
             </div>
@@ -196,19 +196,19 @@ const Register = () => {
             {/* Confirm Password Field */}
             <div>
               <FormControl
-                variant='outlined'
-                className='w-full'
+                variant="outlined"
+                className="w-full"
                 // sx={{ marginTop: "24px" }}
               >
-                <InputLabel htmlFor='cPassword'>Confirm Password</InputLabel>
+                <InputLabel htmlFor="cPassword">Confirm Password</InputLabel>
                 <OutlinedInput
-                  id='cPassword'
+                  id="cPassword"
                   type={showCpassword ? "text" : "password"}
-                  name='cPassword'
+                  name="cPassword"
                   onChange={handleFormData}
-                  className='w-full'
+                  className="w-full"
                   endAdornment={
-                    <InputAdornment position='end'>
+                    <InputAdornment position="end">
                       <IconButton
                         aria-label={
                           showPassword
@@ -216,41 +216,41 @@ const Register = () => {
                             : "display the password"
                         }
                         onClick={handleshowCpassword}
-                        edge='end'
+                        edge="end"
                       >
-                        {showCpassword ? <VisibilityOff /> : <Visibility />}
+                        {showCpassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   }
-                  label='Confirm Password'
+                  label="Confirm Password"
                 />
               </FormControl>
-              <p className='text-red-400 text-xs'>
+              <p className="text-red-400 text-xs">
                 {errors && errors.cPassword}
               </p>
             </div>
 
             {/* Create Account Button */}
-            <div className='grid'>
-              <PrimaryButton btnText='Create Account' />
+            <div className="grid">
+              <PrimaryButton btnText="Create Account" />
             </div>
           </form>
-          <div className='grid gap-6'>
-            <p className='text-text-black text-sm font-medium flex justify-center mt-6'>
+          <div className="grid gap-6">
+            <p className="text-text-black text-sm font-medium flex justify-center mt-6">
               Or Continue With
             </p>
 
-            <div className='grid'>
+            <div className="grid">
               <ButtonWithIcon
                 icon={<FcGoogle />}
-                btnText='Google'
+                btnText="Google"
                 onClick={handleGoogleRegister}
               />
             </div>
-            <p className='text-sm font-medium'>
+            <p className="text-sm font-medium">
               Already have an account?{" "}
-              <span className='text-primary underline hover:text-light-primary transition'>
-                <Link to='/login'>Sign In</Link>
+              <span className="text-primary underline hover:text-light-primary transition">
+                <Link to="/login">Sign In</Link>
               </span>
             </p>
           </div>
