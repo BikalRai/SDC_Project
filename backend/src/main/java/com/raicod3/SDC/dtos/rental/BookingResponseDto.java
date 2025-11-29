@@ -22,9 +22,8 @@ public class BookingResponseDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalDate createdAt;
-    private double totalAmount;
+    private String totalAmount;
     private BookingStatus status;
-    private double securityDeposit;
 //    private int userId;
 //    private long itemId;
     private UserResponseDto user;
@@ -37,7 +36,6 @@ public class BookingResponseDto {
         this.createdAt = booking.getCreatedAt();
         this.totalAmount = booking.getTotalAmount();
         this.status = booking.getStatus();
-        this.securityDeposit = booking.getSecurityDeposit();
         this.user = new UserResponseDto(booking.getUser());
         this.item = new ItemResponseDto(booking.getItem());
     }

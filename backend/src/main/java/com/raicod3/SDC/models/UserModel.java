@@ -41,7 +41,7 @@ public class UserModel {
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;
 
     @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL, orphanRemoval = true)

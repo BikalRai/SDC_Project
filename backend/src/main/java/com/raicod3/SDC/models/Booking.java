@@ -31,13 +31,11 @@ public class Booking {
     private LocalDate createdAt = LocalDate.now();
 
     @Column(nullable = false)
-    private double totalAmount;
+    private String totalAmount;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    @Column(nullable = false)
-    private double securityDeposit;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
@@ -55,6 +53,5 @@ public class Booking {
         this.user = user;
         this.item = item;
         this.createdAt = LocalDate.now();
-        this.securityDeposit = req.getSecurityDeposit();
     }
 }
