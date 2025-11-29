@@ -39,4 +39,6 @@ public class RentalService {
     @Autowired
     private BookingRepository bookingRepository;
 
+
+    public RentalResponseDto
 }

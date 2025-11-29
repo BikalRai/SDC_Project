@@ -27,4 +27,11 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
+    @PostMapping("/rent")
+    public ResponseEntity<Map<String, Object>> rent(@RequestBody RentalRequestDto rentalRequestDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        try {
+
+        } catch ()
+    }
+
 }
