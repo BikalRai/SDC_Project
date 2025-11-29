@@ -52,6 +52,7 @@ public class KYCModel {
 
     // verification
     private KYCStatus status;
+    private Boolean isVerified;
     private LocalDate submittedDate;
     private LocalDateTime verifiedDate;
 
@@ -76,6 +77,7 @@ public class KYCModel {
         this.citizenshipFrontImageUrl = kycRequestDto.getCitizenshipFrontImageUrl();
         this.citizenshipBackImageUrl = kycRequestDto.getCitizenshipBackImageUrl();
         this.status = KYCStatus.PENDING;
+        this.isVerified = false;
         this.submittedDate = LocalDate.now();
     }
 
