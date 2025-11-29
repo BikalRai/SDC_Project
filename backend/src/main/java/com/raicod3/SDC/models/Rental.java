@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,8 +23,8 @@ public class Rental {
     private int rentalId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDate returnDate;
-    private double totalAmount;
+    private LocalTime pickupTime;
+    private String totalAmount;
 
     @Enumerated(EnumType.STRING)
     private RentalStatus status;
@@ -37,14 +38,19 @@ public class Rental {
     @JoinColumn(name = "itemId")
     private Item item;
 
+    @Column(name = "owner_id")
+    private int ownerId;
+
     public Rental(RentalRequestDto req, Item item, UserModel user) {
 
         this.startDate = req.getStartDate();
         this.endDate = req.getEndDate();
         this.totalAmount = req.getTotalAmount();
+        this.pickupTime = req.getPickupTime();
         this.status = RentalStatus.ACTIVE;
         this.createdAt = LocalDate.now();
         this.renter = user;
         this.item = item;
+        this.ownerId = item.getUser().getId();
     }
 }

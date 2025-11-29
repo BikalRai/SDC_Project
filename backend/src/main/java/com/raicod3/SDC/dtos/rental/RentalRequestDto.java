@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -22,5 +23,9 @@ public class RentalRequestDto {
 
     @NotNull(message = "Proposed end date is required")
     private LocalDate endDate;
+
+    private LocalTime pickupTime;
+
+    private String totalAmount;
 
 }
