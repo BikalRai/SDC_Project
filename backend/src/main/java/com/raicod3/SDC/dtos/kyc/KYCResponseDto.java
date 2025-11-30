@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 @Setter
 public class KYCResponseDto {
 
+    private int kycId;
+
     private String fullName;
 
     private String fatherName;
@@ -58,10 +60,11 @@ public class KYCResponseDto {
     // verification
     private KYCStatus KYCStatus;
     private LocalDate submittedDate;
-    private LocalDateTime verifiedDate;
+    private LocalDate verifiedDate;
 
     public KYCResponseDto(UserModel user, KYCModel kyc) {
         this.user = new UserResponseDto(user);
+        this.kycId = kyc.getId();
         this.fullName = kyc.getFullName();
         this.fatherName = kyc.getFatherName();
         this.birthDate = kyc.getBirthDate();

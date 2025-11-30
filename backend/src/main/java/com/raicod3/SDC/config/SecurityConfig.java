@@ -107,6 +107,7 @@ public class SecurityConfig {
                         .requestMatchers( "/api/item/**").hasRole("USER")
                         .requestMatchers("/api/category/**").permitAll()
                         .requestMatchers(("/api/rental/**")).hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(("/api/kyc/**")).hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

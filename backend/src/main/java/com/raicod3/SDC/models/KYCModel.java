@@ -54,12 +54,12 @@ public class KYCModel {
     private KYCStatus status;
     private Boolean isVerified;
     private LocalDate submittedDate;
-    private LocalDateTime verifiedDate;
+    private LocalDate verifiedDate;
 
 
 
-    public KYCModel (KYCRequestDto kycRequestDto) {
-        this.user = kycRequestDto.getUser();
+    public KYCModel (KYCRequestDto kycRequestDto, UserModel user) {
+        this.user = user;
         this.fullName = kycRequestDto.getFullName();
         this.fatherName = kycRequestDto.getFatherName();
         this.birthDate = kycRequestDto.getBirthDate();

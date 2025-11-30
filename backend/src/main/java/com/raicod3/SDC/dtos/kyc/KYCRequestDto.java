@@ -76,28 +76,6 @@ public class KYCRequestDto {
     // verification
     private KYCStatus KYCStatus;
     private LocalDate submittedDate;
-    private LocalDateTime verifiedDate;
+    private LocalDate verifiedDate;
 
-    public KYCRequestDto(UserModel user, KYCModel kyc) {
-        this.user = user;
-        this.fullName = kyc.getFullName();
-        this.fatherName = kyc.getFatherName();
-        this.birthDate = kyc.getBirthDate();
-        this.gender = kyc.getGender();
-        this.email = kyc.getEmail();
-        this.phone = kyc.getPhone();
-        this.province = kyc.getProvince();
-        this.district = kyc.getDistrict();
-        this.municipality = kyc.getMunicipality();
-        this.wardNumber = kyc.getWardNumber();
-        this.street = kyc.getStreet();
-        this.citizenshipId = kyc.getCitizenshipId();
-        this.issuedDistrict = kyc.getIssuedDistrict();
-        this.issuedDate = kyc.getIssuedDate();
-        this.citizenshipFrontImageUrl = kyc.getCitizenshipFrontImageUrl();
-        this.citizenshipBackImageUrl = kyc.getCitizenshipBackImageUrl();
-        this.KYCStatus = kyc.getStatus();
-        this.submittedDate = kyc.getSubmittedDate();
-        this.verifiedDate = kyc.getVerifiedDate();
-    }
 }
