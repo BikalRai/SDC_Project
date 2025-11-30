@@ -5,6 +5,8 @@ import SectionHeader from "../header/SectionHeader";
 import { useState, useRef, useEffect } from "react";
 import { getCategories } from "@/slices/category.slice";
 import { getAllItems } from "@/slices/item.slice";
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 const FindYourRental = () => {
   const sliderRef = useRef(null);
@@ -59,13 +61,13 @@ const FindYourRental = () => {
 
   return (
     <ReContainer>
-      <section className='mt-20'>
-        <div className='bg-background rounded-[8px] py-8 px-10'>
-          <SectionHeader header='Find Your Rental' />
+      <section className="mt-20">
+        <div className="bg-background rounded-[8px] py-8 px-10">
+          <SectionHeader header="Find Your Rental" />
 
           {/* Category Selector */}
-          <div className='flex flex-col items-center mt-6'>
-            <div className='flex overflow-hidden border-2 border-gray-300 rounded-2xl bg-white shadow-sm mb-8'>
+          <div className="flex flex-col items-center mt-6">
+            <div className="flex overflow-hidden border-2 border-gray-300 rounded-2xl bg-white shadow-sm mb-8">
               {categories.map((cat, index) => {
                 const isActive = selectedCategory === cat;
 
@@ -98,19 +100,19 @@ const FindYourRental = () => {
             </div>
 
             {/* Slider Section */}
-            <div className='relative w-full'>
+            <div className="relative w-full">
               {/* Left Button */}
               <button
                 onClick={scrollLeft}
-                className='absolute left-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition bg-white hover:bg-gray-200 rounded-full h-10 w-10 z-10 border'
+                className="absolute left-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition z-10"
               >
-                ←
+                <FaArrowAltCircleLeft />
               </button>
 
               {/* Slider */}
               <div
                 ref={sliderRef}
-                className='flex gap-6 overflow-x-auto overflow-y-hidden py-2 scrollbar-hide'
+                className="flex gap-6 overflow-x-auto overflow-y-hidden py-2 no-scrollbar"
               >
                 {/* {items
                   ?.filter((item) => item.name === selectedCategory)
@@ -125,47 +127,47 @@ const FindYourRental = () => {
                 </div> */}
                 {/* ))} */}
                 {/* Wrap each card to prevent shrinking */}
-                <div className='flex-shrink-0'>
+                <div className="flex-shrink-0">
                   <ItemCard
-                    name='sujal'
-                    price='5000'
-                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
+                    name="sujal"
+                    price="5000"
+                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className='flex-shrink-0'>
+                <div className="flex-shrink-0">
                   <ItemCard
-                    name='sujal'
-                    price='5000'
-                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
+                    name="sujal"
+                    price="5000"
+                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className='flex-shrink-0'>
+                <div className="flex-shrink-0">
                   <ItemCard
-                    name='sujal'
-                    price='5000'
-                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
+                    name="sujal"
+                    price="5000"
+                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className='flex-shrink-0'>
+                <div className="flex-shrink-0">
                   <ItemCard
-                    name='sujal'
-                    price='5000'
-                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
+                    name="sujal"
+                    price="5000"
+                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className='flex-shrink-0'>
+                <div className="flex-shrink-0">
                   <ItemCard
-                    name='sujal'
-                    price='5000'
-                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
+                    name="sujal"
+                    price="5000"
+                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
@@ -174,9 +176,9 @@ const FindYourRental = () => {
               {/* Right Button */}
               <button
                 onClick={scrollRight}
-                className='absolute right-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition bg-white hover:bg-gray-200 rounded-full h-10 w-10 z-10 border'
+                className="absolute right-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition z-10"
               >
-                →
+                <FaArrowAltCircleRight />
               </button>
             </div>
           </div>
