@@ -16,6 +16,10 @@ import ProfileAndSettings from "@/pages/userDashboard/ProfileAndSettings";
 import UserDashboardLayout from "../layout/UserDashboardLayout";
 import ItemDetail from "@/pages/userDashboard/ItemDetail";
 import ViewItem from "@/pages/userDashboard/ViewItem";
+import JoinAsProvider from "@/pages/joinAsProvider";
+import ProviderResources from "@/pages/ProviderResources";
+import VerificationProcess from "@/pages/VerificationProcess";
+import ProviderApp from "@/pages/ProviderApp";
 
 const Approutes = () => {
   return (
@@ -42,6 +46,11 @@ const Approutes = () => {
           {/* <Route path="view-item" element={<ViewItem />} /> */}
           <Route path="view-item/:id" element={<ViewItem />} />
         </Route>
+        <Route path="/join-as-provider" element={<JoinAsProvider />} />
+        <Route path="/provider-resources" element={<ProviderResources />} />
+        <Route path="/verification-process" element={<VerificationProcess />} />
+        <Route path="/provider-app" element={<ProviderApp />} />
+        <Route path="/complete-profile" element={<CompleteProfile />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
