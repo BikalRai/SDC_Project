@@ -26,6 +26,7 @@ public class Item {
     private String name;
     private String brand;
     private String description;
+    private String location;
 
     @ElementCollection
     private List<String> specifications;
@@ -65,6 +66,7 @@ public class Item {
         this.name = requestDto.getName();
         this.brand = requestDto.getBrand();
         this.description = requestDto.getDescription();
+        this.location = requestDto.getLocation();
         this.specifications = requestDto.getSpecifications();
         this.category = requestDto.getCategory();
         this.model = requestDto.getModel();

@@ -30,6 +30,8 @@ public class ItemRequestDto {
 
     private String model;
 
+    private String location;
+
     @NotBlank(message = "Description is required")
     private String description;
 

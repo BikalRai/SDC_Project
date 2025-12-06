@@ -24,6 +24,7 @@ public class ItemResponseDto {
     private String name;
     private String brand;
     private String description;
+    private String location;
 
     private List<String> specifications;
 
@@ -53,6 +54,7 @@ public class ItemResponseDto {
         this.name = item.getName();
         this.brand = item.getBrand();
         this.description = item.getDescription();
+        this.location = item.getLocation();
         this.specifications = item.getSpecifications();
         this.category = item.getCategory();
         this.model = item.getModel();

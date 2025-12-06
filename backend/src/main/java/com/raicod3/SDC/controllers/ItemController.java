@@ -3,6 +3,7 @@ package com.raicod3.SDC.controllers;
 
 import com.raicod3.SDC.custom.CustomUserDetails;
 import com.raicod3.SDC.dtos.item.ItemRequestDto;
+import com.raicod3.SDC.dtos.item.ItemRequestFilter;
 import com.raicod3.SDC.dtos.item.ItemResponseDto;
 import com.raicod3.SDC.exceptions.HttpForbiddenException;
 import com.raicod3.SDC.exceptions.HttpNotFoundException;
@@ -37,9 +38,9 @@ public class ItemController {
    }
 
    @GetMapping("/items")
-   public ResponseEntity<Map<String, Object>> getItems(@AuthenticationPrincipal CustomUserDetails userDetails) {
+   public ResponseEntity<Map<String, Object>> getItems(@AuthenticationPrincipal CustomUserDetails userDetails, ItemRequestFilter filter) {
        try {
-           List<ItemResponseDto> itemResponseDto = itemService.getItems(userDetails);
+           List<ItemResponseDto> itemResponseDto = itemService.getItems(userDetails, filter);
 
            if (itemResponseDto.isEmpty()) {
                return ResponseBuilder.buildResponse("There are no items", HttpStatus.OK, new ArrayList<>());

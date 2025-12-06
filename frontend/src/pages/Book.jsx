@@ -1,14 +1,17 @@
-import { useSelector } from "react-redux";
-import ItemCard from "../components/card/ItemCard";
 import PopularCard from "@/components/card/PopularCard";
 import GridLayout from "@/components/layout/GridLayout";
+import { useSelector } from "react-redux";
 
-const Vehicle = () => {
+const Book = () => {
   const { items } = useSelector((state) => state.item);
+  const bookItems = items.filter(
+    (item) => item.category.toLowerCase() === "book"
+  );
+  console.log(bookItems, "book items");
   return (
     <GridLayout>
       {items
-        .filter((item) => item.category.toLowerCase() === "vehicle")
+        .filter((item) => item.category.toLowerCase() === "book")
         .map((item) => (
           <PopularCard key={item?.id} item={item} />
         ))}
@@ -16,4 +19,4 @@ const Vehicle = () => {
   );
 };
 
-export default Vehicle;
+export default Book;
