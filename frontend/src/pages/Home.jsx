@@ -1,5 +1,4 @@
 import AboutUs from "@/components/aboutUs/AboutUs";
-import FindYourRental from "@/components/findYourRental/FindYourRental";
 import Hero from "@/components/hero/Hero";
 import HowItWorks from "@/components/howItWorks/HowItWorks";
 import AppLayout from "@/components/layout/AppLayout";
@@ -15,7 +14,6 @@ const Home = () => {
         <AppNavBar />
         <Hero />
         <AboutUs />
-        <FindYourRental />
         <MostPopularSection />
         <HowItWorks />
         <Testimonial />
