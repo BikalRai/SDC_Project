@@ -20,6 +20,7 @@ import JoinAsProvider from "@/pages/joinAsProvider";
 import ProviderResources from "@/pages/ProviderResources";
 import VerificationProcess from "@/pages/VerificationProcess";
 import ProviderApp from "@/pages/ProviderApp";
+import Profile from "@/pages/profile";
 
 const Approutes = () => {
   return (
@@ -43,6 +44,7 @@ const Approutes = () => {
           <Route path="rentals" element={<MyRentals />} />
           <Route path="settings" element={<ProfileAndSettings />} />
           <Route path="item-detail" element={<ItemDetail />} />
+          <Route path="profile" element={<Profile />} />
           {/* <Route path="view-item" element={<ViewItem />} /> */}
           <Route path="view-item/:id" element={<ViewItem />} />
         </Route>
