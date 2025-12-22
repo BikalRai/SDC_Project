@@ -16,6 +16,24 @@ const request = {
   category: {
     categories: () => api.get("/category/categories"),
   },
+  kyc: {
+    create: (formData) =>
+      api.post("/kyc/create", {
+        ...formData,
+      }),
+    getAllKycs: () => api.get("/kyc/kycs"),
+    getKycByLoggedInUser: () => api.get("/kyc/user"),
+    getKycById: (id) => api.get(`/kyc/${id}`),
+    updateKyc: (id, data) =>
+      api.put(`/kyc/update/${id}`, {
+        ...data,
+      }),
+    updateKycStatus: (id, status) =>
+      api.patch(`/kyc/update/status/${id}`, {
+        status,
+      }),
+    deleteKyc: (id) => api.delete(`/kyc/delete/${id}`),
+  },
 };
 
 export default request;

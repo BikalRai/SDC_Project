@@ -30,6 +30,7 @@ public class KYCController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createKYCHandler(@RequestBody KYCRequestDto request, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
+            System.out.println(request);
             KYCResponseDto kycResponse = kycService.createKYC(customUserDetails, request);
             return ResponseBuilder.buildResponse("Created KYC successfully", HttpStatus.CREATED, kycResponse);
         } catch (HttpUnprocessableException e) {

@@ -29,11 +29,11 @@ public class KYCModel {
     private UserModel user;
 
     // name and details
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String fatherName;
-    private LocalDate birthDate;
+    private LocalDate dob;
     private String gender;
-    private int email;
     private String phone;
 
     // address
@@ -44,7 +44,7 @@ public class KYCModel {
     private String street;
 
     // citizenship
-    private String citizenshipId;
+    private String citizenshipNumber;
     private String issuedDistrict;
     private LocalDate issuedDate;
     private String citizenshipFrontImageUrl;
@@ -60,18 +60,18 @@ public class KYCModel {
 
     public KYCModel (KYCRequestDto kycRequestDto, UserModel user) {
         this.user = user;
-        this.fullName = kycRequestDto.getFullName();
+        this.firstName = kycRequestDto.getFirstName();
+        this.lastName = kycRequestDto.getLastName();
         this.fatherName = kycRequestDto.getFatherName();
-        this.birthDate = kycRequestDto.getBirthDate();
+        this.dob = kycRequestDto.getDob();
         this.gender = kycRequestDto.getGender();
-        this.email = kycRequestDto.getEmail();
         this.phone = kycRequestDto.getPhone();
         this.province = kycRequestDto.getProvince();
         this.district = kycRequestDto.getDistrict();
         this.municipality = kycRequestDto.getMunicipality();
         this.wardNumber = kycRequestDto.getWardNumber();
         this.street = kycRequestDto.getStreet();
-        this.citizenshipId = kycRequestDto.getCitizenshipId();
+        this.citizenshipNumber = kycRequestDto.getCitizenshipNumber();
         this.issuedDistrict = kycRequestDto.getIssuedDistrict();
         this.issuedDate = kycRequestDto.getIssuedDate();
         this.citizenshipFrontImageUrl = kycRequestDto.getCitizenshipFrontImageUrl();

@@ -80,18 +80,18 @@ public class KYCService {
             throw new HttpUnprocessableException("You are not allowed to update a KYC");
         }
 
-        existingKYC.setFullName(kycRequestDto.getFullName());
+        existingKYC.setFirstName(kycRequestDto.getFirstName());
+        existingKYC.setLastName(kycRequestDto.getLastName());
         existingKYC.setFatherName(kycRequestDto.getFatherName());
-        existingKYC.setBirthDate(kycRequestDto.getBirthDate());
+        existingKYC.setDob(kycRequestDto.getDob());
         existingKYC.setGender(kycRequestDto.getGender());
-        existingKYC.setEmail(kycRequestDto.getEmail());
         existingKYC.setPhone(kycRequestDto.getPhone());
         existingKYC.setProvince(kycRequestDto.getProvince());
         existingKYC.setDistrict(kycRequestDto.getDistrict());
         existingKYC.setMunicipality(kycRequestDto.getMunicipality());
         existingKYC.setWardNumber(kycRequestDto.getWardNumber());
         existingKYC.setStreet(kycRequestDto.getStreet());
-        existingKYC.setCitizenshipId(kycRequestDto.getCitizenshipId());
+        existingKYC.setCitizenshipNumber(kycRequestDto.getCitizenshipNumber());
         existingKYC.setIssuedDate(kycRequestDto.getIssuedDate());
         existingKYC.setIssuedDistrict(kycRequestDto.getIssuedDistrict());
         existingKYC.setCitizenshipFrontImageUrl(kycRequestDto.getCitizenshipFrontImageUrl());

@@ -114,7 +114,7 @@ const MostPopularSection = () => {
           <SectionHeader header='Most Popular Products' />
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center mt-6'>
             {cars.slice(0, visible).map((car, index) => (
-              <PopularCard key={index} {...car} />
+              <PopularCard key={index} item={cars} />
             ))}
           </div>
           {visible < cars.length && (
