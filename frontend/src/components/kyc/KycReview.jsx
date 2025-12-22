@@ -1,220 +1,179 @@
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Grid,
-  Paper,
-  Avatar,
-  Button,
-  Divider,
-} from "@mui/material";
-import SecondaryButton from "../buttons/SecondaryButton";
+import React, { useState } from "react";
+import { Box, Typography, Grid, Paper, Avatar, Divider } from "@mui/material";
+import { uploadToCloudinary } from "@/utils/cloudinary";
 import PrimaryButton from "../buttons/PrimaryButton";
+import SecondaryButton from "../buttons/SecondaryButton";
+import { useDispatch } from "react-redux";
+import { createKyc } from "@/slices/kyc.slice";
 
-const PERSONAL_KEY = "kyc_personal_v1";
-const DOCS_KEY = "kyc_docs_v1";
+export default function KycReview({ formData, onBack, onSubmitComplete }) {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-export default function KycReview() {
-  const [personal, setPersonal] = useState(null);
-  const [docs, setDocs] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    try {
-      const p = localStorage.getItem(PERSONAL_KEY);
-      const d = localStorage.getItem(DOCS_KEY);
-      if (p) setPersonal(JSON.parse(p));
-      if (d) setDocs(JSON.parse(d));
-    } catch (e) {
-      console.warn("Failed to read review data", e);
-    }
-  }, []);
+  if (!formData || Object.keys(formData).length === 0) {
+    return <Typography>No KYC data found</Typography>;
+  }
 
   const handleSubmit = async () => {
-    // This is a demo / placeholder. Replace with your API call.
-    if (!personal || !docs || !docs.selfie || !docs.idFront) {
-      alert(
-        "Missing required data: make sure personal info and required documents are present."
-      );
-      return;
-    }
-
     try {
-      setSubmitting(true);
-      // Simulate upload delay
-      await new Promise((r) => setTimeout(r, 1200));
-      // Mark as submitted
-      localStorage.setItem(
-        "kyc_submitted_v1",
-        JSON.stringify({ submittedAt: new Date().toISOString() })
-      );
-      // Optionally you could clear inputs:
-      // localStorage.removeItem(PERSONAL_KEY);
-      // localStorage.removeItem(DOCS_KEY);
+      setLoading(true);
 
-      // Friendly confirmation UI (non-blocking)
-      alert(
-        "KYC submitted (demo). The real implementation should POST files to your server."
-      );
-    } catch (err) {
-      console.error(err);
-      alert("Submission failed.");
+      // both images upload in parallel
+      const [frontUrl, backUrl] = await Promise.all([
+        uploadToCloudinary(formData.citizenshipFrontFile),
+        uploadToCloudinary(formData.citizenshipBackFile),
+      ]);
+
+      const finalData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        fatherName: formData.fatherName,
+        dob: formData.dob,
+        gender: formData.gender,
+        email: formData.email,
+        phone: formData.phone,
+
+        province: formData.province,
+        district: formData.district,
+        municipality: formData.municipality,
+        wardNumber: formData.wardNumber,
+        street: formData.street,
+
+        citizenshipNumber: formData.citizenshipNumber,
+        issuedDistrict: formData.issuedDistrict,
+        issuedDate: formData.issuedDate,
+
+        // ------ CLOUDINARY FINAL VALUES ------
+        citizenshipFrontImageUrl: frontUrl,
+        citizenshipBackImageUrl: backUrl,
+      };
+
+      dispatch(createKyc(finalData));
+
+      onSubmitComplete(finalData);
+    } catch (error) {
+      console.error("Cloudinary upload failed:", error);
+      alert("Image upload failed.");
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
-  if (!personal && !docs) {
-    return (
-      <Box>
-        <Typography variant="body1">
-          No KYC data found. Please complete previous steps.
-        </Typography>
-      </Box>
-    );
-  }
+  const getPreview = (file) => {
+    if (!file) return "";
+    if (typeof file === "string") return file;
+    return file.dataUrl || URL.createObjectURL(file);
+  };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 920 }}>
-      <Typography variant="h6" gutterBottom>
+    <Box sx={{ maxWidth: 920, width: "100%" }}>
+      <Typography variant='h6' gutterBottom>
         Review & Submit
       </Typography>
 
-      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
-        <Typography variant="subtitle2">Personal details</Typography>
-        <Divider sx={{ my: 1 }} />
+      {/* PERSONAL INFO */}
+      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
+        <Typography variant='subtitle2'>Personal Information</Typography>
+        <Divider sx={{ mb: 2 }} />
         <Grid container spacing={1}>
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Full name
-            </Typography>
-            <Typography>{personal?.fullName || "—"}</Typography>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Date of birth
-            </Typography>
-            <Typography>{personal?.dob || "—"}</Typography>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Phone
-            </Typography>
-            <Typography>{personal?.phone || "—"}</Typography>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Email
-            </Typography>
-            <Typography>{personal?.email || "—"}</Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Address
-            </Typography>
-            <Typography>{personal?.address || "—"}</Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              ID number
-            </Typography>
-            <Typography>{personal?.idNumber || "—"}</Typography>
-          </Grid>
+          {[
+            ["First Name", formData.firstName],
+            ["Last Name", formData.lastName],
+            ["Father's Name", formData.fatherName],
+            ["Date of Birth", formData.dob],
+            ["Gender", formData.gender],
+            ["Email", formData.email],
+            ["Phone", formData.phone],
+          ].map(([label, value]) => (
+            <Grid item xs={12} sm={6} key={label}>
+              <Typography variant='body2' color='text.secondary'>
+                {label}
+              </Typography>
+              <Typography>{value || "—"}</Typography>
+            </Grid>
+          ))}
         </Grid>
       </Paper>
 
-      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
-        <Typography variant="subtitle2">Uploaded documents</Typography>
-        <Divider sx={{ my: 1 }} />
-        <Grid container spacing={2} alignItems="center">
-          {docs?.selfie ? (
-            <Grid item xs={12} sm={4}>
-              <Typography variant="caption">Selfie</Typography>
-              <Box sx={{ mt: 1 }}>
-                <Avatar
-                  src={docs.selfie.dataUrl}
-                  alt="selfie"
-                  sx={{ width: 120, height: 120 }}
-                />
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  {docs.selfie.name}
-                </Typography>
-              </Box>
+      {/* ADDRESS INFO */}
+      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
+        <Typography variant='subtitle2'>Address Information</Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Grid container spacing={1}>
+          {[
+            ["Province", formData.province],
+            ["District", formData.district],
+            ["Municipality", formData.municipality],
+            ["Ward Number", formData.wardNumber],
+            ["Street", formData.street],
+          ].map(([label, value]) => (
+            <Grid item xs={12} sm={6} key={label}>
+              <Typography variant='body2' color='text.secondary'>
+                {label}
+              </Typography>
+              <Typography>{value || "—"}</Typography>
             </Grid>
-          ) : null}
-
-          {docs?.idFront ? (
-            <Grid item xs={12} sm={4}>
-              <Typography variant="caption">ID front</Typography>
-              <Box sx={{ mt: 1 }}>
-                <Avatar
-                  src={docs.idFront.dataUrl}
-                  alt="id front"
-                  variant="rounded"
-                  sx={{ width: 120, height: 80 }}
-                />
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  {docs.idFront.name}
-                </Typography>
-              </Box>
-            </Grid>
-          ) : null}
-
-          {docs?.idBack ? (
-            <Grid item xs={12} sm={4}>
-              <Typography variant="caption">ID back</Typography>
-              <Box sx={{ mt: 1 }}>
-                <Avatar
-                  src={docs.idBack.dataUrl}
-                  alt="id back"
-                  variant="rounded"
-                  sx={{ width: 120, height: 80 }}
-                />
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  {docs.idBack.name}
-                </Typography>
-              </Box>
-            </Grid>
-          ) : null}
-
-          {docs?.other ? (
-            <Grid item xs={12} sm={4}>
-              <Typography variant="caption">Other</Typography>
-              <Box sx={{ mt: 1 }}>
-                <Avatar
-                  src={docs.other.dataUrl}
-                  alt="other"
-                  variant="rounded"
-                  sx={{ width: 120, height: 80 }}
-                />
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  {docs.other.name}
-                </Typography>
-              </Box>
-            </Grid>
-          ) : null}
+          ))}
         </Grid>
       </Paper>
 
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <SecondaryButton
-          btnText="EDIT"
-          onClick={() => {
-            // encourage editing: scroll up to forms
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            alert("Use the Previous button to edit specific fields.");
-          }}
-        />
+      {/* CITIZENSHIP INFO */}
+      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
+        <Typography variant='subtitle2'>Citizenship Details</Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Grid container spacing={1}>
+          {[
+            ["Citizenship Number", formData.citizenshipNumber],
+            ["Issued District", formData.issuedDistrict],
+            ["Issued Date", formData.issuedDate],
+          ].map(([label, value]) => (
+            <Grid item xs={12} sm={6} key={label}>
+              <Typography variant='body2' color='text.secondary'>
+                {label}
+              </Typography>
+              <Typography>{value || "—"}</Typography>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+
+      {/* DOCUMENT PREVIEW */}
+      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
+        <Typography variant='subtitle2'>Uploaded Documents</Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Grid container spacing={2}>
+          {formData.citizenshipFrontFile && (
+            <Grid item xs={12} sm={6}>
+              <Typography variant='caption'>Citizenship Front</Typography>
+              <Avatar
+                src={getPreview(formData.citizenshipFrontFile)}
+                variant='rounded'
+                sx={{ width: 140, height: 90, mt: 1 }}
+              />
+            </Grid>
+          )}
+
+          {formData.citizenshipBackFile && (
+            <Grid item xs={12} sm={6}>
+              <Typography variant='caption'>Citizenship Back</Typography>
+              <Avatar
+                src={getPreview(formData.citizenshipBackFile)}
+                variant='rounded'
+                sx={{ width: 140, height: 90, mt: 1 }}
+              />
+            </Grid>
+          )}
+        </Grid>
+      </Paper>
+
+      {/* BUTTONS */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+        <SecondaryButton btnText={`Back`} onClick={onBack} disabled={loading} />
+
         <PrimaryButton
-          variant="contained"
+          btnText={loading ? "Uploading…" : "Submit"}
           onClick={handleSubmit}
-          disabled={submitting}
-          btnText={submitting ? "Submitting…" : "Submit KYC"}
+          disabled={loading}
         />
       </Box>
     </Box>

@@ -109,7 +109,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE,  "/api/item/**").hasRole("USER")
                         .requestMatchers("/api/category/**").permitAll()
                         .requestMatchers(("/api/rental/**")).hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(("/api/kyc/**")).hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(("/api/kyc/**")).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

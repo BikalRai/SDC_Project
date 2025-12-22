@@ -4,14 +4,16 @@ const PrimaryButton = ({
   onClick,
   icon,
   type = "button",
-  ...props
+  disabled,
 }) => {
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`px-6 py-3 rounded-sm text-sm text-white bg-primary hover:bg-light-primary transition-all duration-300 cursor-pointer ${className} group`}
-      {...props}
+      disabled={disabled}
+      className={`px-6 py-3 rounded-sm text-sm text-white ${
+        disabled ? "bg-gray-300" : "bg-primary"
+      }  hover:bg-light-primary transition-all duration-300 cursor-pointer ${className} group `}
     >
       {icon ? (
         <p className='flex items-center justify-center gap-4'>

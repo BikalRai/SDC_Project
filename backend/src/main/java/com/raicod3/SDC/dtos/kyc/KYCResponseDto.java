@@ -20,17 +20,17 @@ public class KYCResponseDto {
 
     private int kycId;
 
-    private String fullName;
+    private String firstName;
+
+    private String lastName;
 
     private String fatherName;
 
-    private LocalDate birthDate;
+    private LocalDate dob;
 
     private UserResponseDto user;
 
     private String gender;
-
-    private int email;
 
     private String phone;
 
@@ -46,7 +46,7 @@ public class KYCResponseDto {
     private String street;
 
     // citizenship
-    private String citizenshipId;
+    private String citizenshipNumber;
 
     private String issuedDistrict;
 
@@ -65,18 +65,18 @@ public class KYCResponseDto {
     public KYCResponseDto(UserModel user, KYCModel kyc) {
         this.user = new UserResponseDto(user);
         this.kycId = kyc.getId();
-        this.fullName = kyc.getFullName();
+        this.firstName = kyc.getFirstName();
+        this.lastName = kyc.getLastName();
         this.fatherName = kyc.getFatherName();
-        this.birthDate = kyc.getBirthDate();
+        this.dob = kyc.getDob();
         this.gender = kyc.getGender();
-        this.email = kyc.getEmail();
         this.phone = kyc.getPhone();
         this.province = kyc.getProvince();
         this.district = kyc.getDistrict();
         this.municipality = kyc.getMunicipality();
         this.wardNumber = kyc.getWardNumber();
         this.street = kyc.getStreet();
-        this.citizenshipId = kyc.getCitizenshipId();
+        this.citizenshipNumber = kyc.getCitizenshipNumber();
         this.issuedDistrict = kyc.getIssuedDistrict();
         this.issuedDate = kyc.getIssuedDate();
         this.citizenshipFrontImageUrl = kyc.getCitizenshipFrontImageUrl();

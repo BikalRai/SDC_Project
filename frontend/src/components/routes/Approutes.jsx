@@ -22,6 +22,7 @@ import ProviderApp from "@/pages/ProviderApp";
 import FindYourRental from "../findYourRental/FindYourRental";
 import Electronic from "@/pages/Electronic";
 import Furnitures from "@/pages/Furnitures";
+import KycForm from "../kyc/KycForm";
 
 const Approutes = () => {
   return (
@@ -49,6 +50,7 @@ const Approutes = () => {
           {/* <Route path="view-item" element={<ViewItem />} /> */}
           <Route path='view-item/:id' element={<ViewItem />} />
         </Route>
+        <Route path='/kyc' element={<KycForm />} />
         <Route path='/join-as-provider' element={<JoinAsProvider />} />
         <Route path='/provider-resources' element={<ProviderResources />} />
         <Route path='/verification-process' element={<VerificationProcess />} />

@@ -40,8 +40,8 @@ const PopularCard = ({ item }) => {
           <div className='line-clamp-3 h-[4.5rem] mt-4'>
             <h3 className='text-base font-medium'>Specifications</h3>
             <div className='flex flex-col text-xs text-text-muted'>
-              {item.specifications.map((spec) => (
-                <p>{spec}</p>
+              {item?.specifications?.map((spec, i) => (
+                <p key={i}>{spec}</p>
               ))}
             </div>
           </div>
