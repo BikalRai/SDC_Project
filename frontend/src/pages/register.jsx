@@ -157,7 +157,7 @@ const Register = () => {
                 />
                 <p className='text-red-400 text-xs'>{errors && errors.email}</p>
               </div>
-              <div>
+              {/* <div>
                 <TextField
                   label='Phone number'
                   variant='outlined'
@@ -167,7 +167,7 @@ const Register = () => {
                   onChange={handleFormData}
                 />
                 <p className='text-red-400 text-xs'>{errors && errors.phone}</p>
-              </div>
+              </div> */}
               {/* Password Field */}
               <div>
                 <FormControl variant='outlined' className='w-full'>

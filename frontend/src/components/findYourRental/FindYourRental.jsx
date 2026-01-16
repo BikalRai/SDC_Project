@@ -1,74 +1,73 @@
-import { useDispatch, useSelector } from "react-redux";
-import ItemCard from "../card/ItemCard";
+import { useDispatch } from "react-redux";
 import ReContainer from "../containers/ReContainer";
 import SectionHeader from "../header/SectionHeader";
-import { useState, useRef, useEffect } from "react";
-import { getCategories } from "@/slices/category.slice";
+import { useState, useEffect } from "react";
 import { getAllItems } from "@/slices/item.slice";
-import { FaArrowAltCircleRight } from "react-icons/fa";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { NavLink, Outlet } from "react-router-dom";
+import AppLayout from "../layout/AppLayout";
+import AppNavBar from "../navbar/AppNavBar";
+
+const categories = [
+  { id: 1, category: "vehicle", path: "/find" },
+  { id: 2, category: "furniture", path: "furniture" },
+  { id: 3, category: "electronic", path: "electronic" },
+  { id: 4, category: "book", path: "book" },
+];
 
 const FindYourRental = () => {
-  const sliderRef = useRef(null);
+  // const sliderRef = useRef(null);
 
-  const scrollLeft = () => {
-    sliderRef.current.scrollBy({
-      left: -900, // adjust per card width
-      behavior: "smooth",
-    });
-  };
+  // const scrollLeft = () => {
+  //   sliderRef.current.scrollBy({
+  //     left: -900, // adjust per card width
+  //     behavior: "smooth",
+  //   });
+  // };
 
-  const scrollRight = () => {
-    sliderRef.current.scrollBy({
-      left: 900,
-      behavior: "smooth",
-    });
-  };
+  // const scrollRight = () => {
+  //   sliderRef.current.scrollBy({
+  //     left: 900,
+  //     behavior: "smooth",
+  //   });
+  // };
 
-  const categories = ["Vehicle", "Furniture", "Electronics", "Clothes"];
-
-  const [selectedCategory, setSelectedCategory] = useState("scooter");
-
-  // const [items, setItems] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("vehicle");
 
   const dispatch = useDispatch();
-  // const { categories } = useSelector((state) => state.category);
-  const { items } = useSelector((state) => state.item);
-
-  useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getAllItems());
   }, [dispatch]);
 
-  console.log(items, "items");
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res = await fetch(`api/${selectedCategory}`);
-  //       const data = await res.json();
-  //       setItems(data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [selectedCategory]);
-
   return (
-    <ReContainer>
-      <section className="mt-20">
-        <div className="bg-background rounded-[8px] py-8 px-10">
-          <SectionHeader header="Find Your Rental" />
+    <AppLayout>
+      <AppNavBar />
+      <ReContainer>
+        <section className='mt-20'>
+          <div className='rounded-[8px] py-8'>
+            <SectionHeader header='Find Your Rental' />
 
-          {/* Category Selector */}
-          <div className="flex flex-col items-center mt-6">
-            <div className="flex overflow-hidden border-2 border-gray-300 rounded-2xl bg-white shadow-sm mb-8">
-              {categories.map((cat, index) => {
+            {/* Category Selector */}
+            <div className='flex flex-col items-center mt-6'>
+              <div className='flex overflow-hidden gap-4 rounded-md bg-white shadow-sm my-10'>
+                {categories.map((cat) => (
+                  <div
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.category)}
+                    className={`${
+                      selectedCategory === cat.category &&
+                      "bg-primary text-text-white"
+                    } cursor-pointer`}
+                  >
+                    <NavLink to={cat.path} className='inline-block py-2 px-4'>
+                      <span>
+                        {cat.category[0].toUpperCase()}
+                        {cat.category.slice(1).toLowerCase()}
+                      </span>
+                    </NavLink>
+                  </div>
+                ))}
+                {/* {categories.map((cat, index) => {
                 const isActive = selectedCategory === cat;
 
                 const radiusClass =
@@ -96,28 +95,29 @@ const FindYourRental = () => {
                     {cat.name}
                   </button>
                 );
-              })}
-            </div>
+              })} */}
+              </div>
 
-            {/* Slider Section */}
-            <div className="relative w-full">
+              {/* Slider Section */}
+              {/* <div className='relative w-full'> */}
               {/* Left Button */}
-              <button
+              {/* <button
                 onClick={scrollLeft}
-                className="absolute left-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition z-10"
+                className='absolute left-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition z-10'
               >
                 <FaArrowAltCircleLeft />
-              </button>
+              </button> */}
 
               {/* Slider */}
-              <div
+              {/* <div
                 ref={sliderRef}
-                className="flex gap-6 overflow-x-auto overflow-y-hidden py-2 no-scrollbar"
-              >
-                {/* {items
+                className='flex gap-6 overflow-x-auto overflow-y-hidden py-2 no-scrollbar'
+              > */}
+
+              {/* {items
                   ?.filter((item) => item.name === selectedCategory)
                   .map((item) => ( */}
-                {/* <div className='flex-shrink-0'>
+              {/* <div className='flex-shrink-0'>
                   <ItemCard
                     name={items[0]?.title}
                     price={items[0]?.rate}
@@ -125,66 +125,68 @@ const FindYourRental = () => {
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div> */}
-                {/* ))} */}
-                {/* Wrap each card to prevent shrinking */}
-                <div className="flex-shrink-0">
+              {/* ))} */}
+              {/* Wrap each card to prevent shrinking */}
+              {/* <div className='flex-shrink-0'>
                   <ItemCard
-                    name="sujal"
-                    price="5000"
-                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
+                    name='sujal'
+                    price='5000'
+                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className="flex-shrink-0">
+                <div className='flex-shrink-0'>
                   <ItemCard
-                    name="sujal"
-                    price="5000"
-                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
+                    name='sujal'
+                    price='5000'
+                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className="flex-shrink-0">
+                <div className='flex-shrink-0'>
                   <ItemCard
-                    name="sujal"
-                    price="5000"
-                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
+                    name='sujal'
+                    price='5000'
+                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className="flex-shrink-0">
+                <div className='flex-shrink-0'>
                   <ItemCard
-                    name="sujal"
-                    price="5000"
-                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
+                    name='sujal'
+                    price='5000'
+                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
 
-                <div className="flex-shrink-0">
+                <div className='flex-shrink-0'>
                   <ItemCard
-                    name="sujal"
-                    price="5000"
-                    image="https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop"
+                    name='sujal'
+                    price='5000'
+                    image='https://images.unsplash.com/photo-1759405095660-62a254209005?q=80&w=688&auto=format&fit=crop'
                     features={["Eat", "Sleep", "Repeat"]}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Right Button */}
-              <button
+              {/* <button
                 onClick={scrollRight}
-                className="absolute right-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition z-10"
+                className='absolute right-[-50px] top-1/2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-primary transition z-10'
               >
                 <FaArrowAltCircleRight />
-              </button>
+              </button> */}
+              {/* </div> */}
             </div>
+            <Outlet />
           </div>
-        </div>
-      </section>
-    </ReContainer>
+        </section>
+      </ReContainer>
+    </AppLayout>
   );
 };
 

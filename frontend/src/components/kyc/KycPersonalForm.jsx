@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Grid,
@@ -6,83 +6,39 @@ import {
   Button,
   Typography,
   InputAdornment,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  FormHelperText,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import SecondaryButton from "../buttons/SecondaryButton";
-import PrimaryButton from "../buttons/PrimaryButton";
+import { useForm } from "react-hook-form";
 
-const STORAGE_KEY = "kyc_personal_v1";
-
-const initialState = {
-  fullName: "",
-  dob: "",
-  phone: "",
-  email: "",
-  address: "",
-  idNumber: "",
-};
-
-export default function KycPersonalForm() {
-  const [data, setData] = useState(initialState);
-  const [errors, setErrors] = useState({});
+export default function KycPersonalForm({
+  formData,
+  onStepSubmit,
+  registerSubmitHandler,
+}) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: formData,
+    mode: "onBlur",
+  });
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setData(JSON.parse(stored));
-    } catch (e) {
-      console.warn("Failed to parse personal KYC from localStorage", e);
-    }
-  }, []);
+    registerSubmitHandler(() => handleSubmit(onSubmit)());
+  }, [handleSubmit, registerSubmitHandler]);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
-
-  const validateField = (name, value) => {
-    switch (name) {
-      case "fullName":
-        return value.trim().length < 3 ? "Enter your full name" : "";
-      case "dob":
-        return !value ? "Date of birth required" : "";
-      case "phone":
-        return !/^\+?\d{7,15}$/.test(value) ? "Invalid phone number" : "";
-      case "email":
-        return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "Invalid email" : "";
-      case "address":
-        return value.trim().length < 5 ? "Provide a valid address" : "";
-      case "idNumber":
-        return value.trim().length < 4 ? "Enter government ID/number" : "";
-      default:
-        return "";
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((s) => ({ ...s, [name]: value }));
-    setErrors((s) => ({ ...s, [name]: validateField(name, value) }));
-  };
-
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    setErrors((s) => ({ ...s, [name]: validateField(name, value) }));
-  };
-
-  // Public helper: quick client-side validity check (not exported, but useful)
-  const isValid = () => {
-    const next = {};
-    let ok = true;
-    Object.keys(initialState).forEach((k) => {
-      const err = validateField(k, data[k]);
-      if (err) ok = false;
-      next[k] = err;
-    });
-    setErrors(next);
-    return ok;
+  const onSubmit = (data) => {
+    onStepSubmit(data);
   };
 
   return (
@@ -92,42 +48,88 @@ export default function KycPersonalForm() {
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             fullWidth
-            label="Full name"
-            name="fullName"
-            value={data.fullName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.fullName}
-            error={Boolean(errors.fullName)}
+            label='First name'
+            name='firstName'
+            {...register("firstName", {
+              required: "First name is required.",
+              minLength: { value: 3, message: "At least 3 characters." },
+            })}
+            error={!!errors.fullname}
+            helperText={errors.fullname?.message}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <PersonIcon />
                 </InputAdornment>
               ),
             }}
-            placeholder="As shown on your ID"
+            placeholder='First name here'
           />
         </Grid>
 
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             fullWidth
-            label="Date of birth"
-            name="dob"
-            value={data.dob}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.dob}
-            error={Boolean(errors.dob)}
-            type="date"
+            label='Last name'
+            name='lastName'
+            {...register("lastName", {
+              required: "Last name is required.",
+              minLength: { value: 3, message: "At least 3 characters." },
+            })}
+            error={!!errors.fullname}
+            helperText={errors.fullname?.message}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <PersonIcon />
+                </InputAdornment>
+              ),
+            }}
+            placeholder='Last name here'
+          />
+        </Grid>
+
+        <Grid size={{ sm: 12 }}>
+          <TextField
+            fullWidth
+            label='Father name'
+            name='fatherName'
+            {...register("fatherName", {
+              required: "Father name is required.",
+              minLength: { value: 3, message: "At least 3 characters." },
+            })}
+            error={!!errors.fullname}
+            helperText={errors.fullname?.message}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <PersonIcon />
+                </InputAdornment>
+              ),
+            }}
+            placeholder='Father name here'
+          />
+        </Grid>
+
+        {/* Date of birth */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <TextField
+            fullWidth
+            label='Date of birth'
+            name='dob'
+            {...register("dob", {
+              required: "Date of birth is required.",
+            })}
+            helperText={errors.dob?.message}
+            error={!!errors.dob}
+            type='date'
             InputLabelProps={{ shrink: true }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <CalendarTodayIcon />
                 </InputAdornment>
               ),
@@ -135,109 +137,78 @@ export default function KycPersonalForm() {
           />
         </Grid>
 
-        <Grid item size={{ xs: 12, md: 6 }}>
-          <TextField
-            fullWidth
-            label="Phone"
-            name="phone"
-            value={data.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.phone || "Include country code, e.g. +91..."}
-            error={Boolean(errors.phone)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PhoneIcon />
-                </InputAdornment>
-              ),
-            }}
-            placeholder="+912345678900"
-          />
+        <Grid size={{ xs: 12, md: 6 }}>
+          <FormControl>
+            <FormLabel id='demo-radio-buttons-group-label'>Gender</FormLabel>
+            <RadioGroup
+              aria-labelledby='demo-radio-buttons-group-label'
+              defaultValue='female'
+              name='radio-buttons-group'
+              row
+            >
+              <FormControlLabel
+                value='female'
+                control={<Radio {...register("gender")} />}
+                label='Female'
+              />
+              <FormControlLabel
+                value='male'
+                control={<Radio {...register("gender")} />}
+                label='Male'
+              />
+            </RadioGroup>
+          </FormControl>
         </Grid>
 
-        <Grid item size={{ xs: 12, md: 6 }}>
+        {/* email */}
+        {/* <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             fullWidth
-            label="Email (optional)"
-            name="email"
-            value={data.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.email}
-            error={Boolean(errors.email)}
+            label='Email address'
+            name='email'
+            {...register("email", {
+              required: "Email is required.",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid email address",
+              },
+            })}
+            helperText={errors.email?.message}
+            error={!!errors.email}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <EmailIcon />
                 </InputAdornment>
               ),
             }}
-            placeholder="you@example.com"
+            placeholder='you@example.com'
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid item size={{ xs: 12 }}>
+        {/* phone */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             fullWidth
-            multiline
-            minRows={2}
-            label="Address"
-            name="address"
-            value={data.address}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.address}
-            error={Boolean(errors.address)}
-            placeholder="Street, city, state, postal code"
-          />
-        </Grid>
-
-        <Grid item size={{ xs: 12 }}>
-          <TextField
-            fullWidth
-            label="Government ID / Citizen number"
-            name="idNumber"
-            value={data.idNumber}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.idNumber}
-            error={Boolean(errors.idNumber)}
-            placeholder="NID / Passport / Driving licence"
-          />
-        </Grid>
-
-        <Grid item xs={12} sx={{ mt: 1 }}>
-          <SecondaryButton
-            btnText="RESET"
-            className="mr-3"
-            onClick={() => {
-              setData(initialState);
-              setErrors({});
-              localStorage.removeItem(STORAGE_KEY);
+            label='Phone number'
+            name='phone'
+            {...register("phone", {
+              required: "Phone number is required.",
+              pattern: {
+                value: /^9[6-8][0-9]{8}$/,
+                message: "Invalid phone number.",
+              },
+            })}
+            helperText={errors.phone?.message}
+            error={!!errors.phone}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <PhoneIcon />
+                </InputAdornment>
+              ),
             }}
-          />
-          <PrimaryButton
-            btnText="SAVE DETAILS"
-            className="mr-3"
-            onClick={() => {
-              const ok = isValid();
-              if (!ok) {
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              } else {
-                const el = document.createElement("div");
-                el.innerText = "Personal details saved";
-                el.style.position = "fixed";
-                el.style.right = "1rem";
-                el.style.top = "4rem";
-                el.style.background = "rgba(0,0,0,0.7)";
-                el.style.color = "white";
-                el.style.padding = "8px 12px";
-                el.style.borderRadius = "6px";
-                document.body.appendChild(el);
-                setTimeout(() => document.body.removeChild(el), 1500);
-              }
-            }}
+            placeholder='9800000000'
           />
         </Grid>
       </Grid>

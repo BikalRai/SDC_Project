@@ -5,10 +5,7 @@ import com.raicod3.SDC.enums.KYCStatus;
 import com.raicod3.SDC.models.KYCModel;
 import com.raicod3.SDC.models.UserModel;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,25 +14,26 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class KYCRequestDto {
 
     private UserModel user;
 
     // name and details
     @NotNull(message = "Field must not be empty")
-    private String fullName;
+    private String firstName;
+
+    @NotNull(message = "Field must not be empty")
+    private String lastName;
 
     @NotNull(message = "Field must not be empty")
     private String fatherName;
 
     @NotNull(message = "Field must not be empty")
-    private LocalDate birthDate;
+    private LocalDate dob;
 
     @NotNull(message = "Field must not be empty")
     private String gender;
-
-    @NotNull(message = "Field must not be empty")
-    private int email;
 
     @NotNull(message = "Field must not be empty")
     private String phone;
@@ -58,7 +56,7 @@ public class KYCRequestDto {
 
     // citizenship
     @NotNull(message = "Field must not be empty")
-    private String citizenshipId;
+    private String citizenshipNumber;
 
     @NotNull(message = "Field must not be empty")
     private String issuedDistrict;
@@ -76,28 +74,6 @@ public class KYCRequestDto {
     // verification
     private KYCStatus KYCStatus;
     private LocalDate submittedDate;
-    private LocalDateTime verifiedDate;
+    private LocalDate verifiedDate;
 
-    public KYCRequestDto(UserModel user, KYCModel kyc) {
-        this.user = user;
-        this.fullName = kyc.getFullName();
-        this.fatherName = kyc.getFatherName();
-        this.birthDate = kyc.getBirthDate();
-        this.gender = kyc.getGender();
-        this.email = kyc.getEmail();
-        this.phone = kyc.getPhone();
-        this.province = kyc.getProvince();
-        this.district = kyc.getDistrict();
-        this.municipality = kyc.getMunicipality();
-        this.wardNumber = kyc.getWardNumber();
-        this.street = kyc.getStreet();
-        this.citizenshipId = kyc.getCitizenshipId();
-        this.issuedDistrict = kyc.getIssuedDistrict();
-        this.issuedDate = kyc.getIssuedDate();
-        this.citizenshipFrontImageUrl = kyc.getCitizenshipFrontImageUrl();
-        this.citizenshipBackImageUrl = kyc.getCitizenshipBackImageUrl();
-        this.KYCStatus = kyc.getStatus();
-        this.submittedDate = kyc.getSubmittedDate();
-        this.verifiedDate = kyc.getVerifiedDate();
-    }
 }

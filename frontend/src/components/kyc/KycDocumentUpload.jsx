@@ -1,219 +1,219 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  IconButton,
-  Avatar,
-  Paper,
-} from "@mui/material";
+import { Box, Grid, Typography, Button, TextField } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SecondaryButton from "../buttons/SecondaryButton";
-import PrimaryButton from "../buttons/PrimaryButton";
+import { useForm } from "react-hook-form";
 
-const STORAGE_KEY = "kyc_docs_v1";
-
-// helper to convert File -> dataURL
-function fileToDataUrl(file) {
-  return new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.onload = () => res(reader.result);
-    reader.onerror = rej;
-    reader.readAsDataURL(file);
+export default function KycDocumentUpload({
+  onStepSubmit,
+  formData,
+  registerSubmitHandler,
+}) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    clearErrors,
+  } = useForm({
+    defaultValues: formData || {
+      citizenshipId: "",
+      issuedDistrict: "",
+      issuedDate: "",
+    },
+    mode: "onBlur",
   });
-}
 
-const emptyState = {
-  selfie: null,
-  idFront: null,
-  idBack: null,
-  other: null, // optional extra doc
-};
-
-export default function KycDocumentUpload() {
-  const [files, setFiles] = useState(emptyState);
-  const [uploading, setUploading] = useState(false);
+  const [citizenshipFrontFile, setCitizenshipFrontFile] = useState(null);
+  const [citizenshipBackFile, setCitizenshipBackFile] = useState(null);
+  const [citizenshipFrontPreview, setCitizenshipFrontPreview] = useState(null);
+  const [citizenshipBackPreview, setCitizenshipBackPreview] = useState(null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setFiles(JSON.parse(stored));
-    } catch (e) {
-      console.warn("Failed to parse KYC docs from localStorage", e);
+    if (registerSubmitHandler) {
+      registerSubmitHandler(() => handleSubmit(onSubmit)());
     }
-  }, []);
+  }, [
+    handleSubmit,
+    registerSubmitHandler,
+    citizenshipFrontFile,
+    citizenshipBackFile,
+  ]);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
-  }, [files]);
+  const onSubmit = (data) => {
+    let hasError = false;
+    if (!citizenshipFrontFile) {
+      setError("citizenshipFrontFile", {
+        type: "manual",
+        message: "Front image is required.",
+      });
+      hasError = true;
+    }
+    if (!citizenshipBackFile) {
+      setError("citizenshipBackFile", {
+        type: "manual",
+        message: "Back image is required.",
+      });
+      hasError = true;
+    }
 
-  const handleFile = async (e, key) => {
+    if (hasError) return;
+
+    clearErrors(["citizenshipFrontFile", "citizenshipBackFile"]);
+
+    // Pass the full data including the file objects to parent
+    onStepSubmit({
+      ...data,
+      citizenshipFrontFile,
+      citizenshipBackFile,
+    });
+  };
+
+  const handleFileChange = (e, setFile, setPreview, fieldName) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    // accept images and pdfs
-    const validTypes = [
-      "image/png",
-      "image/jpeg",
-      "image/jpg",
-      "application/pdf",
-    ];
-    if (!validTypes.includes(file.type)) {
-      alert("Only JPG/PNG/PDF files are accepted.");
-      return;
+    if (file) {
+      setFile(file);
+      setPreview(URL.createObjectURL(file));
+      clearErrors(fieldName);
     }
-    setUploading(true);
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      setFiles((s) => ({
-        ...s,
-        [key]: { name: file.name, mime: file.type, dataUrl },
-      }));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to read file.");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const removeFile = (key) => {
-    setFiles((s) => ({ ...s, [key]: null }));
-  };
-
-  const previewBox = (label, key) => {
-    const f = files[key];
-    return (
-      <Paper
-        variant="outlined"
-        sx={{
-          p: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <Box
-          sx={{
-            width: 84,
-            height: 84,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {f ? (
-            f.mime === "application/pdf" ? (
-              <Avatar variant="rounded">{/* PDF icon fallback */}PDF</Avatar>
-            ) : (
-              <Avatar
-                variant="rounded"
-                src={f.dataUrl}
-                sx={{ width: 82, height: 82 }}
-              />
-            )
-          ) : (
-            <Avatar
-              variant="rounded"
-              sx={{ width: 82, height: 82, bgcolor: "background.default" }}
-            >
-              <UploadFileIcon />
-            </Avatar>
-          )}
-        </Box>
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="subtitle2">{label}</Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {f ? f.name : "No file uploaded"}
-          </Typography>
-        </Box>
-
-        <Box>
-          <label>
-            <input
-              accept="image/*,application/pdf"
-              style={{ display: "none" }}
-              type="file"
-              onChange={(e) => handleFile(e, key)}
-            />
-            <Button component="span" size="small" variant="outlined">
-              Upload
-            </Button>
-          </label>
-
-          {f && (
-            <IconButton
-              aria-label="delete"
-              size="small"
-              onClick={() => removeFile(key)}
-              sx={{ ml: 1 }}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          )}
-        </Box>
-      </Paper>
-    );
   };
 
   return (
     <Box sx={{ width: "100%", maxWidth: 700 }}>
-      <Typography variant="h6" gutterBottom>
-        Document upload
+      <Typography variant='h6' gutterBottom>
+        Citizenship Details
       </Typography>
 
-      <Typography variant="body2" sx={{ mb: 2 }}>
-        Upload clear pictures of your ID (front and back) and a selfie for
-        identity verification. We accept JPG, PNG, PDF.
-      </Typography>
+      <div>
+        <Grid container spacing={2}>
+          <Grid size={{ sm: 12 }}>
+            <TextField
+              label='Citizenship ID'
+              fullWidth
+              {...register("citizenshipNumber", {
+                required: "Citizenship ID is required.",
+              })}
+              error={!!errors.citizenshipId}
+              helperText={errors.citizenshipId?.message}
+              placeholder='Enter your citizenship ID'
+            />
+          </Grid>
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6} width={"100%"}>
-          {previewBox("Selfie (clear face)", "selfie")}
+          <Grid size={{ sm: 12, md: 6 }}>
+            <TextField
+              label='Issued District'
+              fullWidth
+              {...register("issuedDistrict", {
+                required: "Issued district is required.",
+              })}
+              error={!!errors.issuedDistrict}
+              helperText={errors.issuedDistrict?.message}
+              placeholder='Enter the district where issued'
+            />
+          </Grid>
+
+          <Grid size={{ sm: 12, md: 6 }}>
+            <TextField
+              label='Issued Date'
+              type='date'
+              fullWidth
+              {...register("issuedDate", {
+                required: "Issued date is required.",
+              })}
+              error={!!errors.issuedDate}
+              helperText={errors.issuedDate?.message}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          <Grid>
+            <Button
+              variant='outlined'
+              component='label'
+              fullWidth
+              startIcon={<UploadFileIcon />}
+            >
+              Upload Citizenship Front Image *
+              <input
+                type='file'
+                hidden
+                accept='image/*'
+                onChange={(e) =>
+                  handleFileChange(
+                    e,
+                    setCitizenshipFrontFile,
+                    setCitizenshipFrontPreview,
+                    "citizenshipFrontFile"
+                  )
+                }
+              />
+            </Button>
+
+            {citizenshipFrontFile && (
+              <Typography variant='body2' mt={1}>
+                Selected: {citizenshipFrontFile.name}
+              </Typography>
+            )}
+
+            {citizenshipFrontPreview && (
+              <Box mt={1}>
+                <img
+                  src={citizenshipFrontPreview}
+                  alt='Citizenship Front Preview'
+                  style={{ maxWidth: "100%", maxHeight: 150, borderRadius: 8 }}
+                />
+              </Box>
+            )}
+
+            {errors.citizenshipFrontFile && (
+              <Typography color='error' variant='body2'>
+                {errors.citizenshipFrontFile.message}
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid size={{ sm: 12, md: 6 }}>
+            <Button
+              variant='outlined'
+              component='label'
+              fullWidth
+              startIcon={<UploadFileIcon />}
+            >
+              Upload Citizenship Back Image *
+              <input
+                type='file'
+                hidden
+                accept='image/*'
+                onChange={(e) =>
+                  handleFileChange(
+                    e,
+                    setCitizenshipBackFile,
+                    setCitizenshipBackPreview,
+                    "citizenshipBackFile"
+                  )
+                }
+              />
+            </Button>
+            {citizenshipBackFile && (
+              <Typography variant='body2' mt={1}>
+                Selected: {citizenshipBackFile.name}
+              </Typography>
+            )}
+
+            <Box mt={1}>
+              <img
+                src={citizenshipBackPreview}
+                alt='Citizenship back Preview'
+                style={{ maxWidth: "100%", maxHeight: 150, borderRadius: 8 }}
+              />
+            </Box>
+            {errors.citizenshipBackFile && (
+              <Typography color='error' variant='body2'>
+                {errors.citizenshipBackFile.message}
+              </Typography>
+            )}
+          </Grid>
         </Grid>
-
-        <Grid item xs={12} md={6} width={"100%"}>
-          {previewBox("ID / Passport (front)", "idFront")}
-        </Grid>
-
-        <Grid item xs={12} md={6} width={"100%"}>
-          {previewBox("ID / Passport (back)", "idBack")}
-        </Grid>
-
-        <Grid item xs={12} md={6} width={"100%"}>
-          {previewBox("Optional: additional document", "other")}
-        </Grid>
-
-        <Grid item xs={12}>
-          <Typography variant="caption" color="text.secondary">
-            Tip: Use a well-lit, straight-on photo. Photos that are blurred or
-            cropped may be rejected.
-          </Typography>
-        </Grid>
-
-        <Grid item xs={12} sx={{ mt: 1 }}>
-          {/* MYBUTTON */}
-          <PrimaryButton
-            btnText="SAVE UPLOADS"
-            className="mr-3"
-            onClick={() => {
-              setFiles(emptyState);
-              localStorage.removeItem(STORAGE_KEY);
-            }}
-          />
-
-          <SecondaryButton
-            btnText="CLEAR ALL"
-            className="mr-3"
-            onClick={() => {
-              setFiles(emptyState);
-              localStorage.removeItem(STORAGE_KEY);
-            }}
-          />
-        </Grid>
-      </Grid>
+      </div>
     </Box>
   );
 }
