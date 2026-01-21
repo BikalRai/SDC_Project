@@ -1,3 +1,5 @@
+import { FaRegStar, FaStar } from "react-icons/fa6";
+
 const Star = ({ onRate, onHoverIn, onHoverOut, full }) => {
   return (
     <div

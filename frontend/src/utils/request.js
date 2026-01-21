@@ -34,6 +34,12 @@ const request = {
       }),
     deleteKyc: (id) => api.delete(`/kyc/delete/${id}`),
   },
+  rent: {
+    create: (rentData) =>
+      api.post("/rental/rent", {
+        ...rentData,
+      }),
+  },
 };
 
 export default request;

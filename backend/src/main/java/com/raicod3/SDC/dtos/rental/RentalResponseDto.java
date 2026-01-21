@@ -22,7 +22,6 @@ public class RentalResponseDto {
     private int rentalId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime pickupTime;
     private String totalAmount;
 
     private RentalStatus status;
@@ -40,7 +39,6 @@ public class RentalResponseDto {
         this.totalAmount = rental.getTotalAmount();
         this.status = rental.getStatus();
         this.createdAt = rental.getCreatedAt();
-        this.pickupTime = rental.getPickupTime();
         this.renter = new UserResponseDto(rental.getRenter());
         this.item = new ItemResponseDto(rental.getItem());
         this.ownerId = rental.getOwnerId();

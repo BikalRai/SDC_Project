@@ -1,5 +1,6 @@
 package com.raicod3.SDC.dtos.item;
 
+import com.raicod3.SDC.dtos.review.ReviewResponseDto;
 import com.raicod3.SDC.dtos.user.UserResponseDto;
 import com.raicod3.SDC.enums.Category;
 import com.raicod3.SDC.enums.ItemCondition;
@@ -13,6 +14,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -49,6 +51,8 @@ public class ItemResponseDto {
 
     private UserResponseDto user;
 
+    private List<ReviewResponseDto> reviews;
+
     public ItemResponseDto(Item item) {
         this.id = item.getId();
         this.name = item.getName();
@@ -69,5 +73,8 @@ public class ItemResponseDto {
         this.images = item.getImages();
         this.reviewCount = item.getReviews() != null ? item.getReviews().size() : 0;
         this.user = new UserResponseDto(item.getUser());
+        this.reviews = item.getReviews() != null
+                ? item.getReviews().stream().map(ReviewResponseDto::new).collect(Collectors.toList())
+                : List.of();
     }
 }
