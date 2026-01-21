@@ -24,8 +24,6 @@ public class RentalRequestDto {
     @NotNull(message = "Proposed end date is required")
     private LocalDate endDate;
 
-    private LocalTime pickupTime;
-
     private String totalAmount;
 
 }

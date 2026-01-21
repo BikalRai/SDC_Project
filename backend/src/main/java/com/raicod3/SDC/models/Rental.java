@@ -23,7 +23,6 @@ public class Rental {
     private int rentalId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime pickupTime;
     private String totalAmount;
 
     @Enumerated(EnumType.STRING)
@@ -46,7 +45,6 @@ public class Rental {
         this.startDate = req.getStartDate();
         this.endDate = req.getEndDate();
         this.totalAmount = req.getTotalAmount();
-        this.pickupTime = req.getPickupTime();
         this.status = RentalStatus.ACTIVE;
         this.createdAt = LocalDate.now();
         this.renter = user;

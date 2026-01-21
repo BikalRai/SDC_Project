@@ -47,9 +47,7 @@ public class ItemService {
         return new ItemResponseDto(item);
 
     }
-
     public List<ItemResponseDto> getItems(CustomUserDetails customUserDetails, ItemRequestFilter filter) throws BadRequestException {
-
         String search = filter.getSearch();
         Category category = null;
 
@@ -60,49 +58,38 @@ public class ItemService {
                 throw new BadRequestException("Invalid category: " + filter.getCategory());
             }
         }
+
         Integer minPrice = null;
         Integer maxPrice = null;
-
         String range = filter.getPriceRange();
 
         if (range != null && !range.isEmpty()) {
-
             if (range.contains("-")) {
                 String[] parts = range.split("-");
                 minPrice = Integer.parseInt(parts[0].trim());
                 maxPrice = Integer.parseInt(parts[1].trim());
-            }
-            else if (range.endsWith("+")) {
+            } else if (range.endsWith("+")) {
                 minPrice = Integer.parseInt(range.replace("+", "").trim());
-                maxPrice = null; // No upper limit
-            }
-            else {
-                // If only a number is passed, treat it as minPrice with no maxPrice
+            } else {
                 minPrice = Integer.parseInt(range.trim());
-                maxPrice = null;
             }
         }
 
+        // Always show items from ALL users
+        List<Item> items = itemRepository.filterItems(
+                search,
+                category,
+                minPrice,
+                maxPrice
+        );
 
-        boolean hasAnyFilter =
-                (search != null && !search.isEmpty()) ||
-                        (category != null) ||
-                        (range != null && !range.isEmpty());
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
 
-        if (hasAnyFilter) {
-            List<Item> filtered = itemRepository.filterItems(search, category, minPrice, maxPrice);
-            return filtered.stream()
-                    .map(ItemResponseDto::new)
-                    .collect(Collectors.toList());
-        }
-
-        if(customUserDetails == null) {
-           List<Item> allItems = itemRepository.findAll();
-           return allItems.stream().map(ItemResponseDto::new).collect(Collectors.toList());
-        }
-
-        List<Item> items = itemRepository.findAllByUser(customUserDetails.getUser());
-        return items.stream().map(ItemResponseDto::new).collect(Collectors.toList());
+    public List<ItemResponseDto> getMyItems (CustomUserDetails user) {
+        return itemRepository.findAllByUser(user.getUser()).stream().map(ItemResponseDto::new). toList();
     }
 
     public ItemResponseDto getItem(@PathVariable long id ) {

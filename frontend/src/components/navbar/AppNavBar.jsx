@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Avatar } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "@/slices/auth.slice";
+import { logo } from "@/utils/imports";
 
 const navLinks = [
   { id: 1, name: "home", path: "/" },
@@ -21,6 +22,13 @@ const AppNavBar = () => {
 
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const handleNavIsOpen = () => {
     setIsOpen(!open);
@@ -37,7 +45,9 @@ const AppNavBar = () => {
           <div className='flex items-center h-16'>
             {/* Logo */}
             <div className='flex-shrink-0 grow'>
-              <h1 className='text-2xl font-bold text-primary'>LOGO</h1>
+              <div className='w-28 cursor-pointer' onClick={scrollToTop}>
+                <img src={logo} alt='Logo' className='w-full aspect-square' />
+              </div>
             </div>
 
             {/* hamburger */}

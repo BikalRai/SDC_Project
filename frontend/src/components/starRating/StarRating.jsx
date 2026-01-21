@@ -16,7 +16,7 @@ const StarRating = ({ maxRating }) => {
           <div key={i + 1}>
             <Star
               key={i}
-              full={tempRating ? tempRating >= 1 + 1 : rating >= 1 + 1}
+              full={tempRating ? tempRating >= i + 1 : rating >= i + 1}
               onRate={() => handleRate(i + 1)}
               onHoverIn={() => setTempRating(i + 1)}
               onHoverOut={() => setTempRating(0)}
@@ -24,6 +24,8 @@ const StarRating = ({ maxRating }) => {
           </div>
         ))}
       </div>
+      <p className='hidden'>{rating || ""}</p>
+      <p className='hidden'>{tempRating || ""}</p>
     </div>
   );
 };
