@@ -24,6 +24,11 @@ import FindYourRental from "../findYourRental/FindYourRental";
 import Furnitures from "@/pages/Furnitures";
 import Electronic from "@/pages/Electronic";
 import KycForm from "../kyc/KycForm";
+import AdminDashboard from "@/pages/static pages/AdminDashboard";
+import AdminPayment from "@/pages/static pages/AdminPayment";
+import KycView from "@/pages/static pages/KycView";
+import KycList from "@/pages/static pages/KycList";
+import PaymentProcess from "@/pages/static pages/PaymentProcess";
 
 const Approutes = () => {
   return (
@@ -59,6 +64,13 @@ const Approutes = () => {
         <Route path='/provider-app' element={<ProviderApp />} />
         <Route path='/complete-profile' element={<CompleteProfile />} />
         <Route path='*' element={<NotFoundPage />} />
+
+        {/* Static Pages */}
+        <Route path='/admin-dashboard' element={<AdminDashboard />} />
+        <Route path='/admin-payment' element={<AdminPayment />} />
+        <Route path='/kyc-view' element={<KycView />} />
+        <Route path='/Kyc-list' element={<KycList />} />
+        <Route path='/payment-process' element={<PaymentProcess />} />
       </Routes>
     </>
   );
