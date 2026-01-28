@@ -348,36 +348,8 @@ export default function PaymentDetails() {
   return (
     <div className="flex min-h-screen bg-[#F5F8FA] font-sans">
       {/* SIDEBAR (shared) */}
-      <aside className="w-[260px] bg-[#DFF0E1] px-6 py-8 flex flex-col justify-between">
-        <div>
-          <div className="flex items-center gap-2 mb-12">
-            <div className="text-2xl font-bold text-[#0093B8]">KB</div>
-            <span className="text-xs text-slate-500">Kiryu Bazar</span>
-          </div>
-
-          <nav className="space-y-2 text-sm">
-            <SidebarItem
-              icon={<LayoutDashboard size={18} />}
-              label="Dashboard"
-            />
-            <SidebarItem icon={<CalendarCheck size={18} />} label="Bookings" />
-            <SidebarItem icon={<BellRing size={18} />} label="Notifications" />
-            <SidebarItem icon={<Settings size={18} />} label="Settings" />
-
-            <p className="mt-8 mb-2 text-xs text-slate-500">Report</p>
-            <SidebarItem icon={<ShieldCheck size={18} />} label="KYC Hub" />
-            <SidebarItem
-              icon={<CreditCard size={18} />}
-              label="Payment Details"
-              active
-            />
-          </nav>
-        </div>
-
-        <button className="flex items-center justify-center gap-2 text-sm bg-[#0093B8] text-white py-2 rounded-lg">
-          <LogOut size={16} /> Logout
-        </button>
-      </aside>
+      <Sidebar />
+      
 
       {/* CONTENT */}
       <main className="flex-1 px-10 py-6">
