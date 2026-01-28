@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 
-import Approutes from "./components/routes/Approutes";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { loadUserFromToken } from "./slices/auth.slice";
+import { AppRouter } from "./components/routes/AppRouter";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -18,15 +18,15 @@ const App = () => {
   }, [dispatch, authToken, user]);
   return (
     <>
-      <Approutes />
+      <AppRouter />
       <ToastContainer
-        position='top-right'
+        position="top-right"
         autoClose={2000}
         hideProgressBar={false}
         closeOnClick
         pauseOnHover
         draggable
-        theme='light'
+        theme="light"
       />
     </>
   );

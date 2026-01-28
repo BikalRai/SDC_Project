@@ -17,10 +17,10 @@ export const addItem = createAsyncThunk(
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to create item"
+        error.response?.data?.message || "Failed to create item",
       );
     }
-  }
+  },
 );
 
 export const getAllItems = createAsyncThunk(
@@ -32,7 +32,19 @@ export const getAllItems = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
+);
+
+export const getUserListedItems = createAsyncThunk(
+  "item/user",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await request.item.userItems();
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  },
 );
 
 export const fetchItemById = createAsyncThunk(
@@ -44,7 +56,7 @@ export const fetchItemById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
 export const updateItem = createAsyncThunk(
@@ -57,10 +69,10 @@ export const updateItem = createAsyncThunk(
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error?.response?.data?.message || "Failed to update item."
+        error?.response?.data?.message || "Failed to update item.",
       );
     }
-  }
+  },
 );
 
 export const deleteItem = createAsyncThunk(
@@ -71,10 +83,10 @@ export const deleteItem = createAsyncThunk(
       return { id, message: "Delete item successfully." };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to delete item."
+        error.response?.data?.message || "Failed to delete item.",
       );
     }
-  }
+  },
 );
 
 const itemSlice = createSlice({
@@ -118,6 +130,21 @@ const itemSlice = createSlice({
         state.items = [];
         state.error = action.payload;
       })
+      .addCase(getUserListedItems.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(getUserListedItems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload.data;
+      })
+      .addCase(getUserListedItems.rejected, (state, action) => {
+        state.loading = false;
+        state.successMessage = null;
+        state.items = [];
+        state.error = action.payload;
+      })
       .addCase(fetchItemById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -143,7 +170,7 @@ const itemSlice = createSlice({
         const updatedItem = action.payload;
 
         state.items = state.items.map((item) =>
-          item.id === updatedItem.id ? updatedItem : item
+          item.id === updatedItem.id ? updatedItem : item,
         );
 
         state.item = updatedItem;
