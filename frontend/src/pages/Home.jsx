@@ -8,11 +8,14 @@ import Footer from "@/components/section/Footer";
 import Testimonial from "@/components/testimonial/Testimonial";
 import { getAllItems } from "@/slices/item.slice";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
   const dispatch = useDispatch();
 
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  console.log(user, isAuthenticated, "in home");
   useEffect(() => {
     dispatch(getAllItems());
   }, []);

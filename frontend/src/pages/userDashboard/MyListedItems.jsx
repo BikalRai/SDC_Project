@@ -6,7 +6,11 @@ import UserDashboardTitle from "@/components/header/UserDashboardTitle";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import { clearMessages, deleteItem, getAllItems } from "@/slices/item.slice";
+import {
+  clearMessages,
+  deleteItem,
+  getUserListedItems,
+} from "@/slices/item.slice";
 import { getCategories } from "@/slices/category.slice";
 
 const MyListedItems = () => {
@@ -31,9 +35,11 @@ const MyListedItems = () => {
 
   // Fetch items + categories once
   useEffect(() => {
-    dispatch(getAllItems());
+    dispatch(getUserListedItems());
     dispatch(getCategories());
   }, [dispatch]);
+
+  console.log(items);
 
   return (
     <div className="grid gap-8">
@@ -70,19 +76,19 @@ const MyListedItems = () => {
                 {/* Item Info */}
                 <div className="flex items-center gap-4 ps-8">
                   <img
-                    src={item.img}
-                    alt={item.title}
-                    className="w-12 h-12 object-cover rounded"
+                    src={item.images[0]}
+                    alt={item.name}
+                    className="w-12 h-12 object-contain rounded"
                   />
 
                   <div className="text-left">
-                    <p className="font-medium">{item.title}</p>
-                    <p className="text-xs">{item.category?.name || "No Category"}</p>
+                    <p className="font-medium">{item.name}</p>
+                    <p className="text-xs">{item.category || "No Category"}</p>
                   </div>
                 </div>
 
                 {/* Price */}
-                <div>{item.rate}</div>
+                <div>{item.dailyRate}</div>
 
                 {/* Status */}
                 <div>{item.status}</div>
@@ -91,7 +97,7 @@ const MyListedItems = () => {
                 <div className="flex justify-center gap-4 text-xl">
                   <CiEdit
                     className="cursor-pointer hover:text-primary transition-all duration-300"
-                    onClick={() => navigate(`/user/edit/${item.id}`)}
+                    onClick={() => navigate(`/user/edit-item/${item.id}`)}
                   />
 
                   <LuTrash2
@@ -102,7 +108,9 @@ const MyListedItems = () => {
               </div>
             ))
           ) : (
-            <div className="text-center py-6 text-text-muted">No items listed yet</div>
+            <div className="text-center py-6 text-text-muted">
+              No items listed yet
+            </div>
           )}
         </div>
       </div>

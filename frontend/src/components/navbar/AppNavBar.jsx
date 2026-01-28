@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useState } from "react";
 import { Avatar } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "@/slices/auth.slice";
+import { useSelector } from "react-redux";
 import { logo } from "@/utils/imports";
+import UserMenu from "./UserMenu";
 
 const navLinks = [
   { id: 1, name: "home", path: "/" },
@@ -19,8 +19,8 @@ const navLinks = [
 
 const AppNavBar = () => {
   const [open, setIsOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-  const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const scrollToTop = () => {
@@ -34,19 +34,23 @@ const AppNavBar = () => {
     setIsOpen(!open);
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
+  const handleMouseEnter = () => {
+    setIsUserMenuOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsUserMenuOpen(false);
   };
 
   return (
     <ReContainer>
-      <nav className='bg-transparent sticky top-0 z-50'>
-        <div className='mx-auto'>
-          <div className='flex items-center h-16'>
+      <nav className="bg-transparent sticky top-0 z-50">
+        <div className="mx-auto">
+          <div className="flex items-center h-16">
             {/* Logo */}
-            <div className='flex-shrink-0 grow'>
-              <div className='w-28 cursor-pointer' onClick={scrollToTop}>
-                <img src={logo} alt='Logo' className='w-full aspect-square' />
+            <div className="flex-shrink-0 grow">
+              <div className="w-28 cursor-pointer" onClick={scrollToTop}>
+                <img src={logo} alt="Logo" className="w-full aspect-square" />
               </div>
             </div>
 
@@ -55,7 +59,7 @@ const AppNavBar = () => {
               className={`lg:hidden h-6 w-6 cursor-pointer hover:fill-light-primary transition ${
                 open ? `hidden` : "block"
               }`}
-              fill='#0090B8'
+              fill="#0090B8"
               onClick={handleNavIsOpen}
             />
 
@@ -65,9 +69,9 @@ const AppNavBar = () => {
               } absolute top-0 right-0 bg-card-bg p-5 rounded-2xl flex-col min-h-dvh gap-4 lg:static lg:min-h-fit lg:bg-transparent lg:flex lg:flex-row lg:grow lg:justify-between lg:p-0`}
             >
               {/* Navigation Links */}
-              <div className='flex flex-col items-center gap-5 mt-4 lg:flex-row lg:mt-0'>
+              <div className="flex flex-col items-center gap-5 mt-4 lg:flex-row lg:mt-0">
                 <div
-                  className='text-primary cursor-pointer absolute right-4 top-4 lg:hidden'
+                  className="text-primary cursor-pointer absolute right-4 top-4 lg:hidden"
                   onClick={handleNavIsOpen}
                 >
                   x
@@ -78,16 +82,27 @@ const AppNavBar = () => {
               </div>
 
               {isAuthenticated ? (
-                <div className='cursor-pointer' onClick={handleLogout}>
-                  <Avatar />
+                <div
+                  className="relative cursor-pointer"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div>
+                    <Avatar />
+                  </div>
+                  {isUserMenuOpen && (
+                    <div className="absolute top-full right-0">
+                      <UserMenu />
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className='flex items-center gap-4 ml-auto'>
-                  <Link to='/login'>
-                    <SecondaryButton btnText='Log In' />
+                <div className="flex items-center gap-4 ml-auto">
+                  <Link to="/login">
+                    <SecondaryButton btnText="Log In" />
                   </Link>
-                  <Link to='/register'>
-                    <PrimaryButton btnText='Join Now' />
+                  <Link to="/register">
+                    <PrimaryButton btnText="Join Now" />
                   </Link>
                 </div>
               )}

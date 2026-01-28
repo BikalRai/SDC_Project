@@ -4,8 +4,7 @@ import FormLabel from "../label/FormLabel";
 const KiSelect = ({ arr = [], labelText, onChangeFunc, value }) => {
   // Capitalize label safely
   const formattedLabel =
-    labelText?.charAt(0).toUpperCase() +
-    labelText?.slice(1).toLowerCase();
+    labelText?.charAt(0).toUpperCase() + labelText?.slice(1).toLowerCase();
 
   return (
     <div className="grid gap-1 flex-1">
@@ -22,11 +21,10 @@ const KiSelect = ({ arr = [], labelText, onChangeFunc, value }) => {
           value={value}
         >
           {arr.map((item) => {
-            const optionLabel =
-              item?.name || item?.status || "Unknown";
+            const optionLabel = item?.name || item?.status || "Unknown";
 
             const optionValue =
-              item?.status ?? item?.id ?? optionLabel;
+              item?.name || item?.status || item?.id || optionLabel;
 
             return (
               <option key={item?.id ?? optionValue} value={optionValue}>

@@ -9,12 +9,10 @@ const request = {
   item: {
     create: (data) => api.post("/item/create", data),
     items: () => api.get("/item/items"),
+    userItems: () => api.get("/item/items/user"),
     getItem: (id) => api.get(`/item/${id}`),
-    update: (id, data) => api.put(`/item/${id}/update`, data),
-    delete: (id) => api.delete(`/item/${id}/delete`),
-  },
-  category: {
-    categories: () => api.get("/category/categories"),
+    update: (id, data) => api.put(`/item/update/${id}`, data),
+    delete: (id) => api.delete(`/item/delete/${id}`),
   },
   kyc: {
     create: (formData) =>

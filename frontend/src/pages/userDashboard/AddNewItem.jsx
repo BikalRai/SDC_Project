@@ -12,11 +12,11 @@ import {
   fetchItemById,
   updateItem,
 } from "@/slices/item.slice";
-import { getCategories } from "@/slices/category.slice";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageUploader from "@/components/image/ImageUploader";
 import SpecificationInput from "@/components/SpecificationInput";
+import { uploadToCloudinary } from "@/utils/cloudinary";
 
 const statuses = [
   { id: 1, status: "available" },
@@ -25,19 +25,44 @@ const statuses = [
 ];
 
 const conditions = [
-  { id: 1, status: "great" },
-  { id: 2, status: "good" },
-  { id: 3, status: "poor" },
+  { id: 1, status: "new" },
+  { id: 2, status: "excellent" },
+  { id: 3, status: "good" },
+  { id: 4, status: "fair" },
+  { id: 5, status: "poor" },
+];
+
+const categories = [
+  { id: 1, name: "VEHICLE" },
+  { id: 2, name: "SCOOTER" },
+  { id: 3, name: "BIKE" },
+  { id: 4, name: "CAR" },
+  { id: 5, name: "BOOK" },
+  {
+    id: 6,
+    name: "ELECTRONICS",
+  },
+  {
+    id: 7,
+    name: "FURNITURE",
+  },
+  { id: 8, name: "TOOLS" },
+  { id: 9, name: "SPORTS_EQUIPMENT" },
+  { id: 10, name: "CAMERA" },
+  { id: 11, name: "OTHER" },
 ];
 
 const AddNewItem = () => {
   const [itemData, setItemData] = useState({
     title: "",
     description: "",
-    categoryId: "1",
+    category: "VEHICLE",
+    brand: "",
+    model: "",
     location: "",
     rate: "",
     status: "available",
+    condition: "good",
     specifications: [],
   });
 
@@ -46,8 +71,7 @@ const AddNewItem = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { categories } = useSelector((state) => state.category);
-  const { successMessage, item } = useSelector((state) => state.item);
+  const { successMessage, item, error } = useSelector((state) => state.item);
   const { id } = useParams();
 
   const editMode = Boolean(id);
@@ -64,7 +88,7 @@ const AddNewItem = () => {
       return false;
     }
 
-    if (!itemData.categoryId) {
+    if (!itemData.category) {
       toast.error("Please select a category");
       return false;
     }
@@ -88,25 +112,47 @@ const AddNewItem = () => {
   };
 
   /* -------------------- SUBMIT -------------------- */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     setLoading(true);
 
-    const payload = {
-      ...itemData,
-      rate: Number(itemData.rate),
-      images: images.map((img) => img.file),
-    };
-
     try {
-      editMode
-        ? dispatch(updateItem({ id: Number(id), updateData: payload }))
-        : dispatch(addItem(payload));
+      // 1. Separate new uploads from existing images
+      const existingUrls = images
+        .filter((img) => !img.file && img.url)
+        .map((img) => img.url);
+
+      const newFiles = images.filter((img) => img.file).map((img) => img.file);
+
+      // 2. Upload only new files to Cloudinary
+      const uploadedUrls = await Promise.all(
+        newFiles.map((file) => uploadToCloudinary(file)),
+      );
+
+      // 3. Combine both
+      const finalImages = [...existingUrls, ...uploadedUrls];
+
+      const payload = {
+        ...itemData,
+        title: itemData.title, // Fixed: use itemData, not item
+        name: itemData.title, // Depending on what your backend expects
+        status: itemData.status.toUpperCase(),
+        condition: itemData.condition.toUpperCase(),
+        dailyRate: itemData.rate,
+        images: finalImages,
+      };
+
+      if (editMode) {
+        dispatch(updateItem({ id, updateData: payload }));
+      } else {
+        dispatch(addItem(payload));
+      }
     } catch (err) {
-      toast.error("Something went wrong");
+      console.error("Submit Error:", err);
+      toast.error("Operation failed");
       setLoading(false);
     }
   };
@@ -114,7 +160,6 @@ const AddNewItem = () => {
   /* -------------------- EFFECTS -------------------- */
   useEffect(() => {
     dispatch(clearMessages());
-    dispatch(getCategories());
   }, [dispatch]);
 
   useEffect(() => {
@@ -122,16 +167,35 @@ const AddNewItem = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
+    if (error) {
+      dispatch(clearMessages());
+    }
+  }, [dispatch, error]);
+
+  useEffect(() => {
     if (id && item) {
       setItemData({
-        title: item?.title || "",
+        title: item?.name || "",
         description: item?.description || "",
-        categoryId: item?.category?.id || "",
+        category: item?.category || "VEHICLE",
+        brand: item?.brand || "",
+        model: item?.model || "",
         location: item?.location || "",
-        rate: item?.rate || "",
-        status: item?.status || "available",
+        rate: item?.dailyRate || "",
+        status: item?.status?.toLowerCase() || "available",
+        condition: item?.condition?.toLowerCase() || "good",
         specifications: item?.specifications || [],
       });
+
+      // CRITICAL: Map existing URLs to the format your Uploader expects
+      if (item.images && item.images.length > 0) {
+        setImages(
+          item.images.map((imgUrl) => ({
+            url: imgUrl, // This allows the UI to display the existing image
+            isExisting: true, // Useful flag to skip re-uploading
+          })),
+        );
+      }
     }
   }, [id, item]);
 
@@ -186,7 +250,7 @@ const AddNewItem = () => {
                 arr={categories}
                 labelText="category"
                 onChangeFunc={handleItemChange}
-                value={itemData.categoryId}
+                value={itemData.category}
               />
               <KiSelect
                 arr={conditions}
@@ -272,7 +336,9 @@ const AddNewItem = () => {
           <div className="flex justify-end gap-4">
             <TertiaryButton btnText="Cancel" />
             <PrimaryButton
-              btnText={loading ? "Posting..." : "Post Item"}
+              btnText={
+                loading ? "Posting..." : editMode ? "Update" : "Post Item"
+              }
               type="submit"
               disabled={loading}
             />
