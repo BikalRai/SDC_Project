@@ -1,60 +1,80 @@
-// import { LuUpload } from "react-icons/lu";
-
-// const ImageUploader = () => {
-//   return (
-//     <div>
-//       <form className='bg-background p-8 rounded'>
-//         <div className='border border-dashed border-text-muted rounded flex flex-col justify-center items-center p-8 relative'>
-//           <div className='flex flex-col justify-center items-center gap-8'>
-//             <div className='bg-[#3b82f830] w-12 h-12  rounded-full flex items-center justify-center'>
-//               <LuUpload className='stroke-primary text-3xl' />
-//             </div>
-//             <p className='text-text-muted'>Upload files. Add up to 5 images.</p>
-
-//             {/* <button className='font-semibold rounded bg-[#3b82f830] py-3.5 px-10 cursor-pointer hover:bg-primary hover:text-text-white transition duration-300'>
-//               Browse File
-//             </button> */}
-//           </div>
-//           <input
-//             type='file'
-//             className='w-full h-full cursor-pointer  absolute opacity-0 top-0 left-0'
-//           />
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default ImageUploader;
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LuUpload } from "react-icons/lu";
 
-const ImageUploader = ({ onUpload, max = 10, className }) => {
+const ImageUploader = ({
+  max = 10,
+  value = [],
+  onChange,
+}) => {
+  const [images, setImages] = useState([]);
+
+  // sync from parent (edit mode support)
+  useEffect(() => {
+    if (value.length) {
+      setImages(value);
+    }
+  }, [value]);
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    const newImages = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    const updatedImages = [...images, ...newImages].slice(0, max);
+    setImages(updatedImages);
+
+    onChange?.(updatedImages);
+  };
+
   return (
-    <div className="p-4 bg-gray-200">
-      <div
-        className={`
-        border-2 border-dashed border-gray-300 rounded-lg p-8 
-        flex flex-col items-center justify-center bg-gray-100
-        relative cursor-pointer ${className}`}
-      >
-        <div className="bg-[#3b82f830] w-12 h-12 rounded-full flex items-center justify-center">
-          <LuUpload className="stroke-primary text-3xl" />
+    <div className="space-y-4">
+      {/* UPLOADER */}
+      <div className="border border-dashed border-text-muted rounded-xl flex flex-col justify-center items-center p-8 relative cursor-pointer bg-background">
+        <div className="flex flex-col items-center gap-4 pointer-events-none">
+          <div className="bg-[#3b82f830] w-12 h-12 rounded-full flex items-center justify-center">
+            <LuUpload className="stroke-primary text-3xl" />
+          </div>
+          <p className="text-text-muted text-sm text-center">
+            Drag & Drop Images or Browse Files. Add up to {max} photos.
+          </p>
         </div>
 
-        <div className="text-center text-gray-400 mt-2">
-          Drag & Drop Images or Browse Files. Add up to {max} photos.
-        </div>
-
-        {/* Full click area input */}
         <input
           type="file"
           multiple
           accept="image/*"
-          onChange={onUpload}
+          onChange={handleImageChange}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
+      </div>
+
+      {/* PREVIEW GRID */}
+      <div className="grid grid-cols-2 gap-4">
+        {images.map((img, index) => (
+          <div
+            key={index}
+            className="h-24 rounded-lg overflow-hidden border border-border"
+          >
+            <img
+              src={img.preview}
+              alt={`preview-${index}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+
+        {/* Figma placeholders */}
+        {Array.from({ length: Math.max(0, 2 - images.length) }).map(
+          (_, i) => (
+            <div
+              key={`placeholder-${i}`}
+              className="h-24 rounded-lg bg-muted"
+            />
+          )
+        )}
       </div>
     </div>
   );
