@@ -15,22 +15,17 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByUser(UserModel user);
 
-//    @Query("""
-//SELECT i FROM Item i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(i.brand) LIKE LOWER(CONCAT('%', :search, '%'))
-//""")
-//    List<Item> findAllItemBySearch(@Param("search") String search);
-
     @Query("""
     SELECT i FROM Item i
-    WHERE (:search IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :search, '%'))
-                           OR LOWER(i.brand) LIKE LOWER(CONCAT('%', :search, '%')))
+    WHERE (:search IS NULL OR :search = '' 
+           OR LOWER(i.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))
+           OR LOWER(i.brand) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))
       AND (:category IS NULL OR i.category = :category)
       AND (
-         (:minPrice IS NULL AND :maxPrice IS NULL)
-         OR (:minPrice IS NOT NULL AND :maxPrice IS NULL AND i.dailyRate >= :minPrice)
-         OR (:minPrice IS NOT NULL AND :maxPrice IS NOT NULL AND i.dailyRate BETWEEN :minPrice AND :maxPrice)
+         (:minPrice IS NULL OR i.dailyRate >= :minPrice)
+         AND (:maxPrice IS NULL OR i.dailyRate <= :maxPrice)
        )
-""")
+    """)
     List<Item> filterItems(
             @Param("search") String search,
             @Param("category") Category category,
@@ -38,3 +33,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             @Param("maxPrice") Integer maxPrice
     );
 }
+
