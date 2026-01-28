@@ -54,6 +54,21 @@ public class ItemController {
        }
    }
 
+    @GetMapping("/items/user")
+    public ResponseEntity<Map<String, Object>> getUserItems(@AuthenticationPrincipal CustomUserDetails userDetails) {
+       try {
+           List<ItemResponseDto> items = itemService.getMyItems(userDetails);
+
+           if(items.isEmpty()) {
+               return ResponseBuilder.buildResponse("There are no items", HttpStatus.OK, new ArrayList<>());
+           }
+
+           return ResponseBuilder.buildResponse("Items fetched successfully", HttpStatus.OK, items);
+       } catch (Exception e) {
+           return ResponseBuilder.buildResponse("An error occurred while trying to get items.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
+       }
+    }
+
    @GetMapping("/{id}")
    public ResponseEntity<Map<String, Object>> getItem(@PathVariable long id) {
        try {

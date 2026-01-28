@@ -47,6 +47,7 @@ public class ItemService {
         return new ItemResponseDto(item);
 
     }
+
     public List<ItemResponseDto> getItems(CustomUserDetails customUserDetails, ItemRequestFilter filter) throws BadRequestException {
         String search = filter.getSearch();
         Category category = null;
