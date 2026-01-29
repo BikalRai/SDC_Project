@@ -12,12 +12,13 @@ import {
   getUserListedItems,
 } from "@/slices/item.slice";
 import { getCategories } from "@/slices/category.slice";
+import { DotLoader } from "react-spinners";
 
 const MyListedItems = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { items, successMessage } = useSelector((state) => state.item);
+  const { items, successMessage, loading } = useSelector((state) => state.item);
 
   // Delete Handler
   const handleDelete = (id) => {
@@ -39,7 +40,7 @@ const MyListedItems = () => {
     dispatch(getCategories());
   }, [dispatch]);
 
-  console.log(items);
+  // console.log(items);
 
   return (
     <div className="grid gap-8">
@@ -55,65 +56,73 @@ const MyListedItems = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-card-bg rounded drop-shadow-xl border-gray-500">
-        {/* Table Header */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1.5fr] min-w-[900px] text-text-black font-medium p-3 border-b border-gray-300">
-          <div className="ps-8 text-left">ITEM</div>
-          <div className="text-center">PRICE</div>
-          <div className="text-center">STATUS</div>
-          <div className="text-center">ACTIONS</div>
+      {loading ? (
+        <div className="min-h-max p-20 flex items-center justify-center">
+          <DotLoader />
         </div>
+      ) : (
+        <div className="overflow-x-auto bg-card-bg rounded drop-shadow-xl border-gray-500">
+          {/* Table Header */}
+          <div className="grid grid-cols-[2fr_1fr_1fr_1.5fr] min-w-[900px] text-text-black font-medium p-3 border-b border-gray-300">
+            <div className="ps-8 text-left">ITEM</div>
+            <div className="text-center">PRICE</div>
+            <div className="text-center">STATUS</div>
+            <div className="text-center">ACTIONS</div>
+          </div>
 
-        {/* Table Body */}
-        <div className="min-w-[900px]">
-          {items?.length > 0 ? (
-            items.map((item) => (
-              <div
-                key={item.id}
-                className="grid grid-cols-[2fr_1fr_1fr_1.5fr] bg-background text-text-muted text-sm p-3 items-center 
+          {/* Table Body */}
+          <div className="min-w-[900px]">
+            {items?.length > 0 ? (
+              items.map((item) => (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-[2fr_1fr_1fr_1.5fr] bg-background text-text-muted text-sm p-3 items-center 
                 text-center border-b border-gray-300 hover:bg-card-bg transition"
-              >
-                {/* Item Info */}
-                <div className="flex items-center gap-4 ps-8">
-                  <img
-                    src={item.images[0]}
-                    alt={item.name}
-                    className="w-12 h-12 object-contain rounded"
-                  />
+                >
+                  {/* Item Info */}
+                  <div className="flex items-center gap-4 ps-8">
+                    <img
+                      src={item.images[0]}
+                      alt={item.name}
+                      className="w-12 h-12 object-contain rounded"
+                    />
 
-                  <div className="text-left">
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-xs">{item.category || "No Category"}</p>
+                    <div className="text-left">
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-xs">
+                        {item.category || "No Category"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Price */}
+                  <div>{item.dailyRate}</div>
+
+                  {/* Status */}
+                  <div>{item.status}</div>
+
+                  {/* Actions */}
+                  <div className="flex justify-center gap-4 text-xl">
+                    <CiEdit
+                      className="cursor-pointer hover:text-primary transition-all duration-300"
+                      onClick={() => navigate(`/user/edit-item/${item.id}`)}
+                    />
+
+                    <LuTrash2
+                      className="cursor-pointer hover:text-red-500 transition-all duration-300"
+                      onClick={() => handleDelete(item.id)}
+                    />
                   </div>
                 </div>
-
-                {/* Price */}
-                <div>{item.dailyRate}</div>
-
-                {/* Status */}
-                <div>{item.status}</div>
-
-                {/* Actions */}
-                <div className="flex justify-center gap-4 text-xl">
-                  <CiEdit
-                    className="cursor-pointer hover:text-primary transition-all duration-300"
-                    onClick={() => navigate(`/user/edit-item/${item.id}`)}
-                  />
-
-                  <LuTrash2
-                    className="cursor-pointer hover:text-red-500 transition-all duration-300"
-                    onClick={() => handleDelete(item.id)}
-                  />
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-6 text-text-muted">
+                No items listed yet
               </div>
-            ))
-          ) : (
-            <div className="text-center py-6 text-text-muted">
-              No items listed yet
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

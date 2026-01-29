@@ -8,7 +8,7 @@ import AppLayout from "../layout/AppLayout";
 import AppNavBar from "../navbar/AppNavBar";
 
 const categories = [
-  { id: 1, category: "vehicle", path: "/find" },
+  { id: 1, category: "vehicle", path: "/categories" },
   { id: 2, category: "furniture", path: "furniture" },
   { id: 3, category: "electronic", path: "electronic" },
   { id: 4, category: "book", path: "book" },
@@ -43,13 +43,13 @@ const FindYourRental = () => {
     <AppLayout>
       <AppNavBar />
       <ReContainer>
-        <section className='mt-20'>
-          <div className='rounded-[8px] py-8'>
-            <SectionHeader header='Find Your Rental' />
+        <section className="mt-20">
+          <div className="rounded-[8px] py-8">
+            <SectionHeader header="Find Your Rental" />
 
             {/* Category Selector */}
-            <div className='flex flex-col items-center mt-6'>
-              <div className='flex overflow-hidden gap-4 rounded-md bg-white shadow-sm my-10'>
+            <div className="flex flex-col items-center mt-6">
+              <div className="flex overflow-hidden gap-4 rounded-md bg-white shadow-sm my-10">
                 {categories.map((cat) => (
                   <div
                     key={cat.id}
@@ -59,7 +59,7 @@ const FindYourRental = () => {
                       "bg-primary text-text-white"
                     } cursor-pointer`}
                   >
-                    <NavLink to={cat.path} className='inline-block py-2 px-4'>
+                    <NavLink to={cat.path} className="inline-block py-2 px-4">
                       <span>
                         {cat.category[0].toUpperCase()}
                         {cat.category.slice(1).toLowerCase()}

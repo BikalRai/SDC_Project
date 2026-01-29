@@ -6,13 +6,14 @@ import { MdCategory } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const PopularCard = ({ item }) => {
+  // console.log(item, "item");
   return (
     <>
       <Link to={`/view-item/${item?.id}`}>
         <div className="bg-white rounded-2xl p-6 hover:shadow-2xl cursor-pointer transition-all duration-300">
           <div className="h-36 flex items-center">
             <img
-              src={`${item?.imageUrl}`}
+              src={`${item?.images[0]}`}
               alt={`${item?.name}`}
               className="object-contain h-full w-full rounded-xl"
             />

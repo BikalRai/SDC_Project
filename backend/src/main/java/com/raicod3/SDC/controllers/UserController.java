@@ -2,6 +2,10 @@ package com.raicod3.SDC.controllers;
 
 import com.raicod3.SDC.custom.CustomUserDetails;
 import com.raicod3.SDC.dtos.user.UserResponseDto;
+import com.raicod3.SDC.dtos.user.UserUpdateRequestDto;
+import com.raicod3.SDC.exceptions.HttpBadRequestException;
+import com.raicod3.SDC.exceptions.HttpForbiddenException;
+import com.raicod3.SDC.exceptions.HttpNotFoundException;
 import com.raicod3.SDC.models.UserModel;
 import com.raicod3.SDC.repositories.UserRepository;
 import com.raicod3.SDC.services.UserService;
@@ -10,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -32,6 +33,23 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseBuilder.buildResponse("An error occurred while trying to retrieve user", HttpStatus.INTERNAL_SERVER_ERROR,null, e);
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Map<String,Object>> updateUser(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UserUpdateRequestDto dto) {
+        try {
+            UserResponseDto res = userService.updateUser(user, dto);
+
+            return ResponseBuilder.buildResponse("User updated successfully.", HttpStatus.OK, res);
+        }
+        catch(HttpNotFoundException e) {
+            return ResponseBuilder.buildResponse("User not found.", HttpStatus.NOT_FOUND, null, e);
+        } catch (HttpForbiddenException e) {
+            return ResponseBuilder.buildResponse("An error occurred while trying to update user.", HttpStatus.FORBIDDEN, null, e);
+        }
+        catch(Exception e) {
+            return ResponseBuilder.buildResponse("An error occurred while trying to update user.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
         }
     }
 }

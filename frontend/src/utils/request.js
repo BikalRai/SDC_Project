@@ -6,9 +6,12 @@ const request = {
     register: (data) => api.post("/auth/register", data),
     getCurrentUser: () => api.get("/user"),
   },
+  user: {
+    update: (data) => api.put("/user/update", data),
+  },
   item: {
     create: (data) => api.post("/item/create", data),
-    items: () => api.get("/item/items"),
+    items: (params = {}) => api.get("/item/items", { params }),
     userItems: () => api.get("/item/items/user"),
     getItem: (id) => api.get(`/item/${id}`),
     update: (id, data) => api.put(`/item/update/${id}`, data),

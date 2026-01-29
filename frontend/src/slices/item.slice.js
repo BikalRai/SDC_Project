@@ -25,9 +25,21 @@ export const addItem = createAsyncThunk(
 
 export const getAllItems = createAsyncThunk(
   "item/items",
-  async (_, { rejectWithValue }) => {
+  async (filter = {}, { rejectWithValue }) => {
     try {
-      const res = await request.item.items();
+      const res = await request.item.items(filter);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  },
+);
+
+export const getSearchItems = createAsyncThunk(
+  "item/search",
+  async (filter, { rejectWithValue }) => {
+    try {
+      const res = await request.item.searchItems(filter);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

@@ -2,10 +2,7 @@ package com.raicod3.SDC.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "users")
 public class UserModel {
 
@@ -33,10 +31,10 @@ public class UserModel {
     private String password;
     private String role;
     private String location;
-    private String provider;
     private String image;
-    private LocalDate createdAt;
-    private LocalDateTime lastActive;
+    private String provider;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;
