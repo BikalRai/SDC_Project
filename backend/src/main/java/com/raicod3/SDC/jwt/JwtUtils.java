@@ -34,7 +34,12 @@ public class JwtUtils {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+       try{
+           return extractClaim(token, Claims::getSubject);
+       } catch (Exception e) {
+           System.out.println("Username extraction error: " + e.getMessage());
+           throw  e;
+       }
     }
 
     public <T> T extractClaim(String token, Function <Claims, T> claimsResolver) {
@@ -57,7 +62,7 @@ public class JwtUtils {
         claims.put("userId", user.getId());
 
 
-        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
+        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {

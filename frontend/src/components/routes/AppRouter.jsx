@@ -10,6 +10,22 @@ import {
 } from "react-router-dom";
 import UserDashboardLayout from "../layout/UserDashboardLayout";
 import AddNewItem from "@/pages/userDashboard/AddNewItem";
+import ProfileAndSettings from "../../pages/userDashboard/ProfileAndSettings";
+import MyRentals from "@/pages/userDashboard/MyRentals";
+import FindYourRental from "../findYourRental/FindYourRental";
+import Vehicle from "@/pages/vehicle";
+import Furnitures from "@/pages/Furnitures";
+import Electronic from "@/pages/Electronic";
+import NotFoundPage from "@/pages/NotFoundPage";
+import AdminDashboard from "@/pages/static pages/AdminDashboard";
+import AdminPayment from "@/pages/static pages/AdminPayment";
+import PaymentProcess from "@/pages/static pages/PaymentProcess";
+import OAuth2Redirect from "@/pages/OAuth2Redirect";
+import Checkout from "@/pages/Checkout";
+import AboutUsPage from "@/pages/AboutUsPage";
+import ViewItem from "@/pages/ViewItem";
+import KycView from "@/pages/static pages/KycView";
+import KycList from "@/pages/static pages/KycList";
 
 const RequireUserAuth = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -49,6 +65,22 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
+    path: "/oauth2/redirect",
+    element: <OAuth2Redirect />,
+  },
+  {
+    path: "/checkout",
+    element: <Checkout />,
+  },
+  {
+    path: "/about",
+    element: <AboutUsPage />,
+  },
+  {
+    path: "/view-item/:id",
+    element: <ViewItem />,
+  },
+  {
     path: "/user",
     element: (
       <RequireUserAuth>
@@ -59,8 +91,42 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <MyListedItems /> },
       { path: "add", element: <AddNewItem /> },
       { path: "edit-item/:id", element: <AddNewItem /> },
+      { path: "rentals", element: <MyRentals /> },
+      { path: "settings", element: <ProfileAndSettings /> },
     ],
   },
+  {
+    path: "/categories",
+    element: <FindYourRental />,
+    children: [
+      { index: true, element: <Vehicle /> },
+      { path: "vehicle", element: <Vehicle /> },
+      { path: "furniture", element: <Furnitures /> },
+      { path: "electronic", element: <Electronic /> },
+      // {path: "book", element: <Vehicle/>},
+    ],
+  },
+  { path: "/admin-dashboard", element: <AdminDashboard /> },
+  { path: "/admin-payment", element: <AdminPayment /> },
+  { path: "/kyc-view", element: <KycView /> },
+  { path: "/kyc-list", element: <KycList /> },
+  { path: "/payment-process", element: <PaymentProcess /> },
+  // {path: "/admin-dashboard", element: <RequireAdminAuth>
+  //   <AdminDashboard/>
+  // </RequireAdminAuth>},
+  // {path: "/admin-payment", element: <RequireAdminAuth>
+  //   <AdminPayment/>
+  // </RequireAdminAuth>},
+  // {path: "/kyc-view", element: <RequireAdminAuth>
+  //   <KycView/>
+  // </RequireAdminAuth>},
+  // {path: "/kyc-list", element: <RequireAdminAuth>
+  //   <KycList/>
+  // </RequireAdminAuth>},
+  // {path: "/payment-process", element: <RequireAdminAuth>
+  //   <PaymentProcess/>
+  // </RequireAdminAuth>},
+  { path: "*", element: <NotFoundPage /> },
 ]);
 
 export const AppRouter = () => {

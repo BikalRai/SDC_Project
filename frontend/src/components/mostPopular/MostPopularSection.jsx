@@ -16,19 +16,21 @@ const MostPopularSection = () => {
     setVisible((prev) => prev + 4); // load 4 more cards
   };
 
+  // console.log(items);
+
   return (
     <ReContainer>
-      <section className='mt-20'>
-        <div className='bg-background rounded-[8px] py-8 px-10'>
-          <SectionHeader header='Most Popular Products' />
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6'>
+      <section className="mt-20">
+        <div className="bg-background rounded-[8px] py-8 px-10">
+          <SectionHeader header="Most Popular Products" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6">
             {items?.slice(0, visible).map((item) => (
               <PopularCard key={item.id} item={item} />
             ))}
           </div>
           {visible < items?.length && (
-            <div className='flex justify-center items-center mt-8'>
-              <SecondaryButton btnText='load more' onClick={handleLoadMore} />
+            <div className="flex justify-center items-center mt-8">
+              <SecondaryButton btnText="load more" onClick={handleLoadMore} />
             </div>
           )}
         </div>

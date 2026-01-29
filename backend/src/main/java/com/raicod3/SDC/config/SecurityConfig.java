@@ -94,15 +94,17 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtils jwtUtils) throws Exception {
+        log.info("Engaged");
         http
+                .securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
                 .cors(cor -> {}) // uses the config that is in the application level
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(("/api/user/**")).permitAll()
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/login/oauth2/code/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/item/**").permitAll()
                         .requestMatchers(HttpMethod.POST,  "/api/item/**").hasRole("USER")
                         .requestMatchers(HttpMethod.PUT,  "/api/item/**").hasRole("USER")

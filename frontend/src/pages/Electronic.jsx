@@ -6,9 +6,11 @@ const Electronic = () => {
   const { items } = useSelector((state) => state.item);
   return (
     <GridLayout>
-      {items.map((item) => (
-        <PopularCard key={item?.id} item={item} />
-      ))}
+      {items
+        .filter((item) => item.category.toLowerCase() === "electronic")
+        .map((item) => (
+          <PopularCard key={item?.id} item={item} />
+        ))}
     </GridLayout>
   );
 };

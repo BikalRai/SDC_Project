@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -60,7 +61,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService {
                     newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
 
                     // Set creation timestamp if you have this field
-                     newUser.setCreatedAt(LocalDate.now());
+                     newUser.setCreatedAt(LocalDateTime.now());
 
                     // Mark email as verified (Google already verified it)
                     // newUser.setEmailVerified(true);
