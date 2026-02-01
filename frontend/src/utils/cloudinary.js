@@ -20,7 +20,10 @@ export const uploadToCloudinary = async (file) => {
       toast.error("Failed to upload image.");
     }
     const data = await res.json();
-    return data.secure_url;
+    return {
+      secure_url: data.secure_url,
+      public_id: data.public_id,
+    };
   } catch (error) {
     console.error("Cloudinary error:", error);
   }

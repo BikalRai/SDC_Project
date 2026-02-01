@@ -132,8 +132,12 @@ const AddNewItem = () => {
         newFiles.map((file) => uploadToCloudinary(file)),
       );
 
+      const uploadedImageUrls = uploadedUrls
+        .map((upload) => upload?.secure_url)
+        .filter(Boolean);
+
       // 3. Combine both
-      const finalImages = [...existingUrls, ...uploadedUrls];
+      const finalImages = [...existingUrls, ...uploadedImageUrls];
 
       const payload = {
         ...itemData,

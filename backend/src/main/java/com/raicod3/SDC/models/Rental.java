@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,6 +41,8 @@ public class Rental {
     @Column(name = "owner_id")
     private int ownerId;
 
+    private String returnToken;
+
     public Rental(RentalRequestDto req, Item item, UserModel user) {
 
         this.startDate = req.getStartDate();
@@ -50,5 +53,6 @@ public class Rental {
         this.renter = user;
         this.item = item;
         this.ownerId = item.getUser().getId();
+        this.returnToken = UUID.randomUUID().toString();
     }
 }

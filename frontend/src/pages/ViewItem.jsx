@@ -13,7 +13,6 @@ import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
-import { createRental } from "@/slices/rent.slice";
 import { calculateDays } from "@/utils/date";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
@@ -37,7 +36,6 @@ const ViewItem = () => {
 
   const days = calculateDays(startDate, endDate);
   const totalAmount = days === 0 ? item?.dailyRate : days * item?.dailyRate;
-
   const handleRentSubmit = () => {
     const authToken = localStorage.getItem("authToken");
 
@@ -51,22 +49,25 @@ const ViewItem = () => {
       return;
     }
 
-    dispatch(
-      createRental({
+    navigate(`/view-item/${item.id}/checkout`, {
+      state: {
         itemId: item.id,
+        name: item.name,
+        image: selectedImage,
+        dailyRate: item.dailyRate,
         startDate: startDate.format("YYYY-MM-DD"),
         endDate: endDate.format("YYYY-MM-DD"),
+        days,
         totalAmount,
-      }),
-    )
-      .unwrap()
-      .then(() => {
-        toast.success("Rental created successfully.");
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
+      },
+    });
   };
+
+  useEffect(() => {
+    if (item?.images?.length > 0) {
+      setSelectedImage(item.images[0]);
+    }
+  }, [item]);
 
   // console.log(item);
 
@@ -83,25 +84,24 @@ const ViewItem = () => {
             {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-primary hover:underline mb-6"
+              className="flex items-center gap-2 text-primary hover:underline transition mb-6 cursor-pointer"
             >
               <LuArrowLeft /> Back
             </button>
 
             {/* Layout */}
-            <div className="grid md:grid-cols-2 items-start gap-10 p-6 rounded-xl shadow-lg border border-gray-200">
+            <div className="grid md:grid-cols-2 items-start gap-10 p-6 rounded-xl shadow-2xl border border-gray-200">
               {/* Image Section */}
               <div className="grid grid-rows-[1fr_200px]">
-                <div className="w-full h-full">
+                <div className="w-full h-full border border-gray-300 rounded-lg">
                   <img
-                    // src={selectedImage}
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsCq6plOr0C_lt_ZRFT7zb5fPs2Qfs2qyVEw&s"
-                    alt={item.name}
+                    src={selectedImage}
+                    alt={item?.name}
                     className="rounded-xl aspect-square w-full h-full object-fit"
                   />
                 </div>
                 <div className="">
-                  {item.images.length === 0 && <p>No images</p>}
+                  {item?.images?.length === 0 && <p>No images</p>}
                   <Swiper
                     modules={[Navigation]}
                     navigation
@@ -110,7 +110,7 @@ const ViewItem = () => {
                     slidesPerView={4}
                     className="w-full mt-9"
                   >
-                    {item?.images.map((img, i) => (
+                    {item?.images?.map((img, i) => (
                       <SwiperSlide key={i}>
                         <div
                           className="h-[80px] w-[80px] lg:h-[116px] lg:w-[116px] rounded-xl border cursor-pointer overflow-hidden"
@@ -133,40 +133,40 @@ const ViewItem = () => {
                 {/* Details Section */}
                 <div className="space-y-4">
                   <h1 className="text-lg font-bold text-text-black p-1 border-b border-b-gray-300">
-                    {item.name}
+                    {item?.name}
                   </h1>
                   {/* Status */}
                   <div className="flex items-center justify-between flex-wrap p-1 border-b border-b-gray-300">
                     <div
                       className={`px-4 py-1  inline-block rounded-full text-sm font-medium ${
-                        item.status.toLowerCase() === "available"
+                        item?.status.toLowerCase() === "available"
                           ? "bg-green-100 text-green-600"
                           : "bg-red-100 text-red-600"
                       }`}
                     >
-                      {item.status}
+                      {item?.status}
                     </div>
-                    <p>Rs. {item.dailyRate}/day</p>
+                    <p>Rs. {item?.dailyRate}/day</p>
                   </div>
                   <div className="p-1 border-b border-b-gray-300">
-                    <p>{item.description}</p>
+                    <p>{item?.description}</p>
                   </div>
 
                   {/* specifications */}
                   <div className="p-1 border-b border-b-gray-300">
                     <p>
-                      Category: {item.category[0].toUpperCase()}
-                      {item.category.slice(1).toLowerCase()}
+                      Category: {item?.category[0].toUpperCase()}
+                      {item?.category.slice(1).toLowerCase()}
                     </p>
-                    <p>Brand: {item.brand}</p>
+                    <p>Brand: {item?.brand}</p>
                     <p>
-                      Condition: {item.condition[0].toUpperCase()}
-                      {item.condition.slice(1).toLowerCase()}
+                      Condition: {item?.condition[0].toUpperCase()}
+                      {item?.condition.slice(1).toLowerCase()}
                     </p>
                     <p>
-                      Posted Date: {new Date(item.createdAt).toLocaleString()}
+                      Posted Date: {new Date(item?.createdAt).toLocaleString()}
                     </p>
-                    <p>Rented by: {item.totalRented}</p>
+                    <p>Rented by: {item?.totalRented}</p>
                   </div>
 
                   <div className="flex items-center justify-between gap-5 flex-wrap">
@@ -187,15 +187,15 @@ const ViewItem = () => {
                   <button
                     onClick={handleRentSubmit}
                     disabled={
-                      item.status.toLowerCase() === "available" ? false : true
+                      item?.status.toLowerCase() === "available" ? false : true
                     }
                     className={`mt-6 px-5 py-2 rounded text-white text-lg transition cursor-pointer ${
-                      item.status.toLowerCase() === "available"
+                      item?.status.toLowerCase() === "available"
                         ? "bg-primary hover:bg-light-primary"
                         : "bg-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    {item.status.toLowerCase() === "available"
+                    {item?.status.toLowerCase() === "available"
                       ? "Rent Now"
                       : "Currently Unavailable"}
                   </button>

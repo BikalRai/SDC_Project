@@ -1,236 +1,171 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Stepper from "@mui/material/Stepper";
-import Typography from "@mui/material/Typography";
-import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-
-import KycPersonalForm from "../components/kyc/KycPersonalForm";
-import KycDocumentUpload from "../components/kyc/KycDocumentUpload";
-import KycReview from "../components/kyc/KycReview";
-
-import AppTheme from "../components/shared-theme/AppTheme";
-import ColorModeIconDropdown from "../components/shared-theme/ColorModeIconDropdown";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react"; // Added useState
 import AppLayout from "@/components/layout/AppLayout";
-import Info from "../components/checkout/Info";
-import InfoMobile from "../components/checkout/InfoMobile";
+import ReContainer from "@/components/containers/ReContainer";
+import { createRental } from "@/slices/rent.slice";
+import { toast } from "react-toastify";
+import { LuCalendar, LuCreditCard, LuWallet, LuBanknote } from "react-icons/lu"; // Added icons
+import AppNavBar from "@/components/navbar/AppNavBar";
 
-const steps = ["Personal Details", "Document Upload", "Review & Submit"];
+const Checkout = () => {
+  const { state } = useLocation();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.rent);
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <KycPersonalForm />;
-    case 1:
-      return <KycDocumentUpload />;
-    case 2:
-      return <KycReview />;
-    default:
-      throw new Error("Unknown step");
-  }
-}
+  // 1. Track the selected payment method
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
-export default function KycVerification(props) {
-  const [activeStep, setActiveStep] = React.useState(0);
+  useEffect(() => {
+    if (!state) {
+      navigate(`/view-item/${id}`, { replace: true });
+    }
+  }, [state, id, navigate]);
 
-  const handleNext = () => setActiveStep(activeStep + 1);
-  const handleBack = () => setActiveStep(activeStep - 1);
+  if (!state) return null;
+
+  const handleConfirmRental = () => {
+    dispatch(
+      createRental({
+        itemId: state.itemId,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        totalAmount: state.totalAmount,
+        paymentMethod: paymentMethod, // 2. Send the choice to backend
+      }),
+    )
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        // 3. Logic: If eSEWA, we might need to handle a redirect here
+        if (paymentMethod === "ESEWA") {
+          toast.info("Redirecting to eSEWA...");
+          // In a real app, 'res' would contain the eSEWA form data/URL
+        } else {
+          toast.success("Rental confirmed via COD!");
+          navigate("/user/rentals");
+        }
+      })
+      .catch((err) => toast.error(err));
+  };
 
   return (
     <AppLayout>
-      <div className="flex justify-center items-center">
-        <Grid container marginTop={4}>
-          {/* LEFT SIDE SUMMARY (Desktop only) */}
-          <Grid
-            item
-            sm={12}
-            md={5}
-            lg={4}
-            sx={{
-              display: { xs: "none", md: "flex" },
-              flexDirection: "column",
-              backgroundColor: "background.paper",
-              borderRight: { sm: "none", md: "1px solid" },
-              borderColor: { sm: "none", md: "divider" },
-              alignItems: "start",
-              pt: 16,
-              px: 10,
-              gap: 4,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flexGrow: 1,
-                width: "100%",
-                maxWidth: 500,
-              }}
-            >
-              <Info Title="KYC Verification" />
-            </Box>
-          </Grid>
+      <AppNavBar />
+      <ReContainer>
+        <div className="max-w-4xl mx-auto py-10">
+          <h1 className="text-3xl font-bold mb-8">Confirm Your Rental</h1>
 
-          {/* MAIN CONTENT */}
-          <Grid
-            item
-            sm={12}
-            md={7}
-            lg={8}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "auto",
-              backgroundColor: {
-                xs: "transparent",
-                sm: "background.default",
-              },
-              alignItems: "start",
-              pt: { xs: 0, sm: 16 },
-              px: { xs: 2, sm: 10 },
-              gap: { xs: 4, md: 8 },
-            }}
-          >
-            {/* DESKTOP STEPPER */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: { sm: "space-between", md: "flex-end" },
-                alignItems: "center",
-                width: "100%",
-                maxWidth: { sm: "100%", md: 600 },
-              }}
-            >
-              <Stepper
-                id="desktop-stepper"
-                activeStep={activeStep}
-                sx={{
-                  width: "100%",
-                  height: 40,
-                  display: { xs: "none", md: "flex" },
-                }}
-              >
-                {steps.map((label) => (
-                  <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-            </Box>
-
-            {/* MOBILE SUMMARY CARD */}
-            <Card sx={{ display: { xs: "flex", md: "none" }, width: "100%" }}>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="md:col-span-2 space-y-6">
+              {/* Item Summary */}
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex gap-4 items-center">
+                <img
+                  src={state.image}
+                  alt={state.name}
+                  className="w-24 h-24 rounded-lg object-cover"
+                />
                 <div>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Perfect Rental
-                  </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    KYC Verification Steps
-                  </Typography>
+                  <h2 className="text-xl font-semibold">{state.name}</h2>
+                  <p className="text-gray-500 font-medium text-lg">
+                    Rs. {state.dailyRate} / day
+                  </p>
                 </div>
+              </div>
 
-                <InfoMobile />
-              </CardContent>
-            </Card>
+              {/* Rental Period */}
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-bold mb-4 flex items-center gap-2">
+                  <LuCalendar /> Rental Period
+                </h3>
+                <div className="flex justify-between text-lg">
+                  <div>
+                    <p className="text-sm text-gray-500">From</p>
+                    <p className="font-medium">{state.startDate}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500">To</p>
+                    <p className="font-medium">{state.endDate}</p>
+                  </div>
+                </div>
+                <p className="mt-4 pt-4 border-t text-primary font-medium">
+                  Duration: {state.days} Day{state.days > 1 ? "s" : ""}
+                </p>
+              </div>
 
-            {/* MOBILE STEPPER */}
-            <Stepper
-              id="mobile-stepper"
-              activeStep={activeStep}
-              alternativeLabel
-              sx={{ display: { xs: "flex", md: "none", width: "100%" } }}
-            >
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-
-            {/* MAIN FORM SECTION */}
-            <Box sx={{ flexGrow: 1, width: "100%", maxWidth: 600 }}>
-              {activeStep === steps.length ? (
-                <Stack spacing={2} useFlexGap>
-                  <Typography variant="h1">✔️</Typography>
-                  <Typography variant="h5">
-                    KYC Submitted Successfully
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: "text.secondary" }}>
-                    Your identity verification request has been submitted. We
-                    will notify you once it is approved.
-                  </Typography>
-                </Stack>
-              ) : (
-                <>
-                  {getStepContent(activeStep)}
-
-                  {/* NAVIGATION BUTTONS */}
-                  <Box
-                    sx={{
-                      mt: 4,
-                      mb: "60px",
-                      display: "flex",
-                      justifyContent:
-                        activeStep !== 0 ? "space-between" : "flex-end",
-                      width: "100%",
-                    }}
+              {/* PAYMENT SELECTION SECTION */}
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-bold mb-4 flex items-center gap-2">
+                  <LuWallet /> Select Payment Method
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {/* eSEWA Option */}
+                  <div
+                    onClick={() => setPaymentMethod("ESEWA")}
+                    className={`cursor-pointer p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-all ${paymentMethod === "ESEWA" ? "border-green-500 bg-green-50" : "border-gray-100 hover:border-gray-300"}`}
                   >
-                    {activeStep !== 0 && (
-                      <Button
-                        startIcon={<ChevronLeftRoundedIcon />}
-                        onClick={handleBack}
-                        variant="outlined"
-                        sx={{
-                          borderColor: "#0090b8",
-                          color: "#0090b8",
-                          "&:hover": {
-                            backgroundColor: "#0090b8",color: "#ffffff",
-                          },
-                        }}
-                      >
-                        Previous
-                      </Button>
-                    )}
+                    <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                      e
+                    </div>
+                    <span className="font-semibold">eSEWA</span>
+                  </div>
 
-                    <Button
-                      variant="contained"
-                      endIcon={<ChevronRightRoundedIcon />}
-                      onClick={handleNext}
-                      sx={{
-                        backgroundColor: "#0090b8",
-                        "&:hover": {
-                          backgroundColor: "#00b8eb",
-                        },
-                      }}
-                    >
-                      {activeStep === steps.length - 1 ? "Submit KYC" : "Next"}
-                    </Button>
-                  </Box>
-                </>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
-      </div>
+                  {/* COD Option */}
+                  <div
+                    onClick={() => setPaymentMethod("COD")}
+                    className={`cursor-pointer p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-all ${paymentMethod === "COD" ? "border-primary bg-blue-50" : "border-gray-100 hover:border-gray-300"}`}
+                  >
+                    <LuBanknote
+                      className={`text-3xl ${paymentMethod === "COD" ? "text-primary" : "text-gray-400"}`}
+                    />
+                    <span className="font-semibold">Cash on Delivery</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Price Breakdown Sidebar */}
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 h-fit">
+              <h3 className="font-bold mb-6 text-xl">Order Summary</h3>
+              <div className="space-y-3 pb-6 border-b">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>Rs. {state.totalAmount}</span>
+                </div>
+                <div className="flex justify-between text-green-600">
+                  <span>Service Fee</span>
+                  <span>FREE</span>
+                </div>
+              </div>
+              <div className="flex justify-between py-6 text-xl font-bold">
+                <span>Total</span>
+                <span>Rs. {state.totalAmount}</span>
+              </div>
+
+              <button
+                onClick={handleConfirmRental}
+                disabled={loading}
+                className="w-full bg-primary hover:bg-light-primary text-white py-4 rounded-lg font-bold transition flex items-center justify-center gap-2 shadow-lg active:scale-95"
+              >
+                {loading ? (
+                  "Processing..."
+                ) : (
+                  <>
+                    <LuCreditCard /> Confirm & Pay via {paymentMethod}
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-gray-400 mt-4 text-center">
+                Secure checkout powered by your platform.
+              </p>
+            </div>
+          </div>
+        </div>
+      </ReContainer>
     </AppLayout>
   );
-}
+};
+
+export default Checkout;

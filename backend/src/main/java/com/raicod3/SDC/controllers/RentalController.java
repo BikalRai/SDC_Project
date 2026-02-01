@@ -44,6 +44,18 @@ public class RentalController {
         }
     }
 
+    @PostMapping("/payment-success/{rentalId}")
+    public ResponseEntity<Map<String, Object>> confirmPaymentController(@PathVariable int rentalId) {
+        try {
+            RentalResponseDto response = rentalService.confirmPaymentAndActivateRental(rentalId);
+            return ResponseBuilder.buildResponse("Payment successful. Item is now Rented.", HttpStatus.OK, response);
+        } catch (HttpNotFoundException e) {
+            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.NOT_FOUND, null);
+        } catch (Exception e) {
+            return ResponseBuilder.buildResponse("Error processing payment.", HttpStatus.INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
     @GetMapping("/rents/owner")
     public ResponseEntity<Map<String, Object>> getOwnerRentalsController(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
@@ -83,6 +95,23 @@ public class RentalController {
         } catch (HttpNotFoundException e) {
             return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.NOT_FOUND,null);
         } catch(Exception e) {
+            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+    @PatchMapping("/return/{token}")
+    public ResponseEntity<Map<String, Object>> returnItemByQrController(
+            @PathVariable String token,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        try {
+            // We pass customUserDetails to ensure only the ITEM OWNER can scan this
+            RentalResponseDto response = rentalService.completeRentalByQr(token, customUserDetails);
+            return ResponseBuilder.buildResponse("Item returned successfully. Item is now Available.", HttpStatus.OK, response);
+        } catch (HttpNotFoundException e) {
+            return ResponseBuilder.buildResponse("Invalid QR Code.", HttpStatus.NOT_FOUND, null);
+        } catch (HttpForbiddenException e) {
+            return ResponseBuilder.buildResponse("Only the item owner can confirm this return.", HttpStatus.FORBIDDEN, null);
+        } catch (Exception e) {
             return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }

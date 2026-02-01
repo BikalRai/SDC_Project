@@ -26,4 +26,6 @@ public class RentalRequestDto {
 
     private String totalAmount;
 
+    private String paymentMethod;
+
 }

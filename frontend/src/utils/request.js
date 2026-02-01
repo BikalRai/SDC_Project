@@ -40,6 +40,7 @@ const request = {
       api.post("/rental/rent", {
         ...rentData,
       }),
+    getRenterRentals: () => api.get("/rental/rents/renter"),
   },
 };
 

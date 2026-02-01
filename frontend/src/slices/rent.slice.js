@@ -31,7 +31,8 @@ export const fetchMyRentals = createAsyncThunk(
   "rental/fetchMyRentals",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await request;
+      const res = await request.rent.getRenterRentals();
+      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data);
@@ -68,6 +69,8 @@ const rentalSlice = createSlice({
       // FETCH RENTALS
       .addCase(fetchMyRentals.pending, (state) => {
         state.loading = true;
+        state.error = null;
+        state.success = null;
       })
       .addCase(fetchMyRentals.fulfilled, (state, action) => {
         state.loading = false;

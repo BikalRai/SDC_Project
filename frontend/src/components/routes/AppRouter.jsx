@@ -69,16 +69,20 @@ const router = createBrowserRouter([
     element: <OAuth2Redirect />,
   },
   {
-    path: "/checkout",
-    element: <Checkout />,
-  },
-  {
     path: "/about",
     element: <AboutUsPage />,
   },
   {
     path: "/view-item/:id",
     element: <ViewItem />,
+  },
+  {
+    path: "/view-item/:id/checkout",
+    element: (
+      <RequireUserAuth>
+        <Checkout />
+      </RequireUserAuth>
+    ),
   },
   {
     path: "/user",

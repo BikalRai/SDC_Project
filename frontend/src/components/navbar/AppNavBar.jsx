@@ -21,7 +21,7 @@ const AppNavBar = () => {
   const [open, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -88,7 +88,10 @@ const AppNavBar = () => {
                   onMouseLeave={handleMouseLeave}
                 >
                   <div>
-                    <Avatar />
+                    <Avatar
+                      src={user?.image}
+                      sx={{ width: "64px", height: "64px" }}
+                    />
                   </div>
                   {isUserMenuOpen && (
                     <div className="absolute top-full right-0">

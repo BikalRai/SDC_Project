@@ -19,6 +19,7 @@ import com.raicod3.SDC.models.UserModel;
 import com.raicod3.SDC.repositories.BookingRepository;
 import com.raicod3.SDC.repositories.ItemRepository;
 import com.raicod3.SDC.repositories.RentalRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,10 +37,8 @@ public class RentalService {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Autowired
-    private ItemRepository itemsRepository;
 
-
+    @Transactional
     public RentalResponseDto createRentalService(RentalRequestDto rentalRequestDto, CustomUserDetails customUserDetails) {
         Item item = itemRepository.findById(rentalRequestDto.getItemId()).orElseThrow(()-> new HttpNotFoundException("Item not found"));
 
@@ -47,12 +46,26 @@ public class RentalService {
             throw new HttpUnprocessableException("You are not allowed to rent this item: it belongs to you");
         }
 
+        if(item.getStatus() != ItemStatus.AVAILABLE) {
+            throw new HttpUnprocessableException("This item is currently unavailable.");
+        }
+
         Rental rental = new Rental(rentalRequestDto, item, customUserDetails.getUser());
+        
+        if ("COD".equalsIgnoreCase(rentalRequestDto.getPaymentMethod())) {
+            // For COD, we can move directly to a status that allows the rental to proceed,
+            // but the item stays locked until returned.
+            rental.setStatus(RentalStatus.WAITING_PAYMENT);
+        } else {
+            // For ESEWA, it MUST stay in WAITING_PAYMENT until the webhook hits
+            rental.setStatus(RentalStatus.WAITING_PAYMENT);
+        }
 
         rentalRepository.save(rental);
 
         item.setStatus(ItemStatus.UNAVAILABLE);
-        itemsRepository.save(item);
+
+        itemRepository.save(item);
 
         return new RentalResponseDto(rental);
     }
@@ -88,8 +101,53 @@ public class RentalService {
         rentalRepository.delete(rental);
 
         item.setStatus(ItemStatus.AVAILABLE);
-        itemsRepository.save(item);
+        itemRepository.save(item);
 
         return new ItemResponseDto(item);
+    }
+
+    @Transactional
+    public RentalResponseDto confirmPaymentAndActivateRental(int rentalId) {
+        // 1. Find the rental or throw an error if it doesn't exist
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new HttpNotFoundException("Rental record not found."));
+
+        // 2. Update statuses
+        rental.setStatus(RentalStatus.PAID); // Or RentalStatus.ACTIVE depending on your Enum
+
+        Item item = rental.getItem();
+        item.setStatus(ItemStatus.RENTED); // Make the item unavailable for others
+
+        // 3. Save changes
+        rentalRepository.save(rental);
+        itemRepository.save(item);
+
+        return new RentalResponseDto(rental); // Assuming your DTO has a constructor for the model
+    }
+
+    @Transactional
+    public RentalResponseDto completeRentalByQr(String token, CustomUserDetails currentUser) {
+        // 1. Find the rental by the unique UUID token
+        Rental rental = (Rental) rentalRepository.findByReturnToken(token).orElseThrow(() -> new HttpNotFoundException("Invalid or expired QR code."));
+
+        // 2. Security Check: Only the OWNER of the item should be able to confirm the return
+        // We compare the ID of the logged-in user with the ownerId stored in the rental
+        if (rental.getOwnerId() != currentUser.getUser().getId()) {
+            throw new HttpForbiddenException("Security Alert: Only the item owner can scan this code to confirm return.");
+        }
+
+        // 3. Update the rental to finished
+        rental.setStatus(RentalStatus.COMPLETED);
+
+        // 4. Make the item available again for the next person
+        Item item = rental.getItem();
+        item.setStatus(ItemStatus.AVAILABLE);
+        item.setTotalRented(item.getTotalRented() + 1); // Increase popularity count
+
+        // 5. Save everything
+        rentalRepository.save(rental);
+        itemRepository.save(item);
+
+        return new RentalResponseDto(rental);
     }
 }

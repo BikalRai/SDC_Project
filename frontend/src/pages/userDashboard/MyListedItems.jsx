@@ -51,7 +51,7 @@ const MyListedItems = () => {
         <PrimaryButton
           icon={<LuPlus />}
           btnText="Add new item"
-          onClick={() => navigate("/user/add-item")}
+          onClick={() => navigate("/user/add")}
         />
       </div>
 

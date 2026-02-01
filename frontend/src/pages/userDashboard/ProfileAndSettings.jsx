@@ -21,10 +21,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { updateUser } from "@/slices/user.slice";
 import { loadUserFromToken } from "@/slices/auth.slice";
+import { uploadToCloudinary } from "@/utils/cloudinary";
 
 export default function UserProfile() {
   const [editMode, setEditMode] = useState(false);
   const dispatch = useDispatch();
+
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
   const { loading } = useSelector((state) => state.user); // Get loading state
@@ -64,15 +68,36 @@ export default function UserProfile() {
       reader.readAsDataURL(file);
     });
 
-  const handleAvatarUpload = async (e) => {
-    const file = e.target.files && e.target.files[0];
+  const handleAvatarSelect = async (e) => {
+    const file = e.target.files?.[0];
     if (!file) return;
+
+    // Optional validation
+    if (!file.type.startsWith("image/")) {
+      toast.error("Only image files allowed");
+      return;
+    }
+
+    // Preview only
+    const preview = URL.createObjectURL(file);
+
+    setTempUser((prev) => ({
+      ...prev,
+      image: preview, // preview only
+    }));
+
+    setAvatarFile(file); // store file for later upload
+  };
+
+  const uploadAvatar = async () => {
+    if (!avatarFile) return null;
+
+    setUploadingImage(true);
     try {
-      const dataUrl = await readFileAsDataURL(file);
-      setTempUser((prev) => ({ ...prev, image: dataUrl }));
-    } catch (err) {
-      console.error("Failed reading avatar", err);
-      toast.error("Failed to upload image");
+      const uploaded = await uploadToCloudinary(avatarFile);
+      return uploaded.secure_url;
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -87,32 +112,41 @@ export default function UserProfile() {
       toast.error("Failed to upload cover image");
     }
   };
-
   const handleSave = async () => {
     try {
+      let imageUrl = user?.image || "";
+
+      // Upload only if a new file was selected
+      if (avatarFile) {
+        const uploadedUrl = await uploadAvatar();
+        console.log(uploadedUrl, "uploadurl");
+        if (!uploadedUrl) {
+          toast.error("Image upload failed");
+          return;
+        }
+        imageUrl = uploadedUrl;
+      }
+
       const updateData = {
         fullName: tempUser.fullName,
         phone: tempUser.phone,
         location: tempUser.location,
-        image: tempUser.image || "",
+        image: imageUrl,
       };
-
-      console.log("Saving user data:", updateData);
 
       const resultAction = await dispatch(updateUser(updateData));
 
       if (updateUser.fulfilled.match(resultAction)) {
         toast.success("Profile updated successfully!");
         setEditMode(false);
-
-        // ✅ Reload user data to get the latest from server
+        setAvatarFile(null);
         await dispatch(loadUserFromToken());
       } else {
         toast.error(resultAction.payload || "Failed to update profile");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error(error.message || "An error occurred");
+      console.error(error);
+      toast.error("An error occurred");
     }
   };
 
@@ -200,7 +234,8 @@ export default function UserProfile() {
                   hidden
                   type="file"
                   accept="image/*"
-                  onChange={handleAvatarUpload}
+                  onChange={handleAvatarSelect}
+                  // disabled={!isDirty || loading || uploadingImage}
                 />
               </Button>
 

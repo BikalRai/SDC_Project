@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Integer> {
@@ -21,4 +22,6 @@ public interface RentalRepository extends JpaRepository<Rental, Integer> {
 
     @Query(value = "SELECT * FROM rental WHERE renter_id = :renterId", nativeQuery = true)
     List<Rental> findAllByRenterId(@Param("renterId") int id);
+
+    Optional<Object> findByReturnToken(String token);
 }
