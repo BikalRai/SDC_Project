@@ -76,31 +76,31 @@ const ViewItem = () => {
       <AppNavBar />
       <ReContainer>
         {loading ? (
-          <div className="min-h-dvh w-full flex items-center justify-center">
+          <div className='min-h-dvh w-full flex items-center justify-center'>
             <DotLoader />
           </div>
         ) : (
-          <div className="h-full">
+          <div className='h-full'>
             {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-primary hover:underline transition mb-6 cursor-pointer"
+              className='flex items-center gap-2 text-primary hover:underline transition mb-6 cursor-pointer'
             >
               <LuArrowLeft /> Back
             </button>
 
             {/* Layout */}
-            <div className="grid md:grid-cols-2 items-start gap-10 p-6 rounded-xl shadow-2xl border border-gray-200">
+            <div className='grid md:grid-cols-2 items-start gap-10 p-6 rounded-xl shadow-2xl border border-gray-200'>
               {/* Image Section */}
-              <div className="grid grid-rows-[1fr_200px]">
-                <div className="w-full h-full border border-gray-300 rounded-lg">
+              <div className='grid grid-rows-[1fr_200px]'>
+                <div className='w-full h-full border border-gray-300 rounded-lg overflow-hidden'>
                   <img
                     src={selectedImage}
                     alt={item?.name}
-                    className="rounded-xl aspect-square w-full h-full object-fit"
+                    className='rounded-xl aspect-square w-full -h-full object-cover'
                   />
                 </div>
-                <div className="">
+                <div className=''>
                   {item?.images?.length === 0 && <p>No images</p>}
                   <Swiper
                     modules={[Navigation]}
@@ -108,18 +108,18 @@ const ViewItem = () => {
                     pagination={{ clickable: true }}
                     spaceBetween={10}
                     slidesPerView={4}
-                    className="w-full mt-9"
+                    className='w-full mt-9'
                   >
                     {item?.images?.map((img, i) => (
                       <SwiperSlide key={i}>
                         <div
-                          className="h-[80px] w-[80px] lg:h-[116px] lg:w-[116px] rounded-xl border cursor-pointer overflow-hidden"
+                          className='h-[80px] w-[80px] lg:h-[116px] lg:w-[116px] rounded-xl border cursor-pointer overflow-hidden'
                           onClick={() => setSelectedImage(img)}
                         >
                           <img
                             src={img}
-                            alt="image"
-                            className="h-full w-full object-contain object-center"
+                            alt='image'
+                            className='h-full w-full object-contain object-center'
                             style={{ minHeight: "100%", minWidth: "100%" }}
                           />
                         </div>
@@ -131,12 +131,12 @@ const ViewItem = () => {
 
               <div>
                 {/* Details Section */}
-                <div className="space-y-4">
-                  <h1 className="text-lg font-bold text-text-black p-1 border-b border-b-gray-300">
+                <div className='space-y-4'>
+                  <h1 className='text-lg font-bold text-text-black p-1 border-b border-b-gray-300'>
                     {item?.name}
                   </h1>
                   {/* Status */}
-                  <div className="flex items-center justify-between flex-wrap p-1 border-b border-b-gray-300">
+                  <div className='flex items-center justify-between flex-wrap p-1 border-b border-b-gray-300'>
                     <div
                       className={`px-4 py-1  inline-block rounded-full text-sm font-medium ${
                         item?.status.toLowerCase() === "available"
@@ -148,12 +148,12 @@ const ViewItem = () => {
                     </div>
                     <p>Rs. {item?.dailyRate}/day</p>
                   </div>
-                  <div className="p-1 border-b border-b-gray-300">
+                  <div className='p-1 border-b border-b-gray-300'>
                     <p>{item?.description}</p>
                   </div>
 
                   {/* specifications */}
-                  <div className="p-1 border-b border-b-gray-300">
+                  <div className='p-1 border-b border-b-gray-300'>
                     <p>
                       Category: {item?.category[0].toUpperCase()}
                       {item?.category.slice(1).toLowerCase()}
@@ -169,15 +169,15 @@ const ViewItem = () => {
                     <p>Rented by: {item?.totalRented}</p>
                   </div>
 
-                  <div className="flex items-center justify-between gap-5 flex-wrap">
+                  <div className='flex items-center justify-between gap-5 flex-wrap'>
                     <PickDate
-                      label="Start Date"
+                      label='Start Date'
                       value={startDate}
                       onChange={(newValue) => setStartDate(newValue)}
                     />
 
                     <PickDate
-                      label="End Date"
+                      label='End Date'
                       value={endDate}
                       onChange={(newValue) => setEndDate(newValue)}
                     />
@@ -200,7 +200,7 @@ const ViewItem = () => {
                       : "Currently Unavailable"}
                   </button>
                 </div>
-                <div className="mt-5">
+                <div className='mt-5'>
                   <ItemReviews />
                 </div>
               </div>
