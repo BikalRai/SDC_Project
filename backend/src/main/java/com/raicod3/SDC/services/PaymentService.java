@@ -38,7 +38,7 @@ public class PaymentService {
     @Transactional
     public String completeRentalByQr(String token) {
         // 1. Find the rental using the unique UUID from the QR
-        Rental rental = rentalRepository.findByReturnToken(token)
+        Rental rental = (Rental) rentalRepository.findByReturnToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid QR Code"));
 
         // 2. Security Check: Is it already returned?

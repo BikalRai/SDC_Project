@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Table(name = "payments")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class Payment {

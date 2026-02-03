@@ -51,7 +51,7 @@ public class RentalService {
         }
 
         Rental rental = new Rental(rentalRequestDto, item, customUserDetails.getUser());
-        
+
         if ("COD".equalsIgnoreCase(rentalRequestDto.getPaymentMethod())) {
             // For COD, we can move directly to a status that allows the rental to proceed,
             // but the item stays locked until returned.
