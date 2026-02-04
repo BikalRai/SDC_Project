@@ -26,6 +26,8 @@ import AboutUsPage from "@/pages/AboutUsPage";
 import ViewItem from "@/pages/ViewItem";
 import KycView from "@/pages/static pages/KycView";
 import KycList from "@/pages/static pages/KycList";
+import PaymentSuccess from "@/pages/PaymentSuccess";
+import PaymentFailure from "@/pages/PaymentFailure";
 
 const RequireUserAuth = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -110,6 +112,8 @@ const router = createBrowserRouter([
       // {path: "book", element: <Vehicle/>},
     ],
   },
+  { path: "/payment/success", element: <PaymentSuccess /> },
+  { path: "/payment/failure", element: <PaymentFailure /> },
   { path: "/admin-dashboard", element: <AdminDashboard /> },
   { path: "/admin-payment", element: <AdminPayment /> },
   { path: "/kyc-view", element: <KycView /> },
