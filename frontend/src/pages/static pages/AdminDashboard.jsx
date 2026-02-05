@@ -231,8 +231,14 @@ export default function AdminDashboard() {
                 </select>
 
                 <div className="flex">
-                  <input type="date" className="h-11 border rounded-l-md px-3" />
-                  <input type="time" className="h-11 border rounded-r-md px-3" />
+                  <input
+                    type="date"
+                    className="h-11 border rounded-l-md px-3"
+                  />
+                  <input
+                    type="time"
+                    className="h-11 border rounded-r-md px-3"
+                  />
                 </div>
 
                 <button className="h-11 px-6 bg-[#0093B8] text-white rounded-md">
