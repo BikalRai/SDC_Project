@@ -128,7 +128,9 @@ const itemSlice = createSlice({
         state.successMessage = null;
       })
       .addCase(getAllItems.pending, (state) => {
-        state.loading = true;
+        if (state.items.length === 0) {
+          state.loading = true;
+        }
         state.error = null;
         state.successMessage = null;
       })
@@ -139,7 +141,6 @@ const itemSlice = createSlice({
       .addCase(getAllItems.rejected, (state, action) => {
         state.loading = false;
         state.successMessage = null;
-        state.items = [];
         state.error = action.payload;
       })
       .addCase(getUserListedItems.pending, (state) => {

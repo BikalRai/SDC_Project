@@ -105,6 +105,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/oauth2/code/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/item/**").permitAll()
                         .requestMatchers(HttpMethod.POST,  "/api/item/**").hasRole("USER")
                         .requestMatchers(HttpMethod.PUT,  "/api/item/**").hasRole("USER")

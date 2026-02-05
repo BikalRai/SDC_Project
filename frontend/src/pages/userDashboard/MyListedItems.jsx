@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
@@ -9,16 +9,40 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   clearMessages,
   deleteItem,
+  getAllItems,
   getUserListedItems,
 } from "@/slices/item.slice";
 import { getCategories } from "@/slices/category.slice";
 import { DotLoader } from "react-spinners";
+import { returnRentItem } from "@/slices/rent.slice";
 
 const MyListedItems = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { items, successMessage, loading } = useSelector((state) => state.item);
+
+  const [showConfirmInput, setShowConfirmInput] = useState(null); // Tracks which item is being returned
+  const [tokenValue, setTokenValue] = useState("");
+
+  const handleReturnSubmit = async () => {
+    if (!tokenValue)
+      return toast.error("Please enter the token from the borrower");
+
+    const resultAction = dispatch(returnRentItem(tokenValue));
+
+    if (returnRentItem.fulfilled.match(resultAction)) {
+      toast.success("Item is back in stock!");
+      setTokenValue("");
+      setShowConfirmInput(null);
+
+      // REFRESH: This is critical so the status changes from RENTED to AVAILABLE
+      dispatch(getUserListedItems());
+      dispatch(getAllItems());
+    } else {
+      toast.error(resultAction.payload || "Invalid Token");
+    }
+  };
 
   // Delete Handler
   const handleDelete = (id) => {
@@ -103,15 +127,53 @@ const MyListedItems = () => {
 
                   {/* Actions */}
                   <div className="flex justify-center gap-4 text-xl">
-                    <CiEdit
-                      className="cursor-pointer hover:text-primary transition-all duration-300"
-                      onClick={() => navigate(`/user/edit-item/${item.id}`)}
-                    />
-
-                    <LuTrash2
-                      className="cursor-pointer hover:text-red-500 transition-all duration-300"
-                      onClick={() => handleDelete(item.id)}
-                    />
+                    {item.status === "UNAVAILABLE" ? (
+                      // SHOW THIS IF RENTED
+                      <div className="flex flex-col items-center gap-2">
+                        {showConfirmInput === item.id ? (
+                          <div className="flex gap-2 animate-in fade-in duration-300">
+                            <input
+                              type="text"
+                              placeholder="Enter Token"
+                              className="text-xs border p-1 rounded w-24 text-black"
+                              value={tokenValue}
+                              onChange={(e) => setTokenValue(e.target.value)}
+                            />
+                            <button
+                              onClick={() => handleReturnSubmit(item.id)}
+                              className="text-xs bg-green-600 text-white px-2 py-1 rounded"
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => setShowConfirmInput(null)}
+                              className="text-xs text-red-500"
+                            >
+                              X
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setShowConfirmInput(item.id)}
+                            className="text-xs bg-primary text-white px-3 py-1 rounded hover:bg-opacity-80 transition"
+                          >
+                            Confirm Return
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      // SHOW EDIT/DELETE IF AVAILABLE
+                      <>
+                        <CiEdit
+                          className="cursor-pointer hover:text-primary transition-all duration-300"
+                          onClick={() => navigate(`/user/edit-item/${item.id}`)}
+                        />
+                        <LuTrash2
+                          className="cursor-pointer hover:text-red-500 transition-all duration-300"
+                          onClick={() => handleDelete(item.id)}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               ))

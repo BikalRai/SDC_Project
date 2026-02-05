@@ -6,6 +6,7 @@ const initialState = {
   loading: false,
   error: null,
   success: false,
+  rent: null,
 };
 
 export const createRental = createAsyncThunk(
@@ -33,6 +34,31 @@ export const fetchMyRentals = createAsyncThunk(
     try {
       const res = await request.rent.getRenterRentals();
       console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  },
+);
+
+export const getRentItemById = createAsyncThunk(
+  "rental/rentItem",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await request.rent.getRentItemById(id);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  },
+);
+
+export const returnRentItem = createAsyncThunk(
+  "rental/return",
+  async (token, { rejectWithValue }) => {
+    try {
+      const res = await request.rent.returnRentItem(token);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data);
@@ -77,6 +103,34 @@ const rentalSlice = createSlice({
         state.rentals = action.payload;
       })
       .addCase(fetchMyRentals.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getRentItemById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(getRentItemById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rent = action.payload;
+        state.success = "Rent item retrieved.";
+      })
+      .addCase(getRentItemById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(returnRentItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(returnRentItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rent = action.payload;
+        state.success = "Returned item successfully";
+      })
+      .addCase(returnRentItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
