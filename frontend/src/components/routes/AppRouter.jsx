@@ -28,6 +28,7 @@ import KycView from "@/pages/static pages/KycView";
 import KycList from "@/pages/static pages/KycList";
 import PaymentSuccess from "@/pages/PaymentSuccess";
 import PaymentFailure from "@/pages/PaymentFailure";
+import KycForm from "../kyc/KycForm";
 
 const RequireUserAuth = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -99,6 +100,7 @@ const router = createBrowserRouter([
       { path: "edit-item/:id", element: <AddNewItem /> },
       { path: "rentals", element: <MyRentals /> },
       { path: "settings", element: <ProfileAndSettings /> },
+      { path: "settings/kyc", element: <KycForm /> },
     ],
   },
   {
@@ -112,6 +114,7 @@ const router = createBrowserRouter([
       // {path: "book", element: <Vehicle/>},
     ],
   },
+  { path: "/kyc", element: <KycForm /> },
   { path: "/payment/success", element: <PaymentSuccess /> },
   { path: "/payment/failure", element: <PaymentFailure /> },
   { path: "/admin-dashboard", element: <AdminDashboard /> },

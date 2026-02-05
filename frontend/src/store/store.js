@@ -5,6 +5,7 @@ import categoryReducer from "../slices/category.slice";
 import kycReducer from "../slices/kyc.slice";
 import rentReducer from "../slices/rent.slice";
 import userReducer from "../slices/user.slice";
+import adminReducer from "../slices/admin.slice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     category: categoryReducer,
     kyc: kycReducer,
     rent: rentReducer,
+    admin: adminReducer,
   },
 });
 

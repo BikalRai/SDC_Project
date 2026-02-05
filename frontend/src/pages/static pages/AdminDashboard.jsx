@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   Bell,
@@ -22,7 +22,8 @@ import {
   Cell,
 } from "recharts";
 import Sidebar from "./Sidebar";
-import TopNavbar from "./TopNavBar";
+import { useDispatch, useSelector } from "react-redux";
+import { getAdminDashboardStats } from "@/slices/admin.slice";
 
 /* ---------- DATA ---------- */
 const revenueData = [
@@ -61,9 +62,30 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState("All");
   const [open, setOpen] = useState(false);
 
+  const [chartData, setChartData] = useState([]);
+
+  const { stats } = useSelector((state) => state.admin);
+  const dispatch = useDispatch();
+
   const filteredProducts =
     filter === "All" ? products : products.filter((p) => p.status === filter);
 
+  useEffect(() => {
+    dispatch(getAdminDashboardStats());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (stats) {
+      const formattedData = [
+        { name: "Active", value: stats?.data?.totalRents },
+        { name: "Completed", value: stats?.data?.completedRents },
+        { name: "Cancelled", value: stats?.data?.totalCancelled },
+      ];
+      setChartData(formattedData);
+    }
+  }, [stats]);
+
+  console.log(stats, "STATS");
   return (
     <div className="flex min-h-screen bg-[#F5F8FA] font-sans">
       <Sidebar />
@@ -71,17 +93,38 @@ export default function AdminDashboard() {
       {/* CONTENT */}
       <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6">
         {/* HEADER */}
-        <TopNavbar
-          title="Today's Statistics"
-          onSearch={(value) => console.log("Searching:", value)}
-          // avatarUrl="/user-avatar.png"
-        />
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <div>
+            <h2 className="text-lg font-semibold">Today’s Statistics</h2>
+            <p className="text-xs text-slate-500">
+              {new Date().toDateString()}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <Bell className="text-slate-400 shrink-0" />
+            <div className="relative w-full sm:w-[260px]">
+              <Search
+                size={16}
+                className="absolute left-3 top-3 text-slate-400"
+              />
+              <input
+                className="pl-9 pr-4 py-2 text-sm rounded-xl bg-[#EEF2F5] w-full"
+                placeholder="Search here"
+              />
+            </div>
+          </div>
+        </div>
 
         {/* GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* LEFT */}
           <div className="lg:col-span-4 space-y-6">
-            <StatCard title="TOTAL REVENUE" value="Rs-58,675" badge="+12.5%" />
+            <StatCard
+              title="TOTAL REVENUE"
+              value={`Rs-${stats?.data?.totalEarnings}`}
+              badge="+12.5%"
+            />
 
             {/* ACTIVE RENTALS */}
             <div className="bg-white rounded-xl border p-5 w-full">
@@ -95,7 +138,7 @@ export default function AdminDashboard() {
                       ACTIVE RENTALS
                     </p>
                     <p className="text-lg font-semibold text-slate-800 mt-1">
-                      3
+                      {stats?.data?.activeRents}
                     </p>
                   </div>
                 </div>
@@ -111,10 +154,10 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-400 tracking-wide">
-                      PENDING PICKUPS
+                      Completed Rentals
                     </p>
                     <p className="text-lg font-semibold text-slate-800 mt-1">
-                      1
+                      {stats?.data?.completedRents}
                     </p>
                   </div>
                 </div>
@@ -128,7 +171,7 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-xl border p-5 w-full">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-xs font-semibold text-slate-400 tracking-wide">
-                  HIRE VS CANCEL
+                  Completed VS CANCEL
                 </h4>
                 <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">
                   Today
@@ -153,14 +196,14 @@ export default function AdminDashboard() {
               </div>
 
               <div className="space-y-2 text-sm">
-                {hireCancelData.map((item, i) => (
+                {chartData.map((item, i) => (
                   <div key={i} className="flex justify-between">
                     <div className="flex items-center gap-2">
                       <span
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
-                      {item.label}
+                      {item.name}
                     </div>
                     <div className="flex items-center gap-1">
                       {item.value}%
@@ -179,7 +222,7 @@ export default function AdminDashboard() {
           {/* RIGHT */}
           <div className="lg:col-span-8 space-y-6">
             {/* Product Availability */}
-            <div className="bg-white rounded-xl p-6 border">
+            {/* <div className="bg-white rounded-xl p-6 border">
               <h3 className="font-semibold mb-4">Product Availability</h3>
 
               <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
@@ -202,7 +245,7 @@ export default function AdminDashboard() {
                   Check
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* TABLE */}
             <div className="bg-white rounded-xl border">

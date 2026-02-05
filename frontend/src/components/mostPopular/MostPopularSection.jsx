@@ -4,12 +4,13 @@ import SectionHeader from "../header/SectionHeader";
 import PopularCard from "../card/PopularCard";
 import SecondaryButton from "../buttons/SecondaryButton";
 import { useSelector } from "react-redux";
+import { DotLoader } from "react-spinners";
 
 const MostPopularSection = () => {
   // Display limit
   const [visible, setVisible] = useState(4);
 
-  const { items } = useSelector((state) => state.item);
+  const { items, loading } = useSelector((state) => state.item);
 
   // Load more handler
   const handleLoadMore = () => {
@@ -23,15 +24,26 @@ const MostPopularSection = () => {
       <section className="mt-20">
         <div className="bg-background rounded-[8px] py-8 px-10">
           <SectionHeader header="Most Popular Products" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6">
-            {items?.slice(0, visible).map((item) => (
-              <PopularCard key={item.id} item={item} />
-            ))}
-          </div>
-          {visible < items?.length && (
-            <div className="flex justify-center items-center mt-8">
-              <SecondaryButton btnText="load more" onClick={handleLoadMore} />
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <DotLoader />
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6">
+                {items?.slice(0, visible).map((item) => (
+                  <PopularCard key={item.id} item={item} />
+                ))}
+              </div>
+              {visible < items?.length && (
+                <div className="flex justify-center items-center mt-8">
+                  <SecondaryButton
+                    btnText="load more"
+                    onClick={handleLoadMore}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

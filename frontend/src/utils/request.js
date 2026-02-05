@@ -41,6 +41,11 @@ const request = {
         ...rentData,
       }),
     getRenterRentals: () => api.get("/rental/rents/renter"),
+    getRentItemById: (id) => api.get(`/rental/rent/${id}`),
+    returnRentItem: (token) => api.patch(`/rental/return/${token}`),
+  },
+  admin: {
+    getDashboardStats: () => api.get("/admin/dashboard/stats"),
   },
 };
 

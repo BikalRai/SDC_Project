@@ -30,6 +30,7 @@ public class RentalResponseDto {
     private UserResponseDto renter;
     private ItemResponseDto item;
     private int ownerId;
+    private String returnToken;
 
 
     public RentalResponseDto(Rental rental) {
@@ -42,5 +43,6 @@ public class RentalResponseDto {
         this.renter = new UserResponseDto(rental.getRenter());
         this.item = new ItemResponseDto(rental.getItem());
         this.ownerId = rental.getOwnerId();
+        this.returnToken = rental.getReturnToken();
     }
 }
