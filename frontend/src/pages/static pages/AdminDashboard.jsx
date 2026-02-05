@@ -22,6 +22,7 @@ import {
   Cell,
 } from "recharts";
 import Sidebar from "./Sidebar";
+import TopNavbar from "./TopNavBar";
 
 /* ---------- DATA ---------- */
 const revenueData = [
@@ -41,8 +42,18 @@ const hireCancelData = [
 
 const products = [
   { id: "01", name: "Aprilia SR 125", owner: "John Doe", status: "Available" },
-  { id: "02", name: "Working table", owner: "Chyangra Lal", status: "Unavailable" },
-  { id: "03", name: "Suzuki Celerio ZXI", owner: "Suleman Pakya", status: "Rented out" },
+  {
+    id: "02",
+    name: "Working table",
+    owner: "Chyangra Lal",
+    status: "Unavailable",
+  },
+  {
+    id: "03",
+    name: "Suzuki Celerio ZXI",
+    owner: "Suleman Pakya",
+    status: "Rented out",
+  },
 ];
 
 /* ================= MAIN ================= */
@@ -60,25 +71,11 @@ export default function AdminDashboard() {
       {/* CONTENT */}
       <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6">
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-          <div>
-            <h2 className="text-lg font-semibold">Today’s Statistics</h2>
-            <p className="text-xs text-slate-500">
-              Tue, 13th Jan, 2026, 7:30AM
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-            <Bell className="text-slate-400 shrink-0" />
-            <div className="relative w-full sm:w-[260px]">
-              <Search size={16} className="absolute left-3 top-3 text-slate-400" />
-              <input
-                className="pl-9 pr-4 py-2 text-sm rounded-xl bg-[#EEF2F5] w-full"
-                placeholder="Search here"
-              />
-            </div>
-          </div>
-        </div>
+        <TopNavbar
+          title="Today's Statistics"
+          onSearch={(value) => console.log("Searching:", value)}
+          // avatarUrl="/user-avatar.png"
+        />
 
         {/* GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -97,7 +94,9 @@ export default function AdminDashboard() {
                     <p className="text-xs font-semibold text-slate-400 tracking-wide">
                       ACTIVE RENTALS
                     </p>
-                    <p className="text-lg font-semibold text-slate-800 mt-1">3</p>
+                    <p className="text-lg font-semibold text-slate-800 mt-1">
+                      3
+                    </p>
                   </div>
                 </div>
                 <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium">
@@ -114,7 +113,9 @@ export default function AdminDashboard() {
                     <p className="text-xs font-semibold text-slate-400 tracking-wide">
                       PENDING PICKUPS
                     </p>
-                    <p className="text-lg font-semibold text-slate-800 mt-1">1</p>
+                    <p className="text-lg font-semibold text-slate-800 mt-1">
+                      1
+                    </p>
                   </div>
                 </div>
                 <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium">
@@ -187,8 +188,14 @@ export default function AdminDashboard() {
                 </select>
 
                 <div className="flex">
-                  <input type="date" className="h-11 border rounded-l-md px-3" />
-                  <input type="time" className="h-11 border rounded-r-md px-3" />
+                  <input
+                    type="date"
+                    className="h-11 border rounded-l-md px-3"
+                  />
+                  <input
+                    type="time"
+                    className="h-11 border rounded-r-md px-3"
+                  />
                 </div>
 
                 <button className="h-11 px-6 bg-[#0093B8] text-white rounded-md">
