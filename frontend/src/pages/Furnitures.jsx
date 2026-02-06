@@ -3,10 +3,10 @@ import GridLayout from "@/components/layout/GridLayout";
 import { useSelector } from "react-redux";
 
 const Furnitures = () => {
-  const { items } = useSelector((state) => state.item);
+  const { allItems } = useSelector((state) => state.item);
   return (
     <GridLayout>
-      {items
+      {allItems
         .filter((item) => item?.category.toLowerCase() === "furniture")
         .map((item) => (
           <PopularCard key={item?.id} item={item} />

@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   items: [],
   successMessage: null,
+  allItems: [],
 };
 
 export const addItem = createAsyncThunk(
@@ -136,7 +137,7 @@ const itemSlice = createSlice({
       })
       .addCase(getAllItems.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.data;
+        state.allItems = action.payload.data;
       })
       .addCase(getAllItems.rejected, (state, action) => {
         state.loading = false;

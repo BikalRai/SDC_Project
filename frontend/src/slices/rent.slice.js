@@ -14,7 +14,8 @@ export const createRental = createAsyncThunk(
   async (rentalData, { rejectWithValue }) => {
     try {
       const res = await request.rent.create(rentalData);
-      return res.data;
+      // console.log(res);
+      return res.data.data;
     } catch (error) {
       // ✅ Extract the message properly
       const message =
@@ -33,8 +34,8 @@ export const fetchMyRentals = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await request.rent.getRenterRentals();
-      console.log(res.data);
-      return res.data;
+      console.log(res.data.data, "data");
+      return res.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
@@ -66,6 +67,31 @@ export const returnRentItem = createAsyncThunk(
   },
 );
 
+export const confirmPayment = createAsyncThunk(
+  "rental/confirm",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await request.rent.confirmPayment(id);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  },
+);
+
+export const cancelRent = createAsyncThunk(
+  "rental/cancel",
+  async (rentalId, { rejectWithValue }) => {
+    try {
+      const res = await request.rent.cancelRent(rentalId);
+
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  },
+);
+
 const rentalSlice = createSlice({
   name: "rental",
   initialState,
@@ -85,7 +111,7 @@ const rentalSlice = createSlice({
       .addCase(createRental.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.rentals.push(action.payload);
+        state.rentals = [...state.rentals, action.payload];
       })
       .addCase(createRental.rejected, (state, action) => {
         state.loading = false;
@@ -99,6 +125,7 @@ const rentalSlice = createSlice({
         state.success = null;
       })
       .addCase(fetchMyRentals.fulfilled, (state, action) => {
+        console.log(action, "action");
         state.loading = false;
         state.rentals = action.payload;
       })
@@ -131,6 +158,34 @@ const rentalSlice = createSlice({
         state.success = "Returned item successfully";
       })
       .addCase(returnRentItem.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(confirmPayment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(confirmPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rent = action.payload;
+        state.success = "Updated status successfuly.";
+      })
+      .addCase(confirmPayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(cancelRent.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(cancelRent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rent = action.payload.data;
+        state.success = "Cancelled rent successfuly.";
+      })
+      .addCase(cancelRent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

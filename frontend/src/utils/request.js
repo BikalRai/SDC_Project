@@ -43,6 +43,8 @@ const request = {
     getRenterRentals: () => api.get("/rental/rents/renter"),
     getRentItemById: (id) => api.get(`/rental/rent/${id}`),
     returnRentItem: (token) => api.patch(`/rental/return/${token}`),
+    confirmPayment: (id) => api.post(`/rental/payment-success/${id}`),
+    cancelRent: (id) => api.patch(`/rental/cancel/${id}`),
   },
   admin: {
     getDashboardStats: () => api.get("/admin/dashboard/stats"),

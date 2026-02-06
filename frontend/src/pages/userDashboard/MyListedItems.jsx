@@ -24,23 +24,29 @@ const MyListedItems = () => {
 
   const [showConfirmInput, setShowConfirmInput] = useState(null); // Tracks which item is being returned
   const [tokenValue, setTokenValue] = useState("");
+  console.log(tokenValue);
 
   const handleReturnSubmit = async () => {
     if (!tokenValue)
       return toast.error("Please enter the token from the borrower");
 
-    const resultAction = dispatch(returnRentItem(tokenValue));
+    try {
+      // 1. unwrap() allows us to use try/catch directly on the thunk result
+      await dispatch(returnRentItem(tokenValue)).unwrap();
 
-    if (returnRentItem.fulfilled.match(resultAction)) {
-      toast.success("Item is back in stock!");
+      // 2. If it succeeds, show the SUCCESS toast
+      toast.success("Item returned successfully! It is now Available.");
+
       setTokenValue("");
       setShowConfirmInput(null);
 
-      // REFRESH: This is critical so the status changes from RENTED to AVAILABLE
+      // 3. REFRESH the lists to get the new 'AVAILABLE' status from the server
       dispatch(getUserListedItems());
       dispatch(getAllItems());
-    } else {
-      toast.error(resultAction.payload || "Invalid Token");
+    } catch (error) {
+      // 4. If the backend returns an error (invalid token), show the ERROR toast
+      // This handles the "Wrong Toast" issue
+      toast.error(error?.message || "Invalid Token. Please try again.");
     }
   };
 
