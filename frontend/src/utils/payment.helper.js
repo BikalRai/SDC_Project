@@ -1,9 +1,9 @@
 import CryptoJS from "crypto-js";
 
-export const buildEsewaPayload = (state) => {
+export const buildEsewaPayload = (state, rentalId) => {
   // Use the Item ID and a timestamp to create a unique ID for this transaction
   // eSewa requires this to be unique every time.
-  const transactionId = `RENT-${state.itemId}-${Date.now()}`;
+  const transactionId = `RENT-${rentalId}-${Date.now()}`;
 
   const payload = {
     amount: state.totalAmount.toString(),

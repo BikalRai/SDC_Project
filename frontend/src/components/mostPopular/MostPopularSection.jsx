@@ -10,14 +10,12 @@ const MostPopularSection = () => {
   // Display limit
   const [visible, setVisible] = useState(4);
 
-  const { items, loading } = useSelector((state) => state.item);
+  const { allItems, loading } = useSelector((state) => state.item);
 
   // Load more handler
   const handleLoadMore = () => {
     setVisible((prev) => prev + 4); // load 4 more cards
   };
-
-  // console.log(items);
 
   return (
     <ReContainer>
@@ -31,11 +29,11 @@ const MostPopularSection = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6">
-                {items?.slice(0, visible).map((item) => (
+                {allItems?.slice(0, visible).map((item) => (
                   <PopularCard key={item.id} item={item} />
                 ))}
               </div>
-              {visible < items?.length && (
+              {visible < allItems?.length && (
                 <div className="flex justify-center items-center mt-8">
                   <SecondaryButton
                     btnText="load more"

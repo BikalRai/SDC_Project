@@ -116,7 +116,20 @@ public class RentalController {
         }
     }
 
-    @DeleteMapping("/cancel")
+    @PatchMapping("/cancel/{rentalId}")
+    public  ResponseEntity<Map<String, Object>> cancelRentalHandler(@PathVariable int rentalId) {
+        try {
+            RentalResponseDto res = rentalService.cancelRental(rentalId);
+            return ResponseBuilder.buildResponse("Cancelled rent successfully.", HttpStatus.OK, res);
+        } catch (HttpNotFoundException e) {
+            return ResponseBuilder.buildResponse("Invalid QR Code.", HttpStatus.NOT_FOUND, null);
+        }catch (Exception e) {
+            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+
+    @DeleteMapping("/delete")
     public ResponseEntity<Map<String, Object>> cancelRentalController(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CancelRentDto cancelRentDto) {
         try {
 

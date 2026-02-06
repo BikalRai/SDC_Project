@@ -5,9 +5,9 @@ import GridLayout from "@/components/layout/GridLayout";
 import { DotLoader } from "react-spinners";
 
 const Vehicle = () => {
-  const { items, loading } = useSelector((state) => state.item);
+  const { allItems, loading } = useSelector((state) => state.item);
   // console.log(items);
-  const vehicleItems = items.filter((item) =>
+  const vehicleItems = allItems.filter((item) =>
     ["vehicle", "car", "scooter"].includes(item?.category?.toLowerCase()),
   );
   return (

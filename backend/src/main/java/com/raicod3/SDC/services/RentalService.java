@@ -150,4 +150,14 @@ public class RentalService {
 
         return new RentalResponseDto(rental);
     }
+
+    public RentalResponseDto cancelRental (int id) {
+        Rental rental = rentalRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("Rental not found."));
+
+        rental.setStatus(RentalStatus.CANCELLED);
+
+        rentalRepository.save(rental);
+
+        return new RentalResponseDto(rental);
+    }
 }
