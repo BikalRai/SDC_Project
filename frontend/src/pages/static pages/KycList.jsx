@@ -2,8 +2,11 @@ import React, { useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import Sidebar from "./Sidebar";
 import TopNavbar from "./TopNavBar";
+import { useNavigate } from "react-router-dom";
 
 export default function KYCList() {
+  const navigate = useNavigate();
+
   const rows = [
     {
       id: 1,
@@ -62,8 +65,7 @@ export default function KYCList() {
       if (filters.document !== "All" && r.doc !== filters.document)
         return false;
 
-      if (filters.status !== "All" && r.status !== filters.status)
-        return false;
+      if (filters.status !== "All" && r.status !== filters.status) return false;
 
       if (filters.date === "Today") {
         return rowDate.toDateString() === now.toDateString();
@@ -77,8 +79,7 @@ export default function KYCList() {
 
       if (filters.date === "Range" && filters.from && filters.to) {
         return (
-          rowDate >= new Date(filters.from) &&
-          rowDate <= new Date(filters.to)
+          rowDate >= new Date(filters.from) && rowDate <= new Date(filters.to)
         );
       }
 
@@ -94,7 +95,10 @@ export default function KYCList() {
       {/* MAIN */}
       <main className="flex-1 p-8 space-y-6">
         {/* TOP NAVBAR */}
-        <TopNavbar title="KYC & Documentation Verification Hub" onSearch={(v) => console.log("Searching:", v)} />
+        <TopNavbar
+          title="KYC & Documentation Verification Hub"
+          onSearch={(v) => console.log("Searching:", v)}
+        />
 
         {/* CARD */}
         <div className="bg-white rounded-xl shadow">
@@ -131,9 +135,7 @@ export default function KYCList() {
                   >
                     <option value="All">All Documents</option>
                     <option value="Driver License">Driver License</option>
-                    <option value="Identity Document">
-                      Identity Document
-                    </option>
+                    <option value="Identity Document">Identity Document</option>
                     <option value="Motorcycle License">
                       Motorcycle License
                     </option>
@@ -171,9 +173,7 @@ export default function KYCList() {
                   {filters.date === "Range" && (
                     <div className="space-y-2">
                       <div>
-                        <label className="text-xs text-gray-500">
-                          From
-                        </label>
+                        <label className="text-xs text-gray-500">From</label>
                         <input
                           type="date"
                           className="w-full border rounded-md px-3 py-2 text-sm"
@@ -187,9 +187,7 @@ export default function KYCList() {
                       </div>
 
                       <div>
-                        <label className="text-xs text-gray-500">
-                          To
-                        </label>
+                        <label className="text-xs text-gray-500">To</label>
                         <input
                           type="date"
                           className="w-full border rounded-md px-3 py-2 text-sm"
@@ -239,10 +237,7 @@ export default function KYCList() {
               {filteredRows.map((r) => (
                 <tr key={r.id} className="border-t">
                   <td className="p-4 flex items-center gap-3">
-                    <img
-                      src={r.avatar}
-                      className="w-8 h-8 rounded-full"
-                    />
+                    <img src={r.avatar} className="w-8 h-8 rounded-full" />
                     {r.name}
                   </td>
                   <td>{r.doc}</td>
@@ -253,7 +248,10 @@ export default function KYCList() {
                     </span>
                   </td>
                   <td className="text-right pr-6">
-                    <button className="bg-sky-600 text-white px-4 py-2 rounded-md text-xs">
+                    <button
+                      onClick={() => navigate("/kyc-view")}
+                      className="bg-sky-600 text-white px-4 py-2 rounded-md text-xs"
+                    >
                       Details
                     </button>
                   </td>
@@ -262,10 +260,7 @@ export default function KYCList() {
 
               {filteredRows.length === 0 && (
                 <tr>
-                  <td
-                    colSpan="5"
-                    className="text-center text-gray-400 py-8"
-                  >
+                  <td colSpan="5" className="text-center text-gray-400 py-8">
                     No records found
                   </td>
                 </tr>
