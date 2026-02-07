@@ -13,7 +13,7 @@ import UserMenu from "./UserMenu";
 const navLinks = [
   { id: 1, name: "home", path: "/" },
   { id: 2, name: "categories", path: "/categories" },
-  { id: 3, name: "how", path: "/kyc" },
+  { id: 3, name: "how", path: "/howitworks" },
   { id: 4, name: "about", path: "/about" },
 ];
 

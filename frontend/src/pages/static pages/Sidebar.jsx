@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   CalendarCheck,
@@ -9,16 +9,26 @@ import {
   CreditCard,
   LogOut,
 } from "lucide-react";
+import { logo } from "@/utils/imports";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   return (
     <aside className="w-[260px] bg-[#DFF0E1] px-6 py-8 flex flex-col justify-between">
       {/* TOP */}
       <div>
         {/* LOGO */}
-        <div className="flex items-center gap-2 mb-12">
-          <div className="text-2xl font-bold text-[#0093B8]">KB</div>
-          <span className="text-xs text-slate-500">Kiraya Bazar</span>
+        <div
+          className="flex pl-2 items-center gap-2 mb-12"
+          onClick={() => navigate("/")}
+        >
+          <div className="flex-shrink-0">
+            <div className="w-11 cursor-pointer">
+              <img src={logo} alt="Logo" className="w-full aspect-square" />
+            </div>
+          </div>
+          <span className="text-xs text-slate-500 cursor-pointer">Kiraya Bazar</span>
         </div>
 
         {/* NAV */}

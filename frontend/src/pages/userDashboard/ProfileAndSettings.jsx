@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { updateUser } from "@/slices/user.slice";
 import { loadUserFromToken } from "@/slices/auth.slice";
 import { uploadToCloudinary } from "@/utils/cloudinary";
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfile() {
   const [editMode, setEditMode] = useState(false);
@@ -40,6 +41,8 @@ export default function UserProfile() {
     location: user?.location || "",
     image: user?.image || "",
   });
+
+  const navigate = useNavigate();
 
   // ✅ Sync tempUser with user from Redux whenever user changes
   useEffect(() => {
@@ -475,12 +478,29 @@ export default function UserProfile() {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               mt: 3,
               pt: 2,
               borderTop: "1px dashed rgba(0,0,0,0.08)",
             }}
           >
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/kyc')}
+              sx={{
+                px: 3,
+                border: "none",
+                color: "#0094b6",
+                "&:hover": {
+                  background: "rgba(0, 148, 182, 0.04)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 3px 10px rgba(0, 148, 182, 0.2)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
+              KYC Verification
+            </Button>
             <Button
               variant="outlined"
               onClick={() => setEditMode(true)}
