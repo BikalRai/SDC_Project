@@ -30,6 +30,7 @@ import PaymentSuccess from "@/pages/PaymentSuccess";
 import PaymentFailure from "@/pages/PaymentFailure";
 import KycForm from "../kyc/KycForm";
 import SystemSettings from "@/pages/static pages/SystemSettings";
+import HowItWorks from "@/pages/HowItWorks";
 
 const RequireUserAuth = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <AboutUsPage />,
+  },
+  {
+    path: "/howitworks",
+    element: <HowItWorks />,
   },
   {
     path: "/view-item/:id",
