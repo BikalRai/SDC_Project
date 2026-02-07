@@ -28,18 +28,24 @@ const MostPopularSection = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6">
-                {allItems?.slice(0, visible).map((item) => (
-                  <PopularCard key={item.id} item={item} />
-                ))}
-              </div>
-              {visible < allItems?.length && (
-                <div className="flex justify-center items-center mt-8">
-                  <SecondaryButton
-                    btnText="load more"
-                    onClick={handleLoadMore}
-                  />
-                </div>
+              {allItems?.length === 0 ? (
+                <>No Items</>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mt-6">
+                    {allItems?.slice(0, visible).map((item) => (
+                      <PopularCard key={item.id} item={item} />
+                    ))}
+                  </div>
+                  {visible < allItems?.length && (
+                    <div className="flex justify-center items-center mt-8">
+                      <SecondaryButton
+                        btnText="load more"
+                        onClick={handleLoadMore}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
