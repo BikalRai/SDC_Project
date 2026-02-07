@@ -48,7 +48,7 @@ const RequireAdminAuth = ({ children }) => {
     return <Navigate to={"/login"} replace />;
   }
 
-  if (user?.role !== "admin") {
+  if (user?.role.toLowerCase() !== "admin") {
     return <Navigate to={"/login"} replace />;
   }
 

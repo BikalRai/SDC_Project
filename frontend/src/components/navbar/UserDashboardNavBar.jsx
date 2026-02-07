@@ -3,6 +3,8 @@ import { LuCirclePlus, LuLogOut, LuSettings } from "react-icons/lu";
 import { LuShoppingBag } from "react-icons/lu";
 import UserDashboardLink from "./UserDashboardLink";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/slices/auth.slice";
 
 const navLinks = [
   {
@@ -32,6 +34,8 @@ const navLinks = [
 ];
 
 const UserDashboardNavBar = () => {
+  const dispatch = useDispatch();
+
   return (
     <nav className="min-h-dvh w-full flex flex-col items-center gap-10 py-0 sm:py-3 shadow-lg sticky top-0 bg-gray-300">
       <div className="flex flex-col">
@@ -55,6 +59,7 @@ const UserDashboardNavBar = () => {
         ))}
       </div>
       <div
+        onClick={() => dispatch(logoutUser())}
         className="
           flex items-center font-medium gap-2 p-3 rounded hover:text-primary
           transition-all duration-300 cursor-pointer mt-auto

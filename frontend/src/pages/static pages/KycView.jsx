@@ -1,16 +1,6 @@
 import { useState } from "react";
-<<<<<<< HEAD
-import { Bell, Search, Car, CreditCard, Bike } from "lucide-react";
-=======
-import {
-  Car,
-  CreditCard,
-  Bike,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { Car, CreditCard, Bike, CheckCircle, XCircle } from "lucide-react";
 import Sidebar from "./Sidebar";
->>>>>>> 87f4838fb4e177dc5525e3a5b49d20efb68be9be
 import TopNavbar from "./TopNavbar";
 
 export default function KYCHub() {
@@ -66,21 +56,11 @@ export default function KYCHub() {
       return;
     }
 
-<<<<<<< HEAD
-    setReviews((prev) =>
-      prev.map((r) =>
-        r.id === activeId
-          ? { ...r, status: decision === "approve" ? "approved" : "rejected" }
-          : r,
-      ),
-    );
-=======
     const updated = {
       ...active,
       status,
       time: "Just now",
     };
->>>>>>> 87f4838fb4e177dc5525e3a5b49d20efb68be9be
 
     setData((prev) => ({
       pending: prev.pending.filter((i) => i.id !== active.id),
@@ -305,17 +285,11 @@ function Doc({ label, src, alt }) {
       <p className="text-xs text-gray-400 mb-2">{label}</p>
       {src ? (
         <div className="h-40 rounded-xl overflow-hidden border">
-          <img
-            src={src}
-            alt={label}
-            className="w-full h-full object-cover"
-          />
+          <img src={src} alt={label} className="w-full h-full object-cover" />
         </div>
       ) : (
         <div
-          className={`h-40 rounded-xl ${
-            alt ? "bg-blue-200" : "bg-blue-100"
-          }`}
+          className={`h-40 rounded-xl ${alt ? "bg-blue-200" : "bg-blue-100"}`}
         />
       )}
     </div>

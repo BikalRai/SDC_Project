@@ -45,17 +45,38 @@ public class AuthService {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private EmailService emailService;
+
 
     public ResponseEntity<Map<String, Object>> register(AuthRegistrationRequest request) {
 
         try {
+
+            List<UserModel> allUsers = userRepository.findAll();
 //            System.out.println(request.getPassword() + ": PASSWORD RECEIVED");
             UserModel user = new UserModel();
             user.setEmail(request.getEmail());
             user.setPhone(request.getPhone());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setCreatedAt(LocalDateTime.now());
-            user.setRole("USER");
+
+            if(allUsers.isEmpty()) {
+                user.setRole("ADMIN");
+            } else{
+                user.setRole("USER");
+
+                try {
+                    // If you have a name in your request, use it.
+                    // Otherwise, this pulls the part before the @ in the email.
+                    String nameForEmail = "New User";
+
+                    emailService.sendWelcomeEmail(user.getEmail(), nameForEmail);
+                } catch (Exception e) {
+                    // We log the error but don't break the registration process
+                    System.out.println("Email failed to send, but user was created: " + e.getMessage());
+                }
+            }
 
             UserModel savedUser = userRepository.save(user);
 
