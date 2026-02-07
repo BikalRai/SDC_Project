@@ -45,35 +45,10 @@ public class UserService {
         existingUser.setLocation(dto.getLocation());
         existingUser.setUpdatedAt(LocalDateTime.now());
         existingUser.setImage(dto.getImage());
+        existingUser.setProfileUpdated(true);
         userRepository.save(existingUser);
         return new UserResponseDto(existingUser);
 
-    }
-
-    public UserResponseDto setIsUserVerified(int userId, KycVerifyRequestDto dto) {
-        KYCModel kyc = kycRepository.findById(dto.getKycId()).orElseThrow(() -> new HttpNotFoundException("KYC does not exists."));
-        UserModel user = userRepository.findById(userId).orElseThrow(() -> new HttpNotFoundException("User not found."));
-
-        kyc.setIsVerified(dto.isVerification());
-        kycRepository.save(kyc);
-
-        user.setVerified(dto.isVerification());
-        userRepository.save(user);
-
-        return new UserResponseDto(user);
-    }
-
-    public UserResponseDto rejectKycVerification(int userId, KycVerifyRequestDto dto) {
-        KYCModel kyc = kycRepository.findById(dto.getKycId()).orElseThrow(() -> new HttpNotFoundException("KYC does not exists."));
-        UserModel user = userRepository.findById(userId).orElseThrow(() -> new HttpNotFoundException("User not found."));
-
-        kyc.setIsVerified(dto.isVerification());
-        kycRepository.save(kyc);
-
-        user.setVerified(dto.isVerification());
-        userRepository.save(user);
-
-        return new UserResponseDto(user);
     }
 
     public  String deleteUser(int id) {

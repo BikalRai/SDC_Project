@@ -56,10 +56,24 @@ const RequireAdminAuth = ({ children }) => {
   return children;
 };
 
+const RootRedirect = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+  if (isAuthenticated) {
+    if (user?.role?.toLowerCase() === "admin") {
+      return <Navigate to="/admin-dashboard" replace />;
+    }
+    // If you want regular users to go to a user dashboard, uncomment below:
+    // return <Navigate to="/user/dashboard" replace />;
+  }
+
+  return <Home />;
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <RootRedirect />,
   },
   {
     path: "/login",
@@ -125,7 +139,7 @@ const router = createBrowserRouter([
   { path: "/payment/failure", element: <PaymentFailure /> },
   { path: "/admin-dashboard", element: <AdminDashboard /> },
   { path: "/admin-payment", element: <AdminPayment /> },
-  { path: "/kyc-view", element: <KycView /> },
+  { path: "/kyc-view/:kycId", element: <KycView /> },
   { path: "/kyc-list", element: <KycList /> },
   { path: "/settings", element: <SystemSettings /> },
   { path: "/payment-process", element: <PaymentProcess /> },

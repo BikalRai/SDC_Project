@@ -11,11 +11,21 @@ import {
 } from "lucide-react";
 import { logo } from "@/utils/imports";
 import { useNavigate } from "react-router-dom";
+import { logoutUser } from "@/slices/auth.slice";
+import { useDispatch } from "react-redux";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    localStorage.removeItem("authToken"); // Clear storage manually to be safe
+    localStorage.removeItem("refreshToken");
+    navigate("/login", { replace: true }); // Force redirect
+  };
   return (
-    <aside className="w-[260px] bg-[#DFF0E1] px-6 py-8 flex flex-col justify-between">
+    <aside className="w-[260px] bg-[#DFF0E1] px-6 py-8 flex flex-col justify-between h-screen sticky top-0 border-r border-slate-200">
       {/* TOP */}
       <div>
         {/* LOGO */}
@@ -28,7 +38,9 @@ const Sidebar = () => {
               <img src={logo} alt="Logo" className="w-full aspect-square" />
             </div>
           </div>
-          <span className="text-xs text-slate-500 cursor-pointer">Kiraya Bazar</span>
+          <span className="text-xs text-slate-500 cursor-pointer">
+            Kiraya Bazar
+          </span>
         </div>
 
         {/* NAV */}
@@ -70,7 +82,10 @@ const Sidebar = () => {
       </div>
 
       {/* LOGOUT */}
-      <button className="flex items-center justify-center gap-2 text-sm bg-[#0093B8] text-white py-2 rounded-lg">
+      <button
+        onClick={handleLogout}
+        className="flex items-center justify-center gap-2 text-sm bg-[#0093B8] text-white py-2 rounded-lg cursor-pointer"
+      >
         <LogOut size={16} /> Logout
       </button>
     </aside>

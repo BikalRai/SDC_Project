@@ -6,6 +6,7 @@ import com.raicod3.SDC.dtos.kyc.KYCRequestDto;
 import com.raicod3.SDC.dtos.kyc.KYCResponseDto;
 import com.raicod3.SDC.dtos.user.UserResponseDto;
 import com.raicod3.SDC.enums.KYCStatus;
+import com.raicod3.SDC.exceptions.HttpBadRequestException;
 import com.raicod3.SDC.exceptions.HttpForbiddenException;
 import com.raicod3.SDC.exceptions.HttpNotFoundException;
 import com.raicod3.SDC.exceptions.HttpUnprocessableException;
@@ -13,6 +14,9 @@ import com.raicod3.SDC.models.KYCModel;
 import com.raicod3.SDC.models.UserModel;
 import com.raicod3.SDC.repositories.KYCRepository;
 import com.raicod3.SDC.repositories.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.validation.constraints.Email;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +35,9 @@ public class KYCService {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private EmailService emailService;
 
     public KYCResponseDto createKYC(CustomUserDetails customUserDetails, KYCRequestDto kycRequestDto) {
 
@@ -55,11 +62,8 @@ public class KYCService {
 
         Optional<KYCModel> existingKyc = kycRepo.findByUser(customUserDetails.getUser());
 
-        if (existingKyc.isEmpty()) {
-            throw new HttpNotFoundException("User with KYC does not exist");
-        }
+        return existingKyc.map(kycModel -> new KYCResponseDto(user, kycModel)).orElse(null);
 
-        return new KYCResponseDto(user, existingKyc.get());
     }
 
     public List<KYCResponseDto> getAllKYCs() {
@@ -103,8 +107,10 @@ public class KYCService {
         return new KYCResponseDto(existingKYC.getUser(), existingKYC);
     }
 
-    public KYCResponseDto updateKYCStatus(int id, KYCProcessStatusRequest kycStatus, CustomUserDetails customUserDetails) {
+    public KYCResponseDto updateKYCStatus(int id, KYCProcessStatusRequest kycStatus, CustomUserDetails customUserDetails) throws MessagingException {
         KYCModel existingKYC = kycRepo.findById(id).orElseThrow(() -> new HttpNotFoundException("KYC does not exist"));
+
+        UserModel user = userRepo.findById(existingKYC.getUser().getId()).orElseThrow(() -> new HttpNotFoundException("User does not exist"));
 
         if(!customUserDetails.getUser().getRole().equals("ADMIN")) {
             throw new HttpForbiddenException("You are not allowed to update KYC status.");
@@ -112,6 +118,21 @@ public class KYCService {
 
         existingKYC.setStatus(kycStatus.getStatus());
         existingKYC.setVerifiedDate(LocalDate.now());
+
+        kycRepo.save(existingKYC);
+
+
+        if(kycStatus.getStatus().equals(KYCStatus.REJECTED)) {
+            emailService.sendKycRejectedEmail(user.getEmail(), user.getFullName(), kycStatus.getRejectionReason());
+        }
+
+        if(kycStatus.getStatus().equals(KYCStatus.PROCESSED)) {
+
+            user.setVerified(true);
+            userRepo.save(user);
+
+            emailService.sendKycApprovedEmail(user.getEmail(), user.getFullName());
+        }
 
         return new KYCResponseDto(existingKYC.getUser(), existingKYC);
     }

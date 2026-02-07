@@ -55,6 +55,36 @@ public class EmailService {
             """.formatted(username, itemName, price);
         sendEmail(to, subject, content);
     }
+
+    public void sendKycApprovedEmail(String to, String username) throws MessagingException {
+        String subject = "KYC Verified - Kiraya Bazar";
+        String content = """
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <h2 style="color: #27AE60;">Account Verified!</h2>
+            <p>Hi %s,</p>
+            <p>Great news! Your <b>Nagarita</b> verification has been approved. You now have full access to rent items on Kiraya Bazar.</p>
+            <a href="http://localhost:5173/login" style="display: inline-block; background: #008CA8; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin-top: 15px;">Go to Dashboard</a>
+        </div>
+        """.formatted(username);
+        sendEmail(to, subject, content);
+    }
+
+    public void sendKycRejectedEmail(String to, String username, String reason) throws MessagingException {
+        String subject = "Action Required: KYC Verification Update";
+        String content = """
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <h2 style="color: #E74C3C;">Verification Update</h2>
+            <p>Hi %s,</p>
+            <p>Unfortunately, your KYC verification was not approved for the following reason:</p>
+            <blockquote style="background: #F9F9F9; border-left: 4px solid #E74C3C; padding: 10px; font-style: italic;">
+                %s
+            </blockquote>
+            <p>Please log in and re-upload the correct documents to verify your account.</p>
+            <a href="http://localhost:5173/kyc-form" style="display: inline-block; background: #E74C3C; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin-top: 15px;">Re-upload Documents</a>
+        </div>
+        """.formatted(username, reason);
+        sendEmail(to, subject, content);
+    }
 }
 
 

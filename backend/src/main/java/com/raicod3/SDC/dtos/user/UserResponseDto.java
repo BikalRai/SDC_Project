@@ -26,6 +26,7 @@ public class UserResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isVerified;
+    private boolean profileUpdated;
 
     public UserResponseDto(UserModel user) {
         this.id = user.getId();
@@ -38,6 +39,7 @@ public class UserResponseDto {
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
         this.isVerified = user.isVerified();
+        this.profileUpdated = user.getProfileUpdated();
     }
 
 }

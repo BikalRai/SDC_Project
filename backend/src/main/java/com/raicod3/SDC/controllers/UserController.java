@@ -54,18 +54,6 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/verify/{userId}")
-    public ResponseEntity<Map<String, Object>> verifyKyc(@PathVariable int userId, @RequestBody KycVerifyRequestDto dto) {
-        try {
-            UserResponseDto res = userService.setIsUserVerified(userId, dto);
-            return ResponseBuilder.buildResponse("Kyc verified.", HttpStatus.OK, res);
-        } catch (HttpNotFoundException e) {
-            return ResponseBuilder.buildResponse("User/kyc not found.", HttpStatus.NOT_FOUND, null, e);
-        }catch(Exception e) {
-            return ResponseBuilder.buildResponse("An error occurred while trying to verify kyc.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
-        }
-    }
-
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userId) {
         try {
