@@ -1,266 +1,261 @@
-import { useState } from "react";
-import {
-  Car,
-  CreditCard,
-  Bike,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { CheckCircle, Clock, MapPin, Phone, User } from "lucide-react";
 import Sidebar from "./Sidebar";
 import TopNavbar from "./TopNavbar";
+import { useDispatch, useSelector } from "react-redux";
+import { getKycById, updateKycStatus } from "@/slices/kyc.slice";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function KYCHub() {
-  const initialData = {
-    pending: [
-      {
-        id: 1,
-        name: "Prinsha Shrestha",
-        type: "Driver’s License",
-        time: "2h ago",
-        icon: Car,
-        email: "prinshashrestha@gmail.com",
-        phone: "9840007774",
-        location: "Lalitpur",
-        citizenship: "1234567890",
-        dob: "08/19/1998",
-        expiry: "5/20/2028",
-        front: "/doc-front.png",
-        back: "/doc-back.png",
-      },
-      {
-        id: 2,
-        name: "Prinsha Shrestha",
-        type: "Identity Document",
-        time: "3h ago",
-        icon: CreditCard,
-      },
-      {
-        id: 3,
-        name: "Prinsha Shrestha",
-        type: "Motorcycle License",
-        time: "6h ago",
-        icon: Bike,
-      },
-    ],
-    history: [],
-  };
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const { kycId } = useParams();
+  const dispatch = useDispatch();
+  const { kyc, loading } = useSelector((state) => state.kyc);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
-  const [data, setData] = useState(initialData);
-  const [tab, setTab] = useState("pending");
-  const [active, setActive] = useState(initialData.pending[0]);
-  const [reason, setReason] = useState("");
-  const [notes, setNotes] = useState("");
+  const handleStatusUpdate = async (status) => {
+    if (isSubmitting) return;
 
-  const isDecided =
-    active?.status === "approved" || active?.status === "rejected";
-
-  const list = tab === "pending" ? data.pending : data.history;
-
-  const decide = (status) => {
-    if (status === "rejected" && !reason.trim()) {
-      alert("Rejection reason is required");
-      return;
+    // If status is PROCESSED, do the direct update with confirmation
+    if (status === "PROCESSED") {
+      if (!window.confirm("Are you sure you want to approve this KYC?")) return;
+      executeStatusChange("PROCESSED", null);
     }
-
-    const updated = {
-      ...active,
-      status,
-      time: "Just now",
-    };
-
-    setData((prev) => ({
-      pending: prev.pending.filter((i) => i.id !== active.id),
-      history: [updated, ...prev.history],
-    }));
-
-    setActive(updated);
-    setReason("");
-    setNotes("");
+    // If status is REJECTED, just open the modal
+    else if (status === "REJECTED") {
+      setIsRejectModalOpen(true);
+    }
   };
+
+  // Helper function to handle the actual API call
+  const executeStatusChange = async (status, reason) => {
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        id: kycId,
+        updateData: {
+          status: status.toUpperCase(),
+          rejectionReason: reason,
+        },
+      };
+
+      await dispatch(updateKycStatus(payload)).unwrap();
+      toast.success("Updated successfuly.");
+      navigate("/kyc-list");
+    } catch (error) {
+      toast.info("Rejected the verification.");
+      navigate("/kyc-list");
+      console.error("KYC Update Error:", error);
+    } finally {
+      setIsSubmitting(false);
+      setIsRejectModalOpen(false); // Close modal if it was open
+    }
+  };
+
+  useEffect(() => {
+    if (kycId) {
+      dispatch(getKycById(kycId));
+    }
+  }, [dispatch, kycId]);
+
+  if (loading) return <div className="p-10">Loading KYC details...</div>;
+  if (!kyc)
+    return <div className="p-10">No KYC data found for ID: {kycId}</div>;
+
+  const fullName = `${kyc.firstName} ${kyc.lastName}`;
 
   return (
     <div className="flex min-h-screen bg-[#F6FAFC]">
       <Sidebar />
 
       <main className="flex-1">
-        <TopNavbar title="KYC & Documentation Verification Hub" />
+        <TopNavbar title="KYC Verification Detail" />
 
-        <div className="px-10 py-6 grid grid-cols-[320px_1fr] gap-8">
-          {/* LEFT */}
-          <div>
-            <div className="mb-4 font-semibold">
-              {tab === "pending" ? "Pending Review" : "Verification History"}
-            </div>
-
-            <div className="bg-white border rounded-lg overflow-hidden">
-              {list.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.id}
-                    onClick={() => {
-                      setActive(item);
-                      setTab(item.status ? "history" : "pending");
-                    }}
-                    className={`flex justify-between items-center px-4 py-4 border-b cursor-pointer ${
-                      active?.id === item.id
-                        ? "bg-[#E8F4F7] border-l-4 border-[#008CA8]"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex gap-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center font-semibold text-[#008CA8]">
-                        PS
-                      </div>
-                      <div>
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-xs text-gray-400">
-                          {item.type} · {item.time}
-                        </div>
-                      </div>
-                    </div>
-
-                    {item.status === "approved" && (
-                      <CheckCircle className="text-green-500" />
-                    )}
-                    {item.status === "rejected" && (
-                      <XCircle className="text-red-500" />
-                    )}
-                    {!item.status && Icon && <Icon />}
+        <div className="px-10 py-6 grid grid-cols-[300px_1fr] gap-8">
+          {/* LEFT COLUMN: Sidebar Info */}
+          <div className="space-y-4">
+            <div className="font-semibold text-gray-700">Document Type</div>
+            <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+              <div className="flex justify-between items-center px-4 py-5 bg-[#E8F4F7] border-l-4 border-[#008CA8]">
+                <div className="flex gap-3">
+                  <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center font-bold text-[#008CA8] shadow-sm">
+                    ID
                   </div>
-                );
-              })}
+                  <div>
+                    <div className="font-semibold text-sm">Nagarita</div>
+                    <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">
+                      {kyc.kycstatus}
+                    </div>
+                  </div>
+                </div>
+                {kyc.kycstatus === "PENDING" ? (
+                  <Clock className="text-orange-400" size={20} />
+                ) : (
+                  <CheckCircle className="text-green-500" size={20} />
+                )}
+              </div>
             </div>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT COLUMN: Details View */}
           <div className="space-y-6">
-            {/* TAB SWITCH */}
-            <div className="flex justify-center">
-              <div className="bg-white border rounded-lg p-1 flex w-80">
-                <button
-                  onClick={() => setTab("pending")}
-                  className={`px-4 py-1 text-sm rounded ${
-                    tab === "pending"
-                      ? "bg-[#008CA8] text-white"
-                      : "text-gray-400"
-                  }`}
-                >
-                  Pending reviews
-                </button>
-                <button
-                  onClick={() => setTab("history")}
-                  className={`px-4 py-1 text-sm rounded ${
-                    tab === "history"
-                      ? "bg-[#008CA8] text-white"
-                      : "text-gray-400"
-                  }`}
-                >
-                  Verification History
-                </button>
+            {/* USER HEADER CARD */}
+            <div className="bg-white p-6 rounded-xl shadow-sm flex justify-between items-center border border-gray-100">
+              <div className="flex gap-4">
+                <div className="w-14 h-14 bg-[#008CA8] rounded-full flex items-center justify-center font-bold text-white text-xl">
+                  {kyc.firstName[0]}
+                  {kyc.lastName[0]}
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-800">
+                    {fullName}
+                  </div>
+                  <div className="text-sm text-gray-500 flex items-center gap-1">
+                    <User size={14} /> {kyc.user?.email}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-8 text-sm font-medium text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Phone size={16} className="text-[#008CA8]" /> {kyc.phone}
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-[#008CA8]" /> {kyc.district}
+                  , {kyc.province}
+                </div>
               </div>
             </div>
 
-            {active && (
-              <>
-                {/* STATUS */}
-                {isDecided && (
-                  <div
-                    className={`p-4 rounded-xl text-sm flex items-center gap-2 ${
-                      active.status === "approved"
-                        ? "bg-green-50 text-green-700"
-                        : "bg-red-50 text-red-700"
-                    }`}
-                  >
-                    {active.status === "approved" ? (
-                      <CheckCircle size={18} />
-                    ) : (
-                      <XCircle size={18} />
-                    )}
-                    This document has been {active.status}.
-                  </div>
-                )}
+            {/* DOCUMENTS SECTION */}
+            <div className="grid grid-cols-2 gap-6">
+              <DocView
+                label="FRONT OF NAGARITA"
+                src={kyc.citizenshipFrontImageUrl}
+              />
+              <DocView
+                label="BACK OF NAGARITA"
+                src={kyc.citizenshipBackImageUrl}
+              />
+            </div>
 
-                {/* USER CARD */}
-                <div className="bg-white p-6 rounded-xl flex justify-between items-center">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center font-bold text-[#008CA8]">
-                      PS
-                    </div>
+            {/* FULL DATA GRID */}
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <h3 className="text-lg font-bold text-gray-800 mb-6 border-b pb-2">
+                Personal & Citizenship Information
+              </h3>
+
+              <div className="grid grid-cols-3 gap-y-8 gap-x-12">
+                <InfoBox label="First Name" value={kyc.firstName} />
+                <InfoBox label="Last Name" value={kyc.lastName} />
+                <InfoBox label="Father's Name" value={kyc.fatherName} />
+
+                <InfoBox
+                  label="Citizenship Number"
+                  value={kyc.citizenshipNumber}
+                />
+                <InfoBox label="Issued District" value={kyc.issuedDistrict} />
+                <InfoBox label="Issued Date" value={kyc.issuedDate} />
+
+                <InfoBox label="Date of Birth" value={kyc.dob} />
+                <InfoBox label="Gender" value={kyc.gender} />
+                <InfoBox label="Submitted On" value={kyc.submittedDate} />
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-800 mt-12 mb-6 border-b pb-2">
+                Permanent Address
+              </h3>
+              <div className="grid grid-cols-3 gap-y-8 gap-x-12">
+                <InfoBox label="Province" value={kyc.province} />
+                <InfoBox label="District" value={kyc.district} />
+                <InfoBox label="Municipality" value={kyc.municipality} />
+
+                <InfoBox label="Ward Number" value={kyc.wardNumber} />
+                <InfoBox label="Street / Tole" value={kyc.street} />
+              </div>
+              <div>
+                {kyc.kycstatus === "PENDING" && (
+                  <div className="bg-white p-8 rounded-xl shadow-sm border-t-4 border-[#008CA8] mt-6 flex justify-between items-center">
                     <div>
-                      <div className="font-semibold">{active.name}</div>
-                      <div className="text-sm text-gray-400">
-                        {active.email || "—"}
-                      </div>
+                      <h3 className="text-lg font-bold text-gray-800">
+                        Final Verification Decision
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Decide if this user's identity is valid.
+                      </p>
                     </div>
-                  </div>
 
-                  <div className="flex gap-6 text-sm text-gray-500">
-                    <div>📞 {active.phone || "—"}</div>
-                    <div>📍 {active.location || "—"}</div>
-                  </div>
-                </div>
-
-                {/* DOCUMENTS */}
-                <div className="grid grid-cols-2 gap-6">
-                  <Doc label="FRONT OF LICENSE" src={active.front} />
-                  <Doc label="BACK OF LICENSE" src={active.back} alt />
-                </div>
-
-                {/* DETAILS + DECISION */}
-                <div className="grid grid-cols-[1fr_320px] gap-6">
-                  <div className="bg-white p-6 rounded-xl grid grid-cols-2 gap-4">
-                    <Input label="Full Name" value={active.name} />
-                    <Input
-                      label="Citizenship Number"
-                      value={active.citizenship || "—"}
-                    />
-                    <Input label="Date of Birth" value={active.dob || "—"} />
-                    <Input label="Expiry Date" value={active.expiry || "—"} />
-                  </div>
-
-                  {/* FINAL DECISION */}
-                  <div
-                    className={`bg-white p-6 rounded-xl ${
-                      isDecided ? "opacity-60 pointer-events-none" : ""
-                    }`}
-                  >
-                    <h3 className="font-semibold mb-4">Final Decision</h3>
-
-                    <Input
-                      label="Rejection Reason"
-                      value={reason}
-                      onChange={setReason}
-                      placeholder="Give a reason"
-                      editable
-                    />
-
-                    <textarea
-                      className="w-full mt-4 border rounded-lg p-3 text-sm"
-                      rows={4}
-                      placeholder="Enter review notes..."
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                    />
-
-                    <div className="flex justify-end gap-3 mt-6">
+                    <div className="flex gap-4">
                       <button
-                        onClick={() => decide("rejected")}
-                        className="border border-red-500 text-red-500 px-4 py-2 rounded-lg"
+                        disabled={isSubmitting}
+                        onClick={() => handleStatusUpdate("REJECTED")}
+                        className="px-8 py-3 border-2 border-red-500 text-red-500 font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50"
                       >
                         REJECT
                       </button>
+
                       <button
-                        onClick={() => decide("approved")}
-                        className="bg-[#008CA8] text-white px-4 py-2 rounded-lg"
+                        disabled={isSubmitting}
+                        onClick={() => handleStatusUpdate("PROCESSED")}
+                        className="px-8 py-3 bg-[#008CA8] text-white font-bold rounded-xl hover:bg-[#00768d] shadow-md transition-all disabled:opacity-50"
                       >
-                        APPROVE
+                        APPROVE & VERIFY
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* REJECTION MODAL */}
+              {isRejectModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                  <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="p-6 border-b border-gray-100">
+                      <h3 className="text-xl font-bold text-gray-800 text-center">
+                        Reject Verification
+                      </h3>
+                      <p className="text-sm text-gray-500 text-center mt-1">
+                        Please explain why this document is being rejected.
+                      </p>
+                    </div>
+
+                    <div className="p-6">
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        Rejection Reason
+                      </label>
+                      <textarea
+                        autoFocus
+                        className="w-full mt-2 border-2 border-gray-100 rounded-xl p-4 text-sm focus:border-red-500 focus:ring-0 outline-none transition-all resize-none bg-gray-50"
+                        rows={4}
+                        placeholder="e.g., The image is too blurry to read the citizenship number..."
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="p-6 bg-gray-50 flex gap-3">
+                      <button
+                        onClick={() => setIsRejectModalOpen(false)}
+                        className="flex-1 px-4 py-3 text-gray-600 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        disabled={isSubmitting || !rejectionReason.trim()}
+                        onClick={() =>
+                          executeStatusChange("REJECTED", rejectionReason)
+                        }
+                        className="flex-1 px-4 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 disabled:opacity-50 shadow-lg shadow-red-100 transition-all"
+                      >
+                        {isSubmitting ? "Rejecting..." : "Confirm Rejection"}
                       </button>
                     </div>
                   </div>
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </main>
@@ -268,36 +263,38 @@ export default function KYCHub() {
   );
 }
 
-/* ---------- Helpers ---------- */
+/* ---------- Reusable Display Components ---------- */
 
-function Input({ label, value, editable, onChange, placeholder }) {
+function InfoBox({ label, value }) {
   return (
-    <div>
-      <label className="text-xs text-gray-400">{label}</label>
-      <input
-        value={value}
-        placeholder={placeholder}
-        readOnly={!editable}
-        onChange={(e) => onChange?.(e.target.value)}
-        className="w-full mt-1 border rounded-lg px-3 py-2 text-sm"
-      />
+    <div className="space-y-1">
+      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+        {label}
+      </p>
+      <p className="text-sm font-semibold text-gray-700">{value || "—"}</p>
     </div>
   );
 }
 
-function Doc({ label, src, alt }) {
+function DocView({ label, src }) {
   return (
-    <div>
-      <p className="text-xs text-gray-400 mb-2">{label}</p>
-      {src ? (
-        <div className="h-40 rounded-xl overflow-hidden border">
-          <img src={src} alt={label} className="w-full h-full object-cover" />
-        </div>
-      ) : (
-        <div
-          className={`h-40 rounded-xl ${alt ? "bg-blue-200" : "bg-blue-100"}`}
-        />
-      )}
+    <div className="space-y-2">
+      <p className="text-xs font-bold text-gray-500 tracking-wide uppercase">
+        {label}
+      </p>
+      <div className="h-56 bg-gray-100 rounded-xl overflow-hidden border-2 border-dashed border-gray-200 flex items-center justify-center">
+        {src ? (
+          <img
+            src={src}
+            alt={label}
+            className="w-full h-full object-contain bg-black"
+          />
+        ) : (
+          <div className="text-gray-400 text-xs text-center px-4">
+            Image not uploaded yet
+          </div>
+        )}
+      </div>
     </div>
   );
 }

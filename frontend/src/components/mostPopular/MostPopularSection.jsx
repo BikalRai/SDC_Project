@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReContainer from "../containers/ReContainer";
 import SectionHeader from "../header/SectionHeader";
 import PopularCard from "../card/PopularCard";
 import SecondaryButton from "../buttons/SecondaryButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DotLoader } from "react-spinners";
+import { getAllItems } from "@/slices/item.slice";
 
 const MostPopularSection = () => {
   // Display limit
   const [visible, setVisible] = useState(4);
 
+  const dispatch = useDispatch();
   const { allItems, loading } = useSelector((state) => state.item);
 
   // Load more handler
   const handleLoadMore = () => {
     setVisible((prev) => prev + 4); // load 4 more cards
   };
+
+  useEffect(() => {
+    dispatch(getAllItems());
+  }, []);
 
   return (
     <ReContainer>

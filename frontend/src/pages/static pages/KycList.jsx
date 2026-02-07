@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import TopNavbar from "./TopNavbar";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllKycs } from "@/slices/kyc.slice";
 
 export default function KYCList() {
   const navigate = useNavigate();
@@ -46,6 +48,8 @@ export default function KYCList() {
     },
   ];
 
+  const dispatch = useDispatch();
+  const { allKycs } = useSelector((state) => state.kyc);
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState({
     document: "All",
@@ -86,6 +90,17 @@ export default function KYCList() {
       return true;
     });
   }, [rows, filters]);
+
+  const handleDetailsClick = (id) => {
+    console.log(id);
+    navigate(`/kyc-view/${id}`);
+  };
+
+  useEffect(() => {
+    dispatch(getAllKycs());
+  }, [dispatch]);
+
+  console.log(allKycs);
 
   return (
     <div className="flex min-h-screen bg-[#F4F7FA]">
@@ -226,7 +241,7 @@ export default function KYCList() {
             <thead className="bg-gray-50 text-left text-gray-600">
               <tr>
                 <th className="p-4">Users</th>
-                <th>Document Type</th>
+                <th>Issued District</th>
                 <th>Submission Date</th>
                 <th>Status</th>
                 <th className="text-right pr-6">Action</th>
@@ -234,7 +249,40 @@ export default function KYCList() {
             </thead>
 
             <tbody>
-              {filteredRows.map((r) => (
+              {allKycs?.length === 0 ? (
+                <tr>No Records found</tr>
+              ) : (
+                allKycs?.map((kyc) => (
+                  <tr key={kyc?.kycId} className="border-t">
+                    <td className="p-4 flex items-center gap-3">
+                      <img
+                        src={kyc?.user?.image}
+                        alt={kyc?.user?.fullName}
+                        className="w-8 h-8 rounded-full"
+                      />
+                      {`${kyc?.firstName[0].toUpperCase()}${kyc?.firstName.slice(1).toLowerCase()} ${kyc?.lastName[0].toUpperCase()}${kyc?.lastName.slice(1).toLowerCase()}`}
+                    </td>
+                    <td>{kyc?.issuedDistrict}</td>
+                    <td>{kyc?.submittedDate}</td>
+                    <td>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs ${kyc?.kycstatus === "PENDING" && "bg-orange-100 text-orange-400"} ${kyc?.kycstatus === "REJECTED" && "bg-red-200 text-red-400"} ${kyc?.kycstatus === "PROCESSED" && "bg-green-200 text-green-400"}`}
+                      >
+                        {kyc?.kycstatus}
+                      </span>
+                    </td>
+                    <td className="text-right pr-6">
+                      <button
+                        onClick={() => handleDetailsClick(kyc?.kycId)}
+                        className="bg-sky-600 text-white px-4 py-2 rounded-md text-xs"
+                      >
+                        Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+              {/* {filteredRows.map((r) => (
                 <tr key={r.id} className="border-t">
                   <td className="p-4 flex items-center gap-3">
                     <img src={r.avatar} className="w-8 h-8 rounded-full" />
@@ -264,7 +312,7 @@ export default function KYCList() {
                     No records found
                   </td>
                 </tr>
-              )}
+              )} */}
             </tbody>
           </table>
         </div>

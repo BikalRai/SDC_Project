@@ -1,10 +1,14 @@
 import { Box, Step, StepLabel, Stepper } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import KycPersonalForm from "./KycPersonalForm";
 import KycReview from "./KycReview";
 import KycDocumentUpload from "./KycDocumentUpload";
 import KycAddressForm from "./KycAddressForm";
 import PrimaryButton from "../buttons/PrimaryButton";
+import { useDispatch, useSelector } from "react-redux";
+import { createKyc, getKycByLoggedInUser } from "@/slices/kyc.slice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const steps = [
   "Personal Info",
@@ -39,6 +43,11 @@ const KycForm = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { user } = useSelector((state) => state.auth);
+  const { kyc } = useSelector((state) => state.kyc);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const stepSubmitRef = useRef(null);
 
   const onStepSubmit = (stepData) => {
@@ -59,10 +68,11 @@ const KycForm = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      alert("Submitted!");
+      dispatch(createKyc(formData));
       setActiveStep((prev) => prev + 1);
+      navigate("/user/settings");
     } catch {
-      alert("Submit failed.");
+      toast.error("Submit failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -97,38 +107,53 @@ const KycForm = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(getKycByLoggedInUser());
+  }, []);
+
+  // console.log(formData);
+  console.log(kyc);
+
   return (
-    <form>
-      <Box>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+    <>
+      {kyc?.kycstatus === "PENDING" ? (
+        <div className="font-semibold text-2xl text-light-primary">
+          Your KYC is being processed
+        </div>
+      ) : (
+        <form>
+          <Box>
+            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
 
-        {getStepContent(activeStep)}
+            {getStepContent(activeStep)}
 
-        {/* Hide BACK + NEXT when on REVIEW */}
-        {activeStep !== steps.length - 1 && (
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-            <PrimaryButton
-              btnText='Back'
-              disabled={activeStep === 0 || isSubmitting}
-              onClick={handleBack}
-            />
+            {/* Hide BACK + NEXT when on REVIEW */}
+            {activeStep !== steps.length - 1 && (
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
+              >
+                <PrimaryButton
+                  btnText="Back"
+                  disabled={activeStep === 0 || isSubmitting}
+                  onClick={handleBack}
+                />
 
-            <PrimaryButton
-              btnText='Next'
-              onClick={handleNext}
-              disabled={isSubmitting}
-            />
-          </Box>
-        )}
+                <PrimaryButton
+                  btnText="Next"
+                  onClick={handleNext}
+                  disabled={isSubmitting}
+                />
+              </Box>
+            )}
 
-        {/* Show only SUBMIT on Review */}
-        {/* {activeStep === steps.length - 1 && (
+            {/* Show only SUBMIT on Review */}
+            {/* {activeStep === steps.length - 1 && (
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
             <PrimaryButton
               btnText={isSubmitting ? "Submitting..." : "Submit"}
@@ -137,8 +162,10 @@ const KycForm = () => {
             />
           </Box>
         )} */}
-      </Box>
-    </form>
+          </Box>
+        </form>
+      )}
+    </>
   );
 };
 

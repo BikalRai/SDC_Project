@@ -26,7 +26,7 @@ public class EmailController {
             String to = dto.getTo();
             String subject = dto.getSubject();
             String username = dto.getUsername();
-            emailService.sendHtmlTemplateEmail(to, subject, username);
+//            emailService.sendHtmlTemplateEmail(to, subject, username);
 
             return ResponseBuilder.buildResponse("Successfully sent email.", HttpStatus.OK, "Successful");
         }catch (Exception e) {

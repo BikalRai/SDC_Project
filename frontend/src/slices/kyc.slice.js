@@ -2,7 +2,7 @@ import request from "@/utils/request";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  kycs: [],
+  allKycs: [],
   kyc: null,
   loading: false,
   error: null,
@@ -17,52 +17,52 @@ export const createKyc = createAsyncThunk(
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to create KYC"
+        error.response?.data?.message || "Failed to create KYC",
       );
     }
-  }
+  },
 );
 
 export const getKycByLoggedInUser = createAsyncThunk(
-  "/kyc/user",
+  "/kyc/loggedInUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await request.getKycByLoggedInUser();
-      return res.data;
+      const res = await request.kyc.getKycByLoggedInUser();
+      return res.data.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to load KYC"
+        error.response?.data?.message || "Failed to load KYC",
       );
     }
-  }
+  },
 );
 
 export const getKycById = createAsyncThunk(
   "/kyc/id",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await request.getKycById(id);
-      return res.data;
+      const res = await request.kyc.getKycById(id);
+      return res.data.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to load KYC"
+        error.response?.data?.message || "Failed to load KYC",
       );
     }
-  }
+  },
 );
 
 export const getAllKycs = createAsyncThunk(
   "/kyc/kycs",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await request.getAllKycs();
-      return res.data;
+      const res = await request.kyc.getAllKycs();
+      return res.data.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to load all KYCs"
+        error.response?.data?.message || "Failed to load all KYCs",
       );
     }
-  }
+  },
 );
 
 export const updateKyc = createAsyncThunk(
@@ -74,10 +74,10 @@ export const updateKyc = createAsyncThunk(
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update KYC"
+        error.response?.data?.message || "Failed to update KYC",
       );
     }
-  }
+  },
 );
 
 export const updateKycStatus = createAsyncThunk(
@@ -85,14 +85,14 @@ export const updateKycStatus = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const { id, updateData } = data;
-      const res = await request.updateKycStatus(id, updateData);
+      const res = await request.kyc.updateKycStatus(id, updateData);
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update KYC"
+        error.response?.data?.message || "Failed to update KYC",
       );
     }
-  }
+  },
 );
 
 export const deleteKyc = createAsyncThunk(
@@ -102,10 +102,10 @@ export const deleteKyc = createAsyncThunk(
       await request.deleteKyc(id);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to delete KYC"
+        error.response?.data?.message || "Failed to delete KYC",
       );
     }
-  }
+  },
 );
 
 const kycSlice = createSlice({
@@ -115,7 +115,8 @@ const kycSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createKyc.pending, (state) => {
-        (state.loading = true), (state.error = null);
+        state.loading = true;
+        state.error = null;
         state.successMessage = null;
       })
       .addCase(createKyc.fulfilled, (state, action) => {
@@ -124,7 +125,53 @@ const kycSlice = createSlice({
         state.successMessage = "Created KYC successfully.";
       })
       .addCase(createKyc.rejected, (state, action) => {
-        (state.loading = false), (state.error = action.payload);
+        state.loading = false;
+        state.error = action.payload;
+        state.successMessage = null;
+      })
+      .addCase(getKycByLoggedInUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(getKycByLoggedInUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.kyc = action.payload;
+        state.successMessage = "Successfully retrieved kyc.";
+      })
+      .addCase(getKycByLoggedInUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.successMessage = null;
+      })
+      .addCase(getAllKycs.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(getAllKycs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allKycs = action.payload;
+        state.successMessage = "Successfully retrieved kycs.";
+      })
+      .addCase(getAllKycs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.successMessage = null;
+      })
+      .addCase(getKycById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(getKycById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.kyc = action.payload;
+        state.successMessage = "Successfully retrieved kyc.";
+      })
+      .addCase(getKycById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
         state.successMessage = null;
       });
   },
