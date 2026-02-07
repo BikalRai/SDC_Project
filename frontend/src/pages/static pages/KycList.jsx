@@ -1,9 +1,16 @@
 import React, { useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import Sidebar from "./Sidebar";
+<<<<<<< HEAD
 import TopNavbar from "./TopNavbar";
+=======
+import TopNavbar from "./TopNavBar";
+import { useNavigate } from "react-router-dom";
+>>>>>>> 87f4838fb4e177dc5525e3a5b49d20efb68be9be
 
 export default function KYCList() {
+  const navigate = useNavigate();
+
   const rows = [
     {
       id: 1,
@@ -245,7 +252,10 @@ export default function KYCList() {
                     </span>
                   </td>
                   <td className="text-right pr-6">
-                    <button className="bg-sky-600 text-white px-4 py-2 rounded-md text-xs">
+                    <button
+                      onClick={() => navigate("/kyc-view")}
+                      className="bg-sky-600 text-white px-4 py-2 rounded-md text-xs"
+                    >
                       Details
                     </button>
                   </td>
