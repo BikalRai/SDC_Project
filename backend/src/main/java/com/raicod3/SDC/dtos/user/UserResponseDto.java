@@ -25,6 +25,7 @@ public class UserResponseDto {
     private String location;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean isVerified;
 
     public UserResponseDto(UserModel user) {
         this.id = user.getId();
@@ -36,6 +37,7 @@ public class UserResponseDto {
         this.image = user.getImage();
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
+        this.isVerified = user.isVerified();
     }
 
 }

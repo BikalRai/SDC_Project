@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Bell, Search, Car, CreditCard, Bike } from "lucide-react";
-import Sidebar from "./Sidebar";
-import TopNavbar from "./TopNavBar";
+import TopNavbar from "./TopNavbar";
 
 export default function KYCHubReview() {
   const initialReviews = [
@@ -81,8 +80,8 @@ export default function KYCHubReview() {
       prev.map((r) =>
         r.id === activeId
           ? { ...r, status: decision === "approve" ? "approved" : "rejected" }
-          : r
-      )
+          : r,
+      ),
     );
 
     setRejectReason("");

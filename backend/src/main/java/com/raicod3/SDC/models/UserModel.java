@@ -35,6 +35,7 @@ public class UserModel {
     private String provider;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean isVerified;
 
     @OneToOne(mappedBy = "user")
     private KYCModel userKyc;

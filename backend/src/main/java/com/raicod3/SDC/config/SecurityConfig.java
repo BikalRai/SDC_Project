@@ -113,6 +113,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/category/**").permitAll()
                         .requestMatchers(("/api/rental/**")).hasAnyRole("ADMIN", "USER")
                         .requestMatchers(("/api/kyc/**")).permitAll()
+                        .requestMatchers(("/api/email/**")).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
