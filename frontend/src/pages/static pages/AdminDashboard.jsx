@@ -24,6 +24,7 @@ import {
 import Sidebar from "./Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { getAdminDashboardStats } from "@/slices/admin.slice";
+import TopNavbar from "./TopNavbar";
 
 /* ---------- DATA ---------- */
 const revenueData = [
@@ -93,28 +94,7 @@ export default function AdminDashboard() {
       {/* CONTENT */}
       <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6">
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-          <div>
-            <h2 className="text-lg font-semibold">Today’s Statistics</h2>
-            <p className="text-xs text-slate-500">
-              {new Date().toDateString()}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-            <Bell className="text-slate-400 shrink-0" />
-            <div className="relative w-full sm:w-[260px]">
-              <Search
-                size={16}
-                className="absolute left-3 top-3 text-slate-400"
-              />
-              <input
-                className="pl-9 pr-4 py-2 text-sm rounded-xl bg-[#EEF2F5] w-full"
-                placeholder="Search here"
-              />
-            </div>
-          </div>
-        </div>
+        <TopNavbar title="Admin Dashboard" />
 
         {/* GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
