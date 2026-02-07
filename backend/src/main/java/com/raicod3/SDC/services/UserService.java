@@ -1,12 +1,15 @@
 package com.raicod3.SDC.services;
 
 import com.raicod3.SDC.custom.CustomUserDetails;
+import com.raicod3.SDC.dtos.kyc.KycVerifyRequestDto;
 import com.raicod3.SDC.dtos.user.UserResponseDto;
 import com.raicod3.SDC.dtos.user.UserUpdateRequestDto;
 import com.raicod3.SDC.exceptions.HttpBadRequestException;
 import com.raicod3.SDC.exceptions.HttpForbiddenException;
 import com.raicod3.SDC.exceptions.HttpNotFoundException;
+import com.raicod3.SDC.models.KYCModel;
 import com.raicod3.SDC.models.UserModel;
+import com.raicod3.SDC.repositories.KYCRepository;
 import com.raicod3.SDC.repositories.UserRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private KYCRepository kycRepository;
 
     public  UserResponseDto getUser(CustomUserDetails user) {
         UserModel existingUser = userRepository.findById(user.getUser().getId()).orElseThrow(() -> new HttpNotFoundException("User not found"));
@@ -42,5 +48,38 @@ public class UserService {
         userRepository.save(existingUser);
         return new UserResponseDto(existingUser);
 
+    }
+
+    public UserResponseDto setIsUserVerified(int userId, KycVerifyRequestDto dto) {
+        KYCModel kyc = kycRepository.findById(dto.getKycId()).orElseThrow(() -> new HttpNotFoundException("KYC does not exists."));
+        UserModel user = userRepository.findById(userId).orElseThrow(() -> new HttpNotFoundException("User not found."));
+
+        kyc.setIsVerified(dto.isVerification());
+        kycRepository.save(kyc);
+
+        user.setVerified(dto.isVerification());
+        userRepository.save(user);
+
+        return new UserResponseDto(user);
+    }
+
+    public UserResponseDto rejectKycVerification(int userId, KycVerifyRequestDto dto) {
+        KYCModel kyc = kycRepository.findById(dto.getKycId()).orElseThrow(() -> new HttpNotFoundException("KYC does not exists."));
+        UserModel user = userRepository.findById(userId).orElseThrow(() -> new HttpNotFoundException("User not found."));
+
+        kyc.setIsVerified(dto.isVerification());
+        kycRepository.save(kyc);
+
+        user.setVerified(dto.isVerification());
+        userRepository.save(user);
+
+        return new UserResponseDto(user);
+    }
+
+    public  String deleteUser(int id) {
+        UserModel user = userRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("User not found."));
+
+        userRepository.delete(user);
+        return "User deleted successfully.";
     }
 }

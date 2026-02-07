@@ -1,6 +1,7 @@
 package com.raicod3.SDC.controllers;
 
 import com.raicod3.SDC.custom.CustomUserDetails;
+import com.raicod3.SDC.dtos.kyc.KycVerifyRequestDto;
 import com.raicod3.SDC.dtos.user.UserResponseDto;
 import com.raicod3.SDC.dtos.user.UserUpdateRequestDto;
 import com.raicod3.SDC.exceptions.HttpBadRequestException;
@@ -46,10 +47,34 @@ public class UserController {
         catch(HttpNotFoundException e) {
             return ResponseBuilder.buildResponse("User not found.", HttpStatus.NOT_FOUND, null, e);
         } catch (HttpForbiddenException e) {
-            return ResponseBuilder.buildResponse("An error occurred while trying to update user.", HttpStatus.FORBIDDEN, null, e);
+            return ResponseBuilder.buildResponse("Access denied.", HttpStatus.FORBIDDEN, null, e);
         }
         catch(Exception e) {
             return ResponseBuilder.buildResponse("An error occurred while trying to update user.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
+        }
+    }
+
+    @PatchMapping("/verify/{userId}")
+    public ResponseEntity<Map<String, Object>> verifyKyc(@PathVariable int userId, @RequestBody KycVerifyRequestDto dto) {
+        try {
+            UserResponseDto res = userService.setIsUserVerified(userId, dto);
+            return ResponseBuilder.buildResponse("Kyc verified.", HttpStatus.OK, res);
+        } catch (HttpNotFoundException e) {
+            return ResponseBuilder.buildResponse("User/kyc not found.", HttpStatus.NOT_FOUND, null, e);
+        }catch(Exception e) {
+            return ResponseBuilder.buildResponse("An error occurred while trying to verify kyc.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
+        }
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userId) {
+        try {
+            String res = userService.deleteUser(userId);
+            return ResponseBuilder.buildResponse(res, HttpStatus.OK, res);
+        } catch (HttpNotFoundException e) {
+            return ResponseBuilder.buildResponse("User not found.", HttpStatus.NOT_FOUND, e);
+        }catch(Exception e) {
+            return ResponseBuilder.buildResponse("An error occurred while trying to delete user.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
         }
     }
 }

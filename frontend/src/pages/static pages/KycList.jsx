@@ -1,8 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import Sidebar from "./Sidebar";
+<<<<<<< HEAD
+import TopNavbar from "./TopNavbar";
+=======
 import TopNavbar from "./TopNavBar";
 import { useNavigate } from "react-router-dom";
+>>>>>>> 87f4838fb4e177dc5525e3a5b49d20efb68be9be
 
 export default function KYCList() {
   const navigate = useNavigate();

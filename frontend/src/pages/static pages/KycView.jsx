@@ -1,4 +1,7 @@
 import { useState } from "react";
+<<<<<<< HEAD
+import { Bell, Search, Car, CreditCard, Bike } from "lucide-react";
+=======
 import {
   Car,
   CreditCard,
@@ -7,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Sidebar from "./Sidebar";
+>>>>>>> 87f4838fb4e177dc5525e3a5b49d20efb68be9be
 import TopNavbar from "./TopNavbar";
 
 export default function KYCHub() {
@@ -62,11 +66,21 @@ export default function KYCHub() {
       return;
     }
 
+<<<<<<< HEAD
+    setReviews((prev) =>
+      prev.map((r) =>
+        r.id === activeId
+          ? { ...r, status: decision === "approve" ? "approved" : "rejected" }
+          : r,
+      ),
+    );
+=======
     const updated = {
       ...active,
       status,
       time: "Just now",
     };
+>>>>>>> 87f4838fb4e177dc5525e3a5b49d20efb68be9be
 
     setData((prev) => ({
       pending: prev.pending.filter((i) => i.id !== active.id),
