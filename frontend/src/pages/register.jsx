@@ -126,20 +126,22 @@ const Register = () => {
       {loading ? (
         <p>Loading....</p>
       ) : (
-        <div className="p-4 min-h-dvh flex items-center justify-center">
+        <div className="p-4 min-h-dvh flex items-center justify-center flex-col">
+          <div className="flex relative lg:right-68 pb-2 sm:right-40">
+            <Link
+              to={"/"}
+              className="flex text-text-muted hover:text-primary transition"
+            >
+              <MdArrowBack className="text-2xl" />
+              <span>Home</span>
+            </Link>
+          </div>
           <div className="bg-[#fffcfc] min-w-96 p-8 rounded-3xl md:max-w-[638px] md:p-9 lg:w-[638px] lg:py-[40px] lg:px-[96px] md:mx-auto">
             <div>
               <div className="flex justify-between items-center">
                 <h1 className="text-xl md:text-3xl font-bold text-primary">
                   Create Account
                 </h1>
-                <Link
-                  to={"/login"}
-                  className="flex text-text-muted hover:text-primary transition"
-                >
-                  <MdArrowBack className="text-2xl" />
-                  <span>Home</span>
-                </Link>
               </div>
               <h2 className="text-sm md:text-lg font-semibold text-text-black mt-1 mb-4">
                 Create an account to continue

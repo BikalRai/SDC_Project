@@ -49,7 +49,7 @@ const AppNavBar = () => {
           <div className="flex items-center h-16">
             {/* Logo */}
             <div className="flex-shrink-0 grow">
-              <div className="w-28 cursor-pointer" onClick={scrollToTop}>
+              <div className="w-20 cursor-pointer" onClick={scrollToTop}>
                 <img src={logo} alt="Logo" className="w-full aspect-square" />
               </div>
             </div>
@@ -90,7 +90,7 @@ const AppNavBar = () => {
                   <div>
                     <Avatar
                       src={user?.image}
-                      sx={{ width: "64px", height: "64px" }}
+                      sx={{ width: "48px", height: "48px" }}
                     />
                   </div>
                   {isUserMenuOpen && (

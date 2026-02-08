@@ -172,20 +172,23 @@ export default function UserProfile() {
     tempUser.location !== user?.location ||
     tempUser.image !== user?.image;
 
+  const coverImage = editMode ? tempUser?.cover : user?.cover;
+  const bannerBackground = coverImage
+    ? `url('${coverImage}')`
+    : "linear-gradient(135deg, #0094b6 0%, #00c6a7 100%)";
+
   return (
     <Box sx={{ backgroundColor: "#f2f6fa", minHeight: "100vh", pb: 5 }}>
       {/* Banner */}
       <Box
         sx={{
-          height: "260px",
-          backgroundImage: `url('${editMode ? tempUser?.cover : user?.cover}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          height: "80px",
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
           position: "relative",
         }}
       >
+
         {/* Edit Button */}
         {!editMode && (
           <Button
@@ -486,20 +489,20 @@ export default function UserProfile() {
           >
             <Button
               variant="outlined"
-              onClick={() => navigate('/kyc')}
+              onClick={() => navigate("/kyc")}
               sx={{
                 px: 3,
                 border: "none",
-                color: "#0094b6",
+                color: "#4caf50",
+                background: "rgba(0, 148, 182, 0.04)",
                 "&:hover": {
-                  background: "rgba(0, 148, 182, 0.04)",
                   transform: "translateY(-2px)",
                   boxShadow: "0 3px 10px rgba(0, 148, 182, 0.2)",
                 },
                 transition: "all 0.2s ease",
               }}
             >
-              KYC Verification
+              KYC Verification Process
             </Button>
             <Button
               variant="outlined"

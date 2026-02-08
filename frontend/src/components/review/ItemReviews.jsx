@@ -1,35 +1,50 @@
-import { useState } from "react";
-import ItemReview from "./ItemReview";
-import WriteReview from "./WriteReview";
+import React from "react";
 
 const reviews = [
-  { id: 1, content: "content 1", rating: 3 },
-  { id: 2, content: "content 2", rating: 3 },
-  { id: 3, content: "content 3 ", rating: 3 },
+  {
+    id: 1,
+    name: "John Doe",
+    rating: 4,
+    comment: "Great product, really liked it!",
+    createdAt: "2026-02-06T10:30:00Z",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    rating: 5,
+    comment: "Amazing quality. Totally worth it.",
+    createdAt: "2026-01-28T14:15:00Z",
+  },
 ];
 
-const ItemReviews = () => {
-  const [showReviewForm, setShowReviewForm] = useState(false);
-
+export default function ItemReviews() {
   return (
-    <div className='grid gap-5 bg-background rounded p-5'>
-      <div className='flex items-center justify-between'>
-        <h1 className='text-text-black font-bold text-xl'>Reviews</h1>
-        <p
-          className='text-sm cursor-pointer border-b-2 border-b-primary text-primary hover:text-light-primary hover:border-b-light-primary  transition'
-          onClick={() => setShowReviewForm((prev) => !prev)}
+    <div className="space-y-4">
+      {reviews.map((review) => (
+        <div
+          key={review.id}
+          className="rounded-xl bg-white p-4 shadow-sm"
         >
-          {showReviewForm ? "Cancel" : "Write a review"}
-        </p>
-      </div>
-      <div>{showReviewForm && <WriteReview />}</div>
-      <div className='grid gap-4'>
-        {reviews.map((review) => (
-          <ItemReview key={review.id} item={review} />
-        ))}
-      </div>
+          <div className="flex justify-between items-center">
+            <h4 className="font-semibold">{review.name}</h4>
+            <span className="text-sm text-gray-500">
+              {new Date(review.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+
+          <p className="mt-2 text-sm text-gray-700">
+            {review.comment}
+          </p>
+
+          <div className="mt-2 text-yellow-500">
+            ⭐ {review.rating}/5
+          </div>
+        </div>
+      ))}
     </div>
   );
-};
-
-export default ItemReviews;
+}

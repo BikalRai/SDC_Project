@@ -148,7 +148,7 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
               <Avatar
                 src={getPreview(formData.citizenshipFrontFile)}
                 variant='rounded'
-                sx={{ width: 140, height: 90, mt: 1 }}
+                sx={{ width: 280, height: 420, mt: 1 }}
               />
             </Grid>
           )}
@@ -159,7 +159,7 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
               <Avatar
                 src={getPreview(formData.citizenshipBackFile)}
                 variant='rounded'
-                sx={{ width: 140, height: 90, mt: 1 }}
+                sx={{ width: 280, height: 420, mt: 1 }}
               />
             </Grid>
           )}
