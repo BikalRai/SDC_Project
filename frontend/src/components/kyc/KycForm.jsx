@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createKyc, getKycByLoggedInUser } from "@/slices/kyc.slice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { DotLoader } from "react-spinners";
 
 const steps = [
   "Personal Info",
@@ -43,8 +44,8 @@ const KycForm = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { user } = useSelector((state) => state.auth);
-  const { kyc } = useSelector((state) => state.kyc);
+  // const { user } = useSelector((state) => state.auth);
+  const { kyc, loading } = useSelector((state) => state.kyc);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -115,45 +116,59 @@ const KycForm = () => {
   console.log(kyc);
 
   return (
-    <>
-      {kyc?.kycstatus === "PENDING" ? (
-        <div className="font-semibold text-2xl text-light-primary">
-          Your KYC is being processed
+    <div>
+      {loading ? (
+        <div className="min-h-dvh flex items-center justify-center">
+          <DotLoader />
         </div>
       ) : (
-        <form>
-          <Box>
-            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+        <>
+          {kyc?.kycstatus === "PENDING" ? (
+            <div className="font-semibold text-2xl text-light-primary">
+              Your KYC is being processed
+            </div>
+          ) : (
+            <form>
+              <Box>
+                <Stepper
+                  activeStep={activeStep}
+                  alternativeLabel
+                  sx={{ mb: 4 }}
+                >
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
 
-            {getStepContent(activeStep)}
+                {getStepContent(activeStep)}
 
-            {/* Hide BACK + NEXT when on REVIEW */}
-            {activeStep !== steps.length - 1 && (
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
-              >
-                <PrimaryButton
-                  btnText="Back"
-                  disabled={activeStep === 0 || isSubmitting}
-                  onClick={handleBack}
-                />
+                {/* Hide BACK + NEXT when on REVIEW */}
+                {activeStep !== steps.length - 1 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mt: 3,
+                    }}
+                  >
+                    <PrimaryButton
+                      btnText="Back"
+                      disabled={activeStep === 0 || isSubmitting}
+                      onClick={handleBack}
+                    />
 
-                <PrimaryButton
-                  btnText="Next"
-                  onClick={handleNext}
-                  disabled={isSubmitting}
-                />
-              </Box>
-            )}
+                    <PrimaryButton
+                      btnText="Next"
+                      onClick={handleNext}
+                      disabled={isSubmitting}
+                    />
+                  </Box>
+                )}
 
-            {/* Show only SUBMIT on Review */}
-            {/* {activeStep === steps.length - 1 && (
+                {/* Show only SUBMIT on Review */}
+                {/* {activeStep === steps.length - 1 && (
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
             <PrimaryButton
               btnText={isSubmitting ? "Submitting..." : "Submit"}
@@ -162,10 +177,12 @@ const KycForm = () => {
             />
           </Box>
         )} */}
-          </Box>
-        </form>
+              </Box>
+            </form>
+          )}
+        </>
       )}
-    </>
+    </div>
   );
 };
 

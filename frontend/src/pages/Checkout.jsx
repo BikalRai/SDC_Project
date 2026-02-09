@@ -16,6 +16,8 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.rent);
 
+  const SERVICE_FEE = 100;
+
   // 1. Track the selected payment method
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
@@ -27,25 +29,31 @@ const Checkout = () => {
 
   if (!state) return null;
 
+  const subTotal = Math.round(state.totalAmount);
+  const grandTotal = subTotal + SERVICE_FEE;
+
   const handleConfirmRental = () => {
     const rentalData = {
       itemId: state.itemId,
       startDate: state.startDate,
       endDate: state.endDate,
-      totalAmount: state.totalAmount,
+      totalAmount: grandTotal,
       paymentMethod: paymentMethod,
     };
 
     dispatch(createRental(rentalData))
       .unwrap()
       .then((res) => {
-        console.log("Rental response:", res);
+        // console.log("Rental response:", res);
 
         const rentalId = res?.rentalId;
 
         if (paymentMethod === "ESEWA") {
           toast.info("Preparing eSewa Payment...");
-          const esewaPayload = buildEsewaPayload(state, rentalId);
+          const esewaPayload = buildEsewaPayload(
+            { ...state, totalAmount: grandTotal },
+            rentalId,
+          );
           submitEsewaForm(esewaPayload);
         } else {
           console.log("COD selected, navigating..."); // Add this log
@@ -140,16 +148,16 @@ const Checkout = () => {
               <div className="space-y-3 pb-6 border-b">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>Rs. {state.totalAmount}</span>
+                  <span>Rs. {subTotal}</span>
                 </div>
                 <div className="flex justify-between text-green-600">
                   <span>Service Fee</span>
-                  <span>FREE</span>
+                  <span>{SERVICE_FEE}</span>
                 </div>
               </div>
               <div className="flex justify-between py-6 text-xl font-bold">
                 <span>Total</span>
-                <span>Rs. {state.totalAmount}</span>
+                <span>Rs. {grandTotal}</span>
               </div>
 
               <button
@@ -157,13 +165,7 @@ const Checkout = () => {
                 disabled={loading}
                 className="w-full bg-primary hover:bg-light-primary text-white py-4 rounded-lg font-bold transition flex items-center justify-center gap-2 shadow-lg active:scale-95"
               >
-                {loading ? (
-                  "Processing..."
-                ) : (
-                  <>
-                    <LuCreditCard /> Confirm & Pay via {paymentMethod}
-                  </>
-                )}
+                {loading ? "Processing..." : `Confirm`}
               </button>
               <p className="text-xs text-gray-400 mt-4 text-center">
                 Secure checkout powered by your platform.

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
-  timeout: 5000,
+  timeout: 10000,
 });
 
 let isRefreshing = false;
@@ -69,7 +69,7 @@ api.interceptors.response.use(
 
         const res = await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}/auth/refresh`,
-          refreshToken
+          refreshToken,
         );
 
         const newAccessToken = res.data?.accessToken;
@@ -84,9 +84,8 @@ api.interceptors.response.use(
           localStorage.setItem("refreshToken", res.data?.refreshToken);
         }
 
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
+        api.defaults.headers.common["Authorization"] =
+          `Bearer ${newAccessToken}`;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         processQueue(null, newAccessToken);
@@ -117,7 +116,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

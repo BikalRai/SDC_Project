@@ -44,8 +44,8 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
         issuedDate: formData.issuedDate,
 
         // ------ CLOUDINARY FINAL VALUES ------
-        citizenshipFrontImageUrl: frontUrl,
-        citizenshipBackImageUrl: backUrl,
+        citizenshipFrontImageUrl: frontUrl.secure_url,
+        citizenshipBackImageUrl: backUrl.secure_url,
       };
 
       dispatch(createKyc(finalData));
@@ -67,13 +67,13 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
 
   return (
     <Box sx={{ maxWidth: 920, width: "100%" }}>
-      <Typography variant='h6' gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Review & Submit
       </Typography>
 
       {/* PERSONAL INFO */}
-      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
-        <Typography variant='subtitle2'>Personal Information</Typography>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle2">Personal Information</Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={1}>
           {[
@@ -86,7 +86,7 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
             ["Phone", formData.phone],
           ].map(([label, value]) => (
             <Grid item xs={12} sm={6} key={label}>
-              <Typography variant='body2' color='text.secondary'>
+              <Typography variant="body2" color="text.secondary">
                 {label}
               </Typography>
               <Typography>{value || "—"}</Typography>
@@ -96,8 +96,8 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
       </Paper>
 
       {/* ADDRESS INFO */}
-      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
-        <Typography variant='subtitle2'>Address Information</Typography>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle2">Address Information</Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={1}>
           {[
@@ -108,7 +108,7 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
             ["Street", formData.street],
           ].map(([label, value]) => (
             <Grid item xs={12} sm={6} key={label}>
-              <Typography variant='body2' color='text.secondary'>
+              <Typography variant="body2" color="text.secondary">
                 {label}
               </Typography>
               <Typography>{value || "—"}</Typography>
@@ -118,8 +118,8 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
       </Paper>
 
       {/* CITIZENSHIP INFO */}
-      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
-        <Typography variant='subtitle2'>Citizenship Details</Typography>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle2">Citizenship Details</Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={1}>
           {[
@@ -128,7 +128,7 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
             ["Issued Date", formData.issuedDate],
           ].map(([label, value]) => (
             <Grid item xs={12} sm={6} key={label}>
-              <Typography variant='body2' color='text.secondary'>
+              <Typography variant="body2" color="text.secondary">
                 {label}
               </Typography>
               <Typography>{value || "—"}</Typography>
@@ -138,16 +138,16 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
       </Paper>
 
       {/* DOCUMENT PREVIEW */}
-      <Paper variant='outlined' sx={{ p: 2, mb: 2 }}>
-        <Typography variant='subtitle2'>Uploaded Documents</Typography>
+      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+        <Typography variant="subtitle2">Uploaded Documents</Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={2}>
           {formData.citizenshipFrontFile && (
             <Grid item xs={12} sm={6}>
-              <Typography variant='caption'>Citizenship Front</Typography>
+              <Typography variant="caption">Citizenship Front</Typography>
               <Avatar
                 src={getPreview(formData.citizenshipFrontFile)}
-                variant='rounded'
+                variant="rounded"
                 sx={{ width: 140, height: 90, mt: 1 }}
               />
             </Grid>
@@ -155,10 +155,10 @@ export default function KycReview({ formData, onBack, onSubmitComplete }) {
 
           {formData.citizenshipBackFile && (
             <Grid item xs={12} sm={6}>
-              <Typography variant='caption'>Citizenship Back</Typography>
+              <Typography variant="caption">Citizenship Back</Typography>
               <Avatar
                 src={getPreview(formData.citizenshipBackFile)}
-                variant='rounded'
+                variant="rounded"
                 sx={{ width: 140, height: 90, mt: 1 }}
               />
             </Grid>

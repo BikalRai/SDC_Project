@@ -6,7 +6,7 @@ import lombok.ToString;
 public class AuthRegistrationRequest {
 
     private String email;
-    private String phone;
+//    private String phone;
     private String password;
 //    private String role;
 
@@ -16,7 +16,7 @@ public class AuthRegistrationRequest {
 
     public AuthRegistrationRequest(String email, String phone, String password) {
         this.email = email;
-        this.phone = phone;
+//        this.phone = phone;
         this.password = password;
 //        this.role = role;
     }
@@ -29,13 +29,13 @@ public class AuthRegistrationRequest {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+//    public String getPhone() {
+//        return phone;
+//    }
+//
+//    public void setPhone(String phone) {
+//        this.phone = phone;
+//    }
 
     public String getPassword() {
         return password;

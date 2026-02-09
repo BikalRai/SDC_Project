@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
+    @Async
     private void sendEmail(String to, String subject, String htmlContent) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -28,6 +30,7 @@ public class EmailService {
     }
 
     // --- TEMPLATE 1: Welcome/Registration ---
+    @Async
     public void sendWelcomeEmail(String to, String username) throws MessagingException {
         String subject = "Welcome to Kiraya Bazar!";
         String content = """
@@ -42,6 +45,7 @@ public class EmailService {
     }
 
     // --- TEMPLATE 2: Renting Confirmation ---
+    @Async
     public void sendRentingConfirmation(String to, String username, String itemName, String price) throws MessagingException {
         String subject = "Renting Confirmation: " + itemName;
         String content = """
@@ -56,6 +60,7 @@ public class EmailService {
         sendEmail(to, subject, content);
     }
 
+    @Async
     public void sendKycApprovedEmail(String to, String username) throws MessagingException {
         String subject = "KYC Verified - Kiraya Bazar";
         String content = """
@@ -69,6 +74,7 @@ public class EmailService {
         sendEmail(to, subject, content);
     }
 
+    @Async
     public void sendKycRejectedEmail(String to, String username, String reason) throws MessagingException {
         String subject = "Action Required: KYC Verification Update";
         String content = """
