@@ -151,7 +151,7 @@ const kycSlice = createSlice({
       })
       .addCase(getAllKycs.fulfilled, (state, action) => {
         state.loading = false;
-        state.allKycs = action.payload;
+        state.allKycs = action.payload || [];
         state.successMessage = "Successfully retrieved kycs.";
       })
       .addCase(getAllKycs.rejected, (state, action) => {

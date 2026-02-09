@@ -26,7 +26,7 @@ const ViewItem = () => {
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
 
-  const [selectedImage, setSelectedImage] = useState(item?.images[0] || "");
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -64,10 +64,11 @@ const ViewItem = () => {
   };
 
   useEffect(() => {
-    if (item?.images?.length > 0) {
+    // Only set the image if item and images actually exist
+    if (item?.images && item.images.length > 0) {
       setSelectedImage(item.images[0]);
     }
-  }, [item]);
+  }, [item]); // This runs as soon as dispatch(fetchItemById) finishes
 
   // console.log(item);
 
@@ -95,8 +96,8 @@ const ViewItem = () => {
               <div className="grid grid-rows-[1fr_200px]">
                 <div className="w-full h-full border border-gray-300 rounded-lg overflow-hidden">
                   <img
-                    src={selectedImage}
-                    alt={item?.name}
+                    src={selectedImage || "https://via.placeholder.com/400"}
+                    alt={item?.name || "Loading item..."}
                     className="rounded-xl aspect-square w-full -h-full object-cover"
                   />
                 </div>

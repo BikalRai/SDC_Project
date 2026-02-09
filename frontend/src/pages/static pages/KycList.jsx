@@ -249,9 +249,7 @@ export default function KYCList() {
             </thead>
 
             <tbody>
-              {allKycs?.length === 0 ? (
-                <tr>No Records found</tr>
-              ) : (
+              {Array.isArray(allKycs) ? (
                 allKycs?.map((kyc) => (
                   <tr key={kyc?.kycId} className="border-t">
                     <td className="p-4 flex items-center gap-3">
@@ -281,6 +279,8 @@ export default function KYCList() {
                     </td>
                   </tr>
                 ))
+              ) : (
+                <p>No KYC records found.</p>
               )}
               {/* {filteredRows.map((r) => (
                 <tr key={r.id} className="border-t">
