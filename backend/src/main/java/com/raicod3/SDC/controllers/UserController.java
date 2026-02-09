@@ -14,6 +14,7 @@ import com.raicod3.SDC.utilities.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or #user.id == #userId")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userId) {
         try {
             String res = userService.deleteUser(userId);

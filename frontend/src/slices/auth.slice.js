@@ -6,13 +6,14 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const res = await request.auth.register(userData);
+      console.log(res);
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Registration failed."
+        error.response?.data?.message || "Registration failed.",
       );
     }
-  }
+  },
 );
 
 export const loginUser = createAsyncThunk(
@@ -30,7 +31,7 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed.");
     }
-  }
+  },
 );
 
 export const logoutUser = createAsyncThunk(
@@ -44,7 +45,7 @@ export const logoutUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Logout failed.");
     }
-  }
+  },
 );
 
 export const loadUserFromToken = createAsyncThunk(
@@ -68,10 +69,10 @@ export const loadUserFromToken = createAsyncThunk(
       localStorage.removeItem("refreshToken");
 
       return rejectWithValue(
-        error.response?.data?.message || "Session expired."
+        error.response?.data?.message || "Session expired.",
       );
     }
-  }
+  },
 );
 
 const initialState = {
@@ -106,7 +107,8 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.successMessage = action.payload || "Registration successful.";
+        state.successMessage =
+          action.payload?.message || "registration successful.";
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;

@@ -30,8 +30,8 @@ public class Rental {
     private RentalStatus status;
     private LocalDate createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "renterId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "renterId", nullable = true)
     private UserModel renter;
 
     @ManyToOne

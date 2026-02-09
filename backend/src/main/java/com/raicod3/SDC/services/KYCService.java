@@ -45,16 +45,24 @@ public class KYCService {
 
         Optional<KYCModel> existing = kycRepo.findByUser(customUserDetails.getUser());
 
+        KYCModel kyc;
+
         if(existing.isPresent()) {
-            throw new HttpUnprocessableException("You already have a KYC");
+            kyc = existing.get();
+            mapDtoToEntity(kyc, kycRequestDto);
+        } else {
+            kyc = new KYCModel(kycRequestDto, user);
         }
 
-        KYCModel kyc = new KYCModel(kycRequestDto, user);
+
+        kyc.setStatus(KYCStatus.PENDING);
         kyc.setSubmittedDate(LocalDate.now());
+        kyc.setIsVerified(false);
+        kyc.setRejectionReason("");
 
-        kycRepo.save(kyc);
+        KYCModel savedKyc = kycRepo.save(kyc);
 
-        return new KYCResponseDto(user, kyc);
+        return new KYCResponseDto(user, savedKyc);
     }
 
     public  KYCResponseDto getKYC(CustomUserDetails customUserDetails) {
@@ -147,5 +155,24 @@ public class KYCService {
         kycRepo.deleteById(existingKYC.getId());
 
         return "KYC has been deleted";
+    }
+
+    private void mapDtoToEntity(KYCModel existingKYC, KYCRequestDto kycRequestDto) {
+        existingKYC.setFirstName(kycRequestDto.getFirstName());
+        existingKYC.setLastName(kycRequestDto.getLastName());
+        existingKYC.setFatherName(kycRequestDto.getFatherName());
+        existingKYC.setDob(kycRequestDto.getDob());
+        existingKYC.setGender(kycRequestDto.getGender());
+        existingKYC.setPhone(kycRequestDto.getPhone());
+        existingKYC.setProvince(kycRequestDto.getProvince());
+        existingKYC.setDistrict(kycRequestDto.getDistrict());
+        existingKYC.setMunicipality(kycRequestDto.getMunicipality());
+        existingKYC.setWardNumber(kycRequestDto.getWardNumber());
+        existingKYC.setStreet(kycRequestDto.getStreet());
+        existingKYC.setCitizenshipNumber(kycRequestDto.getCitizenshipNumber());
+        existingKYC.setIssuedDate(kycRequestDto.getIssuedDate());
+        existingKYC.setIssuedDistrict(kycRequestDto.getIssuedDistrict());
+        existingKYC.setCitizenshipFrontImageUrl(kycRequestDto.getCitizenshipFrontImageUrl());
+        existingKYC.setCitizenshipBackImageUrl(kycRequestDto.getCitizenshipBackImageUrl());
     }
 }

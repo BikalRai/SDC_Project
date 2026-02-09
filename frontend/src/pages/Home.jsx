@@ -9,11 +9,12 @@ import Testimonial from "@/components/testimonial/Testimonial";
 import { getAllItems } from "@/slices/item.slice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { DotLoader } from "react-spinners";
 
 const Home = () => {
   const dispatch = useDispatch();
 
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
 
   console.log(user, isAuthenticated, "in home");
   useEffect(() => {
@@ -22,15 +23,21 @@ const Home = () => {
 
   return (
     <div>
-      <AppLayout>
-        <AppNavBar />
-        <Hero />
-        <AboutUs />
-        <MostPopularSection />
-        <HowItWorks />
-        <Testimonial />
-        <Footer />
-      </AppLayout>
+      {loading ? (
+        <div className="min-h-dvh flex items-center justify-center">
+          <DotLoader />
+        </div>
+      ) : (
+        <AppLayout>
+          <AppNavBar />
+          <Hero />
+          <AboutUs />
+          <MostPopularSection />
+          <HowItWorks />
+          <Testimonial />
+          <Footer />
+        </AppLayout>
+      )}
     </div>
   );
 };

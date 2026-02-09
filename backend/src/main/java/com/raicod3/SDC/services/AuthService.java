@@ -57,7 +57,7 @@ public class AuthService {
 //            System.out.println(request.getPassword() + ": PASSWORD RECEIVED");
             UserModel user = new UserModel();
             user.setEmail(request.getEmail());
-            user.setPhone(request.getPhone());
+//            user.setPhone(request.getPhone());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setCreatedAt(LocalDateTime.now());
 

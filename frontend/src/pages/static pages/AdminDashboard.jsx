@@ -134,10 +134,10 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-slate-400 tracking-wide">
-                      Completed Rentals
+                      Cancelled Rentals
                     </p>
                     <p className="text-lg font-semibold text-slate-800 mt-1">
-                      {stats?.data?.completedRents}
+                      {stats?.data?.cancelledRents}
                     </p>
                   </div>
                 </div>

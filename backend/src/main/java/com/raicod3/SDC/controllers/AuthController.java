@@ -25,7 +25,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRegistrationRequest request) {
         try {
-            return ResponseEntity.ok(authService.register(request));
+            return authService.register(request);
         } catch (Exception e) {
             return new ResponseEntity<>("Unable to register", HttpStatus.UNPROCESSABLE_ENTITY);
         }
