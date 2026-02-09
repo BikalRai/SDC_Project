@@ -24,4 +24,6 @@ public interface RentalRepository extends JpaRepository<Rental, Integer> {
     List<Rental> findAllByRenterId(@Param("renterId") int id);
 
     Optional<Object> findByReturnToken(String token);
+
+    List<Rental> findByRenter(UserModel renter);
 }

@@ -34,22 +34,19 @@ const conditions = [
 
 const categories = [
   { id: 1, name: "VEHICLE" },
-  { id: 2, name: "SCOOTER" },
-  { id: 3, name: "BIKE" },
-  { id: 4, name: "CAR" },
-  { id: 5, name: "BOOK" },
+  { id: 2, name: "BOOK" },
   {
-    id: 6,
+    id: 3,
     name: "ELECTRONICS",
   },
   {
-    id: 7,
+    id: 4,
     name: "FURNITURE",
   },
-  { id: 8, name: "TOOLS" },
-  { id: 9, name: "SPORTS_EQUIPMENT" },
-  { id: 10, name: "CAMERA" },
-  { id: 11, name: "OTHER" },
+  { id: 5, name: "TOOLS" },
+  { id: 6, name: "SPORTS_EQUIPMENT" },
+  { id: 7, name: "CAMERA" },
+  { id: 8, name: "OTHER" },
 ];
 
 const AddNewItem = () => {

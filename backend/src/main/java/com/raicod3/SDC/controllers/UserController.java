@@ -14,6 +14,7 @@ import com.raicod3.SDC.utilities.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,19 +55,8 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/verify/{userId}")
-    public ResponseEntity<Map<String, Object>> verifyKyc(@PathVariable int userId, @RequestBody KycVerifyRequestDto dto) {
-        try {
-            UserResponseDto res = userService.setIsUserVerified(userId, dto);
-            return ResponseBuilder.buildResponse("Kyc verified.", HttpStatus.OK, res);
-        } catch (HttpNotFoundException e) {
-            return ResponseBuilder.buildResponse("User/kyc not found.", HttpStatus.NOT_FOUND, null, e);
-        }catch(Exception e) {
-            return ResponseBuilder.buildResponse("An error occurred while trying to verify kyc.", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
-        }
-    }
-
     @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or #user.id == #userId")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable int userId) {
         try {
             String res = userService.deleteUser(userId);

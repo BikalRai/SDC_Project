@@ -1,19 +1,15 @@
-import {
-  Box,
-  Step,
-  StepLabel,
-  Stepper,
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-} from "@mui/material";
-import { useRef, useState } from "react";
+import { Box, Step, StepLabel, Stepper } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import KycPersonalForm from "./KycPersonalForm";
 import KycReview from "./KycReview";
 import KycDocumentUpload from "./KycDocumentUpload";
 import KycAddressForm from "./KycAddressForm";
 import PrimaryButton from "../buttons/PrimaryButton";
+import { useDispatch, useSelector } from "react-redux";
+import { createKyc, getKycByLoggedInUser } from "@/slices/kyc.slice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { DotLoader } from "react-spinners";
 
 const steps = [
   "Personal Info",
@@ -48,6 +44,11 @@ const KycForm = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // const { user } = useSelector((state) => state.auth);
+  const { kyc, loading } = useSelector((state) => state.kyc);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const stepSubmitRef = useRef(null);
 
   const onStepSubmit = (stepData) => {
@@ -68,10 +69,11 @@ const KycForm = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      alert("Submitted!");
+      dispatch(createKyc(formData));
       setActiveStep((prev) => prev + 1);
+      navigate("/user/settings");
     } catch {
-      alert("Submit failed.");
+      toast.error("Submit failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -106,75 +108,81 @@ const KycForm = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(getKycByLoggedInUser());
+  }, []);
+
+  // console.log(formData);
+  console.log(kyc);
+
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        backgroundColor: "#f5f7fb",
-        py: 6,
-      }}
-    >
-      <Card
-        sx={{
-          width: "100%",
-          maxWidth: 900,
-          borderRadius: 3,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-        }}
-      >
-        <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-          {/* Header */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" fontWeight={600} textAlign="center" gutterBottom>
-              KYC Verification
-            </Typography>
-            <Typography variant="body2" color="text.secondary" textAlign="center">
-              Please complete all steps to verify your identity
-            </Typography>
+    <div>
+      {loading ? (
+        <div className="min-h-dvh flex items-center justify-center">
+          <DotLoader />
+        </div>
+      ) : (
+        <>
+          {kyc?.kycstatus === "PENDING" ? (
+            <div className="font-semibold text-2xl text-light-primary">
+              Your KYC is being processed
+            </div>
+          ) : (
+            <form>
+              <Box>
+                <Stepper
+                  activeStep={activeStep}
+                  alternativeLabel
+                  sx={{ mb: 4 }}
+                >
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+
+                {getStepContent(activeStep)}
+
+                {/* Hide BACK + NEXT when on REVIEW */}
+                {activeStep !== steps.length - 1 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mt: 3,
+                    }}
+                  >
+                    <PrimaryButton
+                      btnText="Back"
+                      disabled={activeStep === 0 || isSubmitting}
+                      onClick={handleBack}
+                    />
+
+                    <PrimaryButton
+                      btnText="Next"
+                      onClick={handleNext}
+                      disabled={isSubmitting}
+                    />
+                  </Box>
+                )}
+
+                {/* Show only SUBMIT on Review */}
+                {/* {activeStep === steps.length - 1 && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            <PrimaryButton
+              btnText={isSubmitting ? "Submitting..." : "Submit"}
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            />
           </Box>
-
-          {/* Stepper */}
-          <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-
-          <Divider sx={{ mb: 4 }} />
-
-          {/* Step Content */}
-          {getStepContent(activeStep)}
-
-          {/* Navigation Buttons */}
-          {activeStep !== steps.length - 1 && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                mt: 4,
-              }}
-            >
-              <PrimaryButton
-                btnText="Back"
-                disabled={activeStep === 0 || isSubmitting}
-                onClick={handleBack}
-              />
-
-              <PrimaryButton
-                btnText="Next"
-                onClick={handleNext}
-                disabled={isSubmitting}
-              />
-            </Box>
+        )} */}
+              </Box>
+            </form>
           )}
-        </CardContent>
-      </Card>
-    </Box>
+        </>
+      )}
+    </div>
   );
 };
 

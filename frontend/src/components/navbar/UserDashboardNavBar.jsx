@@ -3,6 +3,9 @@ import { LuCirclePlus, LuLogOut, LuSettings } from "react-icons/lu";
 import { LuShoppingBag } from "react-icons/lu";
 import UserDashboardLink from "./UserDashboardLink";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "@/slices/auth.slice";
+import { logo } from "@/utils/imports";
 
 const navLinks = [
   {
@@ -32,15 +35,20 @@ const navLinks = [
 ];
 
 const UserDashboardNavBar = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
   return (
-    <nav className="min-h-dvh w-full flex flex-col items-center gap-10 py-0 sm:py-3 shadow-lg sticky top-0 bg-gray-300">
+    <nav className="min-h-dvh w-full flex flex-col items-center gap-10 py-0 sm:py-3 shadow-lg sticky top-0 bg-background">
       <div className="flex flex-col">
         <Link to="/">
           <div className="text-xl sm:text-2xl font-bold text-primary text-center">
-            LOGO{" "}
+            <Link to="/">
+              <img src={logo} alt="LOGO" />
+            </Link>
           </div>
-          <div className="text-xs sm:text-sm text-center font-light text-text-muted">
-            welcome, user
+          <div className="hidden md:block text-xs sm:text-sm text-center font-light text-text-muted">
+            welcome, {user?.fullName}
           </div>
         </Link>
       </div>
@@ -55,6 +63,7 @@ const UserDashboardNavBar = () => {
         ))}
       </div>
       <div
+        onClick={() => dispatch(logoutUser())}
         className="
           flex items-center font-medium gap-2 p-3 rounded hover:text-primary
           transition-all duration-300 cursor-pointer mt-auto

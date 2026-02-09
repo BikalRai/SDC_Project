@@ -55,6 +55,7 @@ public class KYCModel {
     private Boolean isVerified;
     private LocalDate submittedDate;
     private LocalDate verifiedDate;
+    private String rejectionReason;
 
 
 
@@ -79,6 +80,7 @@ public class KYCModel {
         this.status = KYCStatus.PENDING;
         this.isVerified = false;
         this.submittedDate = LocalDate.now();
+        this.rejectionReason = "";
     }
 
 }

@@ -28,8 +28,8 @@ const ViewItem = () => {
 
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
+
   const [selectedImage, setSelectedImage] = useState("");
-  const [activeTab, setActiveTab] = useState("lister");
 
   useEffect(() => {
     if (id) {
@@ -59,10 +59,10 @@ const ViewItem = () => {
       return;
     }
 
-    navigate(`/view-item/${item.id}/checkout`, {
+    navigate(`/view-item/${item?.id}/checkout`, {
       state: {
-        itemId: item.id,
-        name: item.name,
+        itemId: item?.id,
+        name: item?.name,
         image: selectedImage,
         dailyRate: item.dailyRate,
         startDate: startDate.format("YYYY-MM-DD"),
@@ -73,170 +73,146 @@ const ViewItem = () => {
     });
   };
 
+  useEffect(() => {
+    // Only set the image if item and images actually exist
+    if (item?.images && item.images.length > 0) {
+      setSelectedImage(item.images[0]);
+    }
+  }, [item]); // This runs as soon as dispatch(fetchItemById) finishes
+
+  // console.log(item);
+
   return (
     <AppLayout>
       <AppNavBar />
       <ReContainer>
         {loading ? (
-          <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="min-h-dvh w-full flex items-center justify-center">
             <DotLoader />
           </div>
         ) : (
-          <div>
+          <div className="h-full">
             {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-primary hover:underline mb-6"
+              className="flex items-center gap-2 text-primary hover:underline transition mb-6 cursor-pointer"
             >
               <LuArrowLeft />
               Back
             </button>
 
-            {/* Main Card */}
+            {/* Layout */}
             <div className="grid md:grid-cols-2 items-start gap-10 p-6 rounded-xl shadow-2xl border border-gray-200">
               {/* Image Section */}
-              <div className="grid grid-rows-[1fr_auto] gap-6">
-                <div className="w-full aspect-square border rounded-xl overflow-hidden">
+              <div className="grid grid-rows-[1fr_200px]">
+                <div className="w-full h-full border border-gray-300 rounded-lg overflow-hidden">
                   <img
-                    src={selectedImage}
-                    alt={item?.name}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                    src={selectedImage || "https://via.placeholder.com/400"}
+                    alt={item?.name || "Loading item..."}
+                    className="rounded-xl aspect-square w-full -h-full object-cover"
                   />
                 </div>
-
-                <Swiper
-                  modules={[Navigation]}
-                  navigation
-                  spaceBetween={10}
-                  slidesPerView={4}
-                  className="w-full"
-                >
-                  {item?.images?.map((img, index) => (
-                    <SwiperSlide key={index}>
-                      <div
-                        onClick={() => setSelectedImage(img)}
-                        className={`h-[80px] w-[80px] lg:h-[116px] lg:w-[116px] rounded-xl border cursor-pointer overflow-hidden transition
-                          ${
-                            selectedImage === img
-                              ? "ring-2 ring-primary"
-                              : "hover:ring-1 hover:ring-primary/50"
-                          }`}
-                      >
-                        <img
-                          src={img}
-                          alt="thumbnail"
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              </div>
-
-              {/* Details Section */}
-              <div className="space-y-5">
-                <h1 className="text-xl font-semibold text-gray-900 border-b pb-2">
-                  {item?.name}
-                </h1>
-
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <span
-                    className={`px-4 py-1 rounded-full text-sm font-medium ${
-                      item?.status?.toLowerCase() === "available"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                <div className="">
+                  {item?.images?.length === 0 && <p>No images</p>}
+                  <Swiper
+                    modules={[Navigation]}
+                    navigation
+                    pagination={{ clickable: true }}
+                    spaceBetween={10}
+                    slidesPerView={4}
+                    className="w-full mt-9"
                   >
-                    {item?.status}
-                  </span>
-
-                  <p className="text-lg font-semibold text-primary">
-                    Rs. {item?.dailyRate}
-                    <span className="text-sm text-gray-500 font-normal">
-                      {" "}
-                      / day
-                    </span>
-                  </p>
+                    {item?.images?.map((img, i) => (
+                      <SwiperSlide key={i}>
+                        <div
+                          className="h-[80px] w-[80px] lg:h-[116px] lg:w-[116px] rounded-xl border cursor-pointer overflow-hidden"
+                          onClick={() => setSelectedImage(img)}
+                        >
+                          <img
+                            src={img}
+                            alt="image"
+                            className="h-full w-full object-contain object-center"
+                            style={{ minHeight: "100%", minWidth: "100%" }}
+                          />
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
 
-                <p className="text-gray-700">{item?.description}</p>
-
-                {/* Specifications */}
-                <div className="rounded-xl text-sm space-y-1 bg-white p-4 shadow-sm">
-                  <p>
-                    Category:{" "}
-                    {item?.category?.charAt(0).toUpperCase() +
-                      item?.category?.slice(1).toLowerCase()}
-                  </p>
-                  <p>Brand: {item?.brand}</p>
-                  <p>
-                    Condition:{" "}
-                    {item?.condition?.charAt(0).toUpperCase() +
-                      item?.condition?.slice(1).toLowerCase()}
-                  </p>
-                  <p>
-                    Posted Date:{" "}
-                    {new Date(item?.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
-                  </p>
-                  <p>Rented by: {item?.totalRented}</p>
-                </div>
-
-                {/* Date Pickers */}
-                <div className="flex flex-wrap gap-5">
-                  <PickDate
-                    label="Start Date"
-                    value={startDate}
-                    onChange={setStartDate}
-                  />
-                  <PickDate
-                    label="End Date"
-                    value={endDate}
-                    onChange={setEndDate}
-                  />
-                </div>
-
-                {/* Action Button */}
-                <button
-        onClick={() => navigate(`/profile/${user.id}`)}
-        className="w-full mt-2 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-light-primary transition"
-      >
-        Rent Now
-      </button>
-
-                {/* Tabs */}
-                <div className="mt-6">
-                  <div className="flex gap-4 border-b mb-4">
-                    <button
-                      onClick={() => setActiveTab("lister")}
-                      className={`px-5 py-2 text-sm font-medium border-b-2 transition-all ${
-                        activeTab === "lister"
-                          ? "border-primary text-primary bg-primary/5"
-                          : "border-transparent text-gray-500 hover:text-primary"
+              <div>
+                {/* Details Section */}
+                <div className="space-y-4">
+                  <h1 className="text-lg font-bold text-text-black p-1 border-b border-b-gray-300">
+                    {item?.name}
+                  </h1>
+                  {/* Status */}
+                  <div className="flex items-center justify-between flex-wrap p-1 border-b border-b-gray-300">
+                    <div
+                      className={`px-4 py-1  inline-block rounded-full text-sm font-medium ${
+                        item?.status.toLowerCase() === "available"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
                       }`}
                     >
-                      Lister Details
-                    </button>
-
-                    <button
-                      onClick={() => setActiveTab("reviews")}
-                      className={`px-5 py-2 text-sm font-medium border-b-2 transition-all ${
-                        activeTab === "reviews"
-                          ? "border-primary text-primary bg-primary/5"
-                          : "border-transparent text-gray-500 hover:text-primary"
-                      }`}
-                    >
-                      Reviews
-                    </button>
+                      {item?.status}
+                    </div>
+                    <p>Rs. {item?.dailyRate}/day</p>
+                  </div>
+                  <div className="p-1 border-b border-b-gray-300">
+                    <p>{item?.description}</p>
                   </div>
 
-                  {activeTab === "lister" && (
-                    <ListerDetails user={item?.user} />
-                  )}
-                  {activeTab === "reviews" && <ItemReviews />}
+                  {/* specifications */}
+                  <div className="p-1 border-b border-b-gray-300">
+                    <p>
+                      Category: {item?.category[0].toUpperCase()}
+                      {item?.category.slice(1).toLowerCase()}
+                    </p>
+                    <p>Brand: {item?.brand}</p>
+                    <p>
+                      Condition: {item?.condition[0].toUpperCase()}
+                      {item?.condition.slice(1).toLowerCase()}
+                    </p>
+                    <p>
+                      Posted Date: {new Date(item?.createdAt).toLocaleString()}
+                    </p>
+                    <p>Rented by: {item?.totalRented}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-5 flex-wrap">
+                    <PickDate
+                      label="Start Date"
+                      value={startDate}
+                      onChange={(newValue) => setStartDate(newValue)}
+                    />
+
+                    <PickDate
+                      label="End Date"
+                      value={endDate}
+                      onChange={(newValue) => setEndDate(newValue)}
+                    />
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    onClick={handleRentSubmit}
+                    disabled={
+                      item?.status.toLowerCase() === "available" ? false : true
+                    }
+                    className={`mt-6 px-5 py-2 rounded text-white text-lg transition cursor-pointer ${
+                      item?.status.toLowerCase() === "available"
+                        ? "bg-primary hover:bg-light-primary"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    {item?.status.toLowerCase() === "available"
+                      ? "Rent Now"
+                      : "Currently Unavailable"}
+                  </button>
+                </div>
+                <div className="mt-5">
+                  <ItemReviews />
                 </div>
               </div>
             </div>

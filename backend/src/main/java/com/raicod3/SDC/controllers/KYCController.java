@@ -91,11 +91,11 @@ public class KYCController {
         }
     }
 
-    @PutMapping("/update/status/{id}")
-    public ResponseEntity<Map<String, Object>> updateKycStatusController(@PathVariable int id, @RequestBody KYCProcessStatusRequest status, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @PatchMapping("/update/status/{id}")
+    public ResponseEntity<Map<String, Object>> updateKycStatusController(@PathVariable int id, @RequestBody KYCProcessStatusRequest status, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
 
-            KYCResponseDto kycResponseDto = kycService.updateKYCStatus(id, status, customUserDetails);
+            KYCResponseDto kycResponseDto = kycService.updateKYCStatus(id, status, userDetails);
 
             return ResponseBuilder.buildResponse("KYC status updated successfully", HttpStatus.OK, kycResponseDto);
         } catch (HttpForbiddenException e) {

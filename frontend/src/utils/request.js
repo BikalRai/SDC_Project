@@ -31,7 +31,7 @@ const request = {
       }),
     updateKycStatus: (id, status) =>
       api.patch(`/kyc/update/status/${id}`, {
-        status,
+        ...status,
       }),
     deleteKyc: (id) => api.delete(`/kyc/delete/${id}`),
   },

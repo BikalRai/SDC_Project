@@ -154,9 +154,13 @@ public class RentalService {
     public RentalResponseDto cancelRental (int id) {
         Rental rental = rentalRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("Rental not found."));
 
+        Item item = itemRepository.findById(rental.getItem().getId()).orElseThrow(() -> new HttpNotFoundException("Item not found"));
+
         rental.setStatus(RentalStatus.CANCELLED);
+        item.setStatus(ItemStatus.AVAILABLE);
 
         rentalRepository.save(rental);
+        itemRepository.save(item);
 
         return new RentalResponseDto(rental);
     }

@@ -90,7 +90,7 @@ const AppNavBar = () => {
                   <div>
                     <Avatar
                       src={user?.image}
-                      sx={{ width: "48px", height: "48px" }}
+                      sx={{ width: "56px", height: "58px" }}
                     />
                   </div>
                   {isUserMenuOpen && (
