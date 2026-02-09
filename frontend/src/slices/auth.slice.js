@@ -138,8 +138,8 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
         state.user = null;
-        state.token = null;
-        state.isAuthenticated = false;
+        state.authToken = null;
+        state.isAuthenticated = false; // This is the crucial line!
         state.successMessage = "Logged out successfully.";
       })
       .addCase(logoutUser.rejected, (state, action) => {

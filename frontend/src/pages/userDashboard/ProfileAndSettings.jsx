@@ -135,7 +135,6 @@ export default function UserProfile() {
         phone: tempUser.phone,
         location: tempUser.location,
         image: imageUrl,
-        // The backend service should set profileUpdated = true when these are received
       };
 
       const resultAction = await dispatch(updateUser(updateData));
@@ -144,10 +143,10 @@ export default function UserProfile() {
         toast.success("Profile updated successfully!");
         setEditMode(false);
         setAvatarFile(null);
-        // This reload will get the new profileUpdated: true status
         await dispatch(loadUserFromToken());
+      } else {
+        toast.error(resultAction.payload || "Failed to update profile");
       }
-      // ...
     } catch (error) {
       console.error(error);
       toast.error("An error occurred");
@@ -165,22 +164,6 @@ export default function UserProfile() {
     });
     setEditMode(false);
   };
-
-  useEffect(() => {
-    if (user && user.profileUpdated === false) {
-      toast.info(
-        "Your profile is incomplete. Please update your details to access all features.",
-        {
-          position: "top-center",
-          autoClose: 5000,
-          toastId: "profile-incomplete", // Prevents duplicate toasts on re-renders
-        },
-      );
-
-      // Optional: Automatically open edit mode for them
-      setEditMode(true);
-    }
-  }, [user]);
 
   // detect if any changes were made so Save button can be enabled/disabled
   const isDirty =
@@ -224,16 +207,12 @@ export default function UserProfile() {
       {/* Banner */}
       <Box
         sx={{
-          height: "160px",
-          backgroundImage: `url('${editMode ? tempUser?.cover : user?.cover}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          height: "80px",
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
           position: "relative",
         }}
       >
-
         {/* Edit Button */}
         {!editMode && (
           <Button
@@ -532,29 +511,23 @@ export default function UserProfile() {
               borderTop: "1px dashed rgba(0,0,0,0.08)",
             }}
           >
-            <>
-              {user?.verified ? (
-                <div className="text-teal-300 font-medium">User Verified</div>
-              ) : (
-                <Button
-                  variant="outlined"
-                  onClick={() => navigate("/user/settings/kyc")}
-                  sx={{
-                    px: 3,
-                    border: "none",
-                    color: "#0094b6",
-                    "&:hover": {
-                      background: "rgba(0, 148, 182, 0.04)",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 3px 10px rgba(0, 148, 182, 0.2)",
-                    },
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  KYC Verification
-                </Button>
-              )}
-            </>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/kyc")}
+              sx={{
+                px: 3,
+                border: "none",
+                color: "#4caf50",
+                background: "rgba(0, 148, 182, 0.04)",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 3px 10px rgba(0, 148, 182, 0.2)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
+              KYC Verification Process
+            </Button>
             <Button
               variant="outlined"
               onClick={() => setEditMode(true)}

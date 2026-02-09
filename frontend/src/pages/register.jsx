@@ -97,6 +97,8 @@ const Register = () => {
           password,
         }),
       );
+
+      toast.success("User registered successfully.");
     } catch (error) {
       console.error(error);
       toast.error(error.message);
@@ -109,13 +111,8 @@ const Register = () => {
 
   useEffect(() => {
     if (successMessage) {
-      // 1. Show the toast from the server message
       toast.success(successMessage);
-
-      // 2. Clear the message so the toast doesn't pop up again if the component re-renders
       dispatch(clearMessages());
-
-      // 3. Navigate to login
       navigate("/login");
     }
 

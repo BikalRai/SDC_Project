@@ -9,6 +9,7 @@ const UserMenu = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    navigate("/");
   };
   return (
     <div>
