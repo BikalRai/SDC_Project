@@ -17,25 +17,35 @@ import { calculateDays } from "@/utils/date";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { DotLoader } from "react-spinners";
+import ListerDetails from "./ListerDetails";
 
 const ViewItem = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { item, loading } = useSelector((state) => state.item);
+
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
 
   const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    if (!id) return;
+    if (id) {
+      dispatch(fetchItemById(Number(id)));
+    }
+  }, [id, dispatch]);
 
-    dispatch(fetchItemById(Number(id)));
-  }, [id]);
+  useEffect(() => {
+    if (item?.images?.length > 0) {
+      setSelectedImage(item.images[0]);
+    }
+  }, [item]);
 
   const days = calculateDays(startDate, endDate);
   const totalAmount = days === 0 ? item?.dailyRate : days * item?.dailyRate;
+
   const handleRentSubmit = () => {
     const authToken = localStorage.getItem("authToken");
 
@@ -87,7 +97,8 @@ const ViewItem = () => {
               onClick={() => navigate(-1)}
               className="flex items-center gap-2 text-primary hover:underline transition mb-6 cursor-pointer"
             >
-              <LuArrowLeft /> Back
+              <LuArrowLeft />
+              Back
             </button>
 
             {/* Layout */}
@@ -128,7 +139,6 @@ const ViewItem = () => {
                     ))}
                   </Swiper>
                 </div>
-              </div>
 
               <div>
                 {/* Details Section */}

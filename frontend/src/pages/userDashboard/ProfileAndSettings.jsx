@@ -189,6 +189,11 @@ export default function UserProfile() {
     tempUser.location !== user?.location ||
     tempUser.image !== user?.image;
 
+  const coverImage = editMode ? tempUser?.cover : user?.cover;
+  const bannerBackground = coverImage
+    ? `url('${coverImage}')`
+    : "linear-gradient(135deg, #0094b6 0%, #00c6a7 100%)";
+
   return (
     <Box sx={{ backgroundColor: "#f2f6fa", minHeight: "100vh", pb: 5 }}>
       {user && !user?.profileUpdated && (
@@ -228,6 +233,7 @@ export default function UserProfile() {
           position: "relative",
         }}
       >
+
         {/* Edit Button */}
         {!editMode && (
           <Button
