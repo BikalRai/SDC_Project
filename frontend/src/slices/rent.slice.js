@@ -92,6 +92,18 @@ export const cancelRent = createAsyncThunk(
   },
 );
 
+export const pickupRentItem = createAsyncThunk(
+  "rent/pickup",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await request.rent.confirmRent(token);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
 const rentalSlice = createSlice({
   name: "rental",
   initialState,
@@ -186,6 +198,20 @@ const rentalSlice = createSlice({
         state.success = "Cancelled rent successfuly.";
       })
       .addCase(cancelRent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(pickupRentItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(pickupRentItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rent = action.payload.data;
+        state.success = "Pickup confirmed successfully! Item is now Rented.";
+      })
+      .addCase(pickupRentItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

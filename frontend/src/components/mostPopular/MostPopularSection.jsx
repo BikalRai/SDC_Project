@@ -27,7 +27,7 @@ const MostPopularSection = () => {
     <ReContainer>
       <section className="mt-20">
         <div className="bg-background rounded-[8px] py-8 px-10">
-          <SectionHeader header="Most Popular Products" />
+          <SectionHeader header="Recommendations" />
           {loading ? (
             <div className="flex items-center justify-center">
               <DotLoader />

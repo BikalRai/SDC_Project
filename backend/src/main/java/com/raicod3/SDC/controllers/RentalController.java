@@ -128,21 +128,14 @@ public class RentalController {
         }
     }
 
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<Map<String, Object>> cancelRentalController(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CancelRentDto cancelRentDto) {
+    @PatchMapping("/confirm/{token}")
+    public ResponseEntity<Map<String, Object>> confirmRent(@PathVariable String token, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
+            RentalResponseDto res = rentalService.confirmPickupByQr(token, userDetails);
 
-            ItemResponseDto item = rentalService.cancelRent(customUserDetails, cancelRentDto);
-
-            return ResponseBuilder.buildResponse("Cancelled rental: item details is provided", HttpStatus.OK, item);
-
-        } catch (HttpForbiddenException e) {
-            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.FORBIDDEN, null);
-        } catch (HttpNotFoundException e) {
-            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.NOT_FOUND, null);
+            return  ResponseBuilder.buildResponse("Pick confirmed! Item is now rented.", HttpStatus.OK, res);
         } catch (Exception e) {
-            return ResponseBuilder.buildResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+            return ResponseBuilder.buildResponse("Failed to confirm pickup", HttpStatus.INTERNAL_SERVER_ERROR, null, e);
         }
     }
 }

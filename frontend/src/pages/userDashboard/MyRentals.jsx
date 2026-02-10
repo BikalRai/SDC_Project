@@ -18,6 +18,11 @@ const MyRentals = () => {
   const [rentalToCancel, setRentalToCancel] = useState(null);
 
   const handleShowToken = (token) => {
+    if (!token) {
+      toast.error("Token not generated yet. Please refresh.");
+      return;
+    }
+    console.log("Setting active token to:", token); // Debugging
     setActiveToken(token);
     setShowTokenModal(true);
   };
@@ -116,13 +121,26 @@ const MyRentals = () => {
                     {rent.status !== "COMPLETED" &&
                     rent.status !== "CANCELLED" ? (
                       <>
-                        {/* 1. Return Button */}
-                        <button
-                          onClick={() => handleShowToken(rent?.returnToken)}
-                          className="bg-primary text-text-white px-4 py-1 rounded hover:bg-light-primary transition cursor-pointer"
-                        >
-                          Return Item
-                        </button>
+                        {/* If the item is ready for pickup */}
+                        {(rent.status === "PAID" ||
+                          rent.status === "WAITING_PAYMENT") && (
+                          <button
+                            onClick={() => handleShowToken(rent?.pickupToken)} // Assuming your backend provides pickupToken
+                            className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 transition cursor-pointer"
+                          >
+                            Show Pickup QR
+                          </button>
+                        )}
+
+                        {/* Existing Return Button logic */}
+                        {rent.status === "RENTED" && (
+                          <button
+                            onClick={() => handleShowToken(rent?.returnToken)}
+                            className="bg-primary text-white px-4 py-1 rounded hover:bg-light-primary transition cursor-pointer"
+                          >
+                            Return Item
+                          </button>
+                        )}
 
                         {/* 2. Cancel Button */}
                         <button
@@ -199,23 +217,37 @@ const MyRentals = () => {
 
             {/* CLICKABLE TOKEN BACKUP */}
             <div
-              className="bg-gray-100 p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-200 transition mb-6"
-              onClick={() => {
-                navigator.clipboard.writeText(activeToken);
-                toast.success("Token copied to clipboard!");
+              className="bg-gray-100 p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-200 transition mb-6 group"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(activeToken);
+                  toast.success("Token copied to clipboard!");
+                } catch (err) {
+                  // Fallback for older browsers or non-secure contexts
+                  const textArea = document.createElement("textarea");
+                  textArea.value = activeToken;
+                  document.body.appendChild(textArea);
+                  textArea.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(textArea);
+                  toast.success("Token copied!");
+                }
               }}
               title="Click to copy"
             >
-              <p className="text-xs text-gray-400 uppercase font-bold mb-1">
+              <p className="text-[10px] text-gray-400 uppercase font-bold mb-1 group-hover:text-primary">
                 Manual Token (Click to copy)
               </p>
-              <span className="text-lg font-mono font-bold text-primary break-all">
-                {activeToken}
+              <span className="text-sm font-mono font-bold text-primary break-all">
+                {activeToken || "No Token Available"}
               </span>
             </div>
 
             <button
-              onClick={() => setShowTokenModal(false)}
+              onClick={() => {
+                setShowTokenModal(false); // Close the modal
+                dispatch(fetchMyRentals()); // Re-fetch the data to get the latest status
+              }}
               className="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-opacity-90 transition shadow-lg"
             >
               Done

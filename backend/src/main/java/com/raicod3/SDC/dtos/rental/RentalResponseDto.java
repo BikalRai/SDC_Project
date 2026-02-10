@@ -31,6 +31,7 @@ public class RentalResponseDto {
     private ItemResponseDto item;
     private int ownerId;
     private String returnToken;
+    private String pickupToken;
 
 
     public RentalResponseDto(Rental rental) {
@@ -44,5 +45,6 @@ public class RentalResponseDto {
         this.item = new ItemResponseDto(rental.getItem());
         this.ownerId = rental.getOwnerId();
         this.returnToken = rental.getReturnToken();
+        this.pickupToken = rental.getPickupToken();
     }
 }

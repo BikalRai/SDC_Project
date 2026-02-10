@@ -9,16 +9,16 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   clearMessages,
   deleteItem,
-  getAllItems,
   getUserListedItems,
 } from "@/slices/item.slice";
 import { getCategories } from "@/slices/category.slice";
 import { DotLoader } from "react-spinners";
-import { returnRentItem } from "@/slices/rent.slice";
+import { pickupRentItem, returnRentItem } from "@/slices/rent.slice";
 
 const MyListedItems = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [confirmType, setConfirmType] = useState("");
 
   const { items, successMessage, loading } = useSelector((state) => state.item);
 
@@ -26,27 +26,26 @@ const MyListedItems = () => {
   const [tokenValue, setTokenValue] = useState("");
   console.log(tokenValue);
 
-  const handleReturnSubmit = async () => {
+  const handleActionSubmit = async (itemId) => {
     if (!tokenValue)
-      return toast.error("Please enter the token from the borrower");
+      return toast.error(
+        `Please enter the token for ${confirmType.toLowerCase()}`,
+      );
 
     try {
-      // 1. unwrap() allows us to use try/catch directly on the thunk result
-      await dispatch(returnRentItem(tokenValue)).unwrap();
-
-      // 2. If it succeeds, show the SUCCESS toast
-      toast.success("Item returned successfully! It is now Available.");
+      if (confirmType === "PICKUP") {
+        await dispatch(pickupRentItem(tokenValue)).unwrap();
+        toast.success("Pickup confirmed! Rental is now active.");
+      } else {
+        await dispatch(returnRentItem(tokenValue)).unwrap();
+        toast.success("Item returned successfully!");
+      }
 
       setTokenValue("");
       setShowConfirmInput(null);
-
-      // 3. REFRESH the lists to get the new 'AVAILABLE' status from the server
       dispatch(getUserListedItems());
-      dispatch(getAllItems());
     } catch (error) {
-      // 4. If the backend returns an error (invalid token), show the ERROR toast
-      // This handles the "Wrong Toast" issue
-      toast.error(error?.message || "Invalid Token. Please try again.");
+      toast.error(error?.message || "Invalid Token.");
     }
   };
 
@@ -133,11 +132,11 @@ const MyListedItems = () => {
 
                   {/* Actions */}
                   <div className="flex justify-center gap-4 text-xl">
-                    {item.status === "UNAVAILABLE" ? (
-                      // SHOW THIS IF RENTED
+                    {item.status === "UNAVAILABLE" ||
+                    item.status === "RENTED" ? (
                       <div className="flex flex-col items-center gap-2">
                         {showConfirmInput === item.id ? (
-                          <div className="flex gap-2 animate-in fade-in duration-300">
+                          <div className="flex gap-2">
                             <input
                               type="text"
                               placeholder="Enter Token"
@@ -146,7 +145,7 @@ const MyListedItems = () => {
                               onChange={(e) => setTokenValue(e.target.value)}
                             />
                             <button
-                              onClick={() => handleReturnSubmit(item.id)}
+                              onClick={() => handleActionSubmit(item.id)}
                               className="text-xs bg-green-600 text-white px-2 py-1 rounded"
                             >
                               Confirm
@@ -160,15 +159,27 @@ const MyListedItems = () => {
                           </div>
                         ) : (
                           <button
-                            onClick={() => setShowConfirmInput(item.id)}
-                            className="text-xs bg-primary text-white px-3 py-1 rounded hover:bg-opacity-80 transition"
+                            onClick={() => {
+                              setShowConfirmInput(item.id);
+                              // If item status is RENTED, we are waiting for RETURN.
+                              // If UNAVAILABLE (waiting for pickup), we are doing PICKUP.
+                              setConfirmType(
+                                item.status === "RENTED" ? "RETURN" : "PICKUP",
+                              );
+                            }}
+                            className={`text-xs text-white px-3 py-1 rounded transition ${
+                              item.status === "RENTED"
+                                ? "bg-primary"
+                                : "bg-green-600"
+                            }`}
                           >
-                            Confirm Return
+                            {item.status === "RENTED"
+                              ? "Confirm Return"
+                              : "Confirm Pickup"}
                           </button>
                         )}
                       </div>
                     ) : (
-                      // SHOW EDIT/DELETE IF AVAILABLE
                       <>
                         <CiEdit
                           className="cursor-pointer hover:text-primary transition-all duration-300"
