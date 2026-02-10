@@ -44,6 +44,7 @@ const request = {
     getRentItemById: (id) => api.get(`/rental/rent/${id}`),
     returnRentItem: (token) => api.patch(`/rental/return/${token}`),
     confirmPayment: (id) => api.post(`/rental/payment-success/${id}`),
+    confirmRent: (token) => api.patch(`/rental/confirm/${token}`),
     cancelRent: (id) => api.patch(`/rental/cancel/${id}`),
   },
   admin: {

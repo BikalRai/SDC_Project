@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { LuArrowLeft } from "react-icons/lu";
+import { LuArrowLeft, LuBadgeCheck } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import AppNavBar from "@/components/navbar/AppNavBar";
@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { DotLoader } from "react-spinners";
 import ListerDetails from "./ListerDetails";
+import Footer from "@/components/section/Footer";
 
 const ViewItem = () => {
   const { id } = useParams();
@@ -202,9 +203,17 @@ const ViewItem = () => {
                 {/* Action Button */}
                 <button
                   onClick={handleRentSubmit}
-                  className="w-full mt-2 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-light-primary transition"
+                  // 1. Logic to disable the button
+                  disabled={item?.status?.toLowerCase() !== "available"}
+                  className={`w-full mt-2 py-2 rounded-lg text-sm font-medium transition duration-300 ${
+                    item?.status?.toLowerCase() === "available"
+                      ? "bg-primary text-white hover:bg-light-primary cursor-pointer"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+                  }`}
                 >
-                  Rent Now
+                  {item?.status?.toLowerCase() === "available"
+                    ? "Rent Now"
+                    : "Currently Rented"}
                 </button>
 
                 {/* Tabs */}
@@ -234,7 +243,18 @@ const ViewItem = () => {
                   </div>
 
                   {activeTab === "lister" && (
-                    <ListerDetails user={item?.user} />
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      {/* If your ListerDetails already has the badge logic, this is perfect */}
+                      <ListerDetails user={item?.user} />
+
+                      {/* Optional: Add a small verification text below the card for extra trust */}
+                      {item?.user?.verified && (
+                        <p className="mt-3 flex items-center gap-1.5 text-xs text-blue-600 font-medium px-1">
+                          <LuBadgeCheck /> Verified Lister - This user has
+                          completed identity verification.
+                        </p>
+                      )}
+                    </div>
                   )}
                   {activeTab === "reviews" && <ItemReviews />}
                 </div>
@@ -243,6 +263,7 @@ const ViewItem = () => {
           </div>
         )}
       </ReContainer>
+      <Footer />
     </AppLayout>
   );
 };

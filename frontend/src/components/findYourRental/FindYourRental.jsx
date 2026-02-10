@@ -6,6 +6,7 @@ import { getAllItems } from "@/slices/item.slice";
 import { NavLink, Outlet } from "react-router-dom";
 import AppLayout from "../layout/AppLayout";
 import AppNavBar from "../navbar/AppNavBar";
+import Footer from "../section/Footer";
 
 const categories = [
   { id: 1, category: "vehicle", path: "/categories" },
@@ -186,6 +187,7 @@ const FindYourRental = () => {
           </div>
         </section>
       </ReContainer>
+      <Footer />
     </AppLayout>
   );
 };

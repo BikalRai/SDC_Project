@@ -13,7 +13,9 @@ const Vehicle = () => {
   return (
     <div>
       {loading ? (
-        <DotLoader />
+        <div className="flex items-center justify-center">
+          <DotLoader />
+        </div>
       ) : (
         <GridLayout>
           {vehicleItems.map((item) => (

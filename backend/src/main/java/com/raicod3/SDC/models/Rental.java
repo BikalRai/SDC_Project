@@ -43,6 +43,8 @@ public class Rental {
 
     private String returnToken;
 
+    private String pickupToken;
+
     public Rental(RentalRequestDto req, Item item, UserModel user) {
 
         this.startDate = req.getStartDate();
@@ -54,5 +56,6 @@ public class Rental {
         this.item = item;
         this.ownerId = item.getUser().getId();
         this.returnToken = UUID.randomUUID().toString();
+        this.pickupToken = UUID.randomUUID().toString();
     }
 }

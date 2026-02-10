@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { LuCalendar, LuCreditCard, LuWallet, LuBanknote } from "react-icons/lu"; // Added icons
 import AppNavBar from "@/components/navbar/AppNavBar";
 import { buildEsewaPayload, submitEsewaForm } from "@/utils/payment.helper";
+import Footer from "@/components/section/Footer";
 
 const Checkout = () => {
   const { state } = useLocation();
@@ -174,6 +175,7 @@ const Checkout = () => {
           </div>
         </div>
       </ReContainer>
+      <Footer />
     </AppLayout>
   );
 };

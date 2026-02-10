@@ -151,6 +151,36 @@ public class RentalService {
         return new RentalResponseDto(rental);
     }
 
+    @Transactional
+    public RentalResponseDto confirmPickupByQr(String token, CustomUserDetails currentOwner) {
+        // 1. Find the rental by the pickup token
+        Rental rental = (Rental) rentalRepository.findByPickupToken(token)
+                .orElseThrow(() -> new HttpNotFoundException("Invalid or expired Pickup QR code."));
+
+        // 2. Security Check: Only the OWNER can confirm they handed the item over
+        if (rental.getOwnerId() != currentOwner.getUser().getId()) {
+            throw new HttpForbiddenException("Only the item owner can confirm the pickup.");
+        }
+
+        // 3. State Guard: Ensure it hasn't been cancelled or already rented
+        if (rental.getStatus() == RentalStatus.CANCELLED) {
+            throw new HttpUnprocessableException("Cannot pickup a cancelled rental.");
+        }
+
+        // 4. Update Statuses
+        // Move from PAID/WAITING_PAYMENT to RENTED
+        rental.setStatus(RentalStatus.RENTED);
+
+        Item item = rental.getItem();
+        item.setStatus(ItemStatus.RENTED); // Ensure item is officially marked as out
+
+        // 5. Persistence
+        rentalRepository.save(rental);
+        itemRepository.save(item);
+
+        return new RentalResponseDto(rental);
+    }
+
     public RentalResponseDto cancelRental (int id) {
         Rental rental = rentalRepository.findById(id).orElseThrow(() -> new HttpNotFoundException("Rental not found."));
 
